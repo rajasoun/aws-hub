@@ -11,11 +11,21 @@ require (
 	github.com/rajasoun/go-ds v0.0.0-20220522214234-b13d68338290
 	github.com/robfig/cron v1.2.0
 	github.com/rs/cors v1.8.2
-	github.com/stretchr/testify v1.5.1
 	github.com/urfave/cli/v2 v2.8.0
 )
 
-require golang.org/x/sys v0.0.0-20220227234510-4e6760a101f9 // indirect
+// Test
+require (
+	github.com/alicebob/miniredis/v2 v2.21.0
+	github.com/stretchr/testify v1.7.0
+)
+
+require (
+	github.com/alicebob/gopher-json v0.0.0-20200520072559-a9ecdc9d1d3a // indirect
+	github.com/yuin/gopher-lua v0.0.0-20210529063254-f4c35e4016d9 // indirect
+	golang.org/x/sys v0.0.0-20220227234510-4e6760a101f9 // indirect
+	gopkg.in/yaml.v3 v3.0.0-20200313102051-9f266ea9e77c // indirect
+)
 
 require (
 	github.com/antzucaro/matchr v0.0.0-20210222213004-b04723ef80f0 // indirect
@@ -29,5 +39,4 @@ require (
 	github.com/rajasoun/go-config-parsers v0.0.0-20220523061051-4cfb3d3dd62c
 	github.com/russross/blackfriday/v2 v2.1.0 // indirect
 	golang.org/x/net v0.0.0-20220225172249-27dd8689420f // indirect
-	gopkg.in/yaml.v2 v2.4.0 // indirect
 )
