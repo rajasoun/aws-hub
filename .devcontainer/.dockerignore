@@ -1,0 +1,6 @@
+# docker related files
+.dockerignore
+Dockerfile*
+
+# source repository history
+.git

@@ -1,0 +1,35 @@
+// For format details, see https://aka.ms/devcontainer.json. For config options, see the README at:
+// https://github.com/microsoft/vscode-dev-containers/tree/v0.205.1/containers/python-3
+{
+  "name": "aws-hub",
+  "build": {
+    "dockerfile": "Dockerfile"
+  },
+  // Set *default* container specific settings.json values on container create.
+  "settings": {
+    "terminal.integrated.defaultProfile.linux": "zsh",
+    "go.toolsManagement.checkForUpdates": "local",
+    "go.useLanguageServer": true,
+    "go.gopath": "/go"
+  },
+  //  ptrace-based debugger like C++, Go, and Rust
+  "runArgs": [
+    "--cap-add=SYS_PTRACE",
+    "--security-opt",
+    "seccomp=unconfined"
+  ],
+  "mounts": [
+    "source=/var/run/docker.sock,target=/var/run/docker.sock,type=bind",
+    "source=${localWorkspaceFolder}/.devcontainer/.aws,target=/home/vscode/.aws,type=bind",
+    "source=${localWorkspaceFolder}/.devcontainer/.store,target=/home/vscode/.password-store,type=bind"
+  ],
+  "remoteUser": "vscode",
+  // Add the IDs of extensions you want installed when the container is created.
+  "extensions": [
+    "golang.Go"
+  ],
+  "features": {
+    "golang": "latest",
+    "docker-from-docker": "latest"
+  }
+}

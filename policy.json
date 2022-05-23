@@ -1,0 +1,19 @@
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Sid": "1",
+            "Effect": "Allow",
+            "Action": [
+                "iam:ListGroups",
+                "iam:ListRoles",
+                "iam:ListPolicies",
+                "iam:ListUsers",
+                "iam:GetUser",
+                "ce:GetCostAndUsage",
+                "ce:GetCostForecast"
+            ],
+            "Resource": "*"
+        }
+    ]
+}
