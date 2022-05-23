@@ -12,12 +12,17 @@ func TestAWSHandler_HealthCheckHandler(t *testing.T) {
 	t.Parallel()
 	t.Run("Check Health API /health", func(t *testing.T) {
 		mux := http.NewServeMux()
-		mux.HandleFunc("/health", func(w http.ResponseWriter, r *http.Request) {
-			awsHandler := awsHandler()
-			awsHandler.HealthCheckHandler(w, r)
-		})
-		handler := mux
-		server := httptest.NewServer(handler)
+		req, err := http.NewRequest("GET", "/health", nil)
+		if err != nil {
+			t.Fatal(err)
+		}
+		handler := http.HandlerFunc(awsHandler.HealthCheckHandler)
+		// mux.HandleFunc("/health", func(w http.ResponseWriter, r *http.Request) {
+		// 	awsHandler := NewHandler()
+		// 	awsHandler.HealthCheckHandler(w, r)
+		// }
+
+		server := httptest.NewServer(mux)
 		defer server.Close()
 		expect := httpexpect.New(t, server.URL)
 

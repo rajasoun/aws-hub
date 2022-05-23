@@ -1,3 +1,13 @@
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=rajasoun_aws-hub&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=rajasoun_aws-hub)
+
+[CodeQL - Vulnerability Analysis](https://github.com/rajasoun/aws-hub/workflows/CodeQL/badge.svg)
+
+[Dependency Review - Vulnerability Check](https://github.com/rajasoun/aws-hub/workflows/DependencyReview/badge.svg)
+
+[Secrets Scan](https://github.com/rajasoun/aws-hub/workflows/SecretScan/badge.svg)
+
+[Go Build](https://github.com/rajasoun/aws-hub/workflows/GoBuild/badge.svg)
+
 # AWS Cot Hub
 
 Go based cost exploration tool for AWS on multiple accounts

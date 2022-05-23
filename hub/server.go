@@ -15,9 +15,11 @@ import (
 	"github.com/urfave/cli/v2"
 )
 
+var awsHandler *aws.AWSHandler
+
 func setUpCache(cache cache.Cache, multiple bool) *aws.AWSHandler {
 	cache.Connect()
-	awsHandler := aws.NewAWSHandler(cache, multiple)
+	awsHandler = aws.NewAWSHandler(cache, multiple)
 	return awsHandler
 }
 
