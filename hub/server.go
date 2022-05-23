@@ -33,7 +33,6 @@ func setUpRoutes(awsHandler *aws.AWSHandler) *mux.Router {
 	router.HandleFunc("/aws/profiles", awsHandler.ConfigProfilesHandler)
 	router.HandleFunc("/aws/iam/users", awsHandler.IAMUsersHandler)
 	router.HandleFunc("/aws/iam/account", awsHandler.IAMUserHandler)
-	router.HandleFunc("/aws/iam/organization", awsHandler.DescribeOrganizationHandler)
 	router.HandleFunc("/aws/cost/current", awsHandler.CurrentCostHandler)
 	router.HandleFunc("/aws/cost/history", awsHandler.CostAndUsageHandler)
 	router.HandleFunc("/aws/cost/forecast", awsHandler.DescribeForecastPriceHandler)

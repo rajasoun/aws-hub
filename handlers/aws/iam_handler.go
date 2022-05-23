@@ -48,17 +48,6 @@ func handleUserResponse(handler *AWSHandler, cfg aws.Config, w http.ResponseWrit
 	}
 }
 
-func handleOrgResponse(handler *AWSHandler, cfg aws.Config, w http.ResponseWriter, key string) {
-	response, err := handler.aws.DescribeOrganization(cfg)
-	msg := "organizations:DescribeOrganization is missing"
-	if err != nil {
-		respondWithError(w, http.StatusInternalServerError, msg)
-	} else {
-		handler.cache.Set(key, response)
-		respondWithJSON(w, http.StatusOK, response)
-	}
-}
-
 func (handler *AWSHandler) IAMUsersHandler(w http.ResponseWriter, r *http.Request) {
 	profile, cfg := readCredentialForProfile(r, handler, w)
 	key := fmt.Sprintf("aws.%s.iam.users", profile)
@@ -79,17 +68,5 @@ func (handler *AWSHandler) IAMUserHandler(w http.ResponseWriter, r *http.Request
 		respondWithJSON(w, http.StatusOK, response)
 	} else {
 		handleUserResponse(handler, cfg, w, key)
-	}
-}
-
-func (handler *AWSHandler) DescribeOrganizationHandler(w http.ResponseWriter, r *http.Request) {
-	profile, cfg := readCredentialForProfile(r, handler, w)
-	key := fmt.Sprintf("aws.%s.iam.organization", profile)
-
-	response, foundInCache := handler.cache.Get(key)
-	if foundInCache {
-		respondWithJSON(w, http.StatusOK, response)
-	} else {
-		handleOrgResponse(handler, cfg, w, key)
 	}
 }
