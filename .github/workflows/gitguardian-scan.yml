@@ -1,4 +1,4 @@
-name: GitGuardian scan
+name: SecretScan
 
 on: [push, pull_request]
 
