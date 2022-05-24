@@ -72,6 +72,8 @@ code .
    > Note: If you set a passphrase, you will be prompted to enter it.
 
    ```bash
+   $ generate_git_config
+   $ gssh_config
    $ generate_gpg_keys
    ```
 
