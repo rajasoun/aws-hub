@@ -10,6 +10,8 @@ import (
 
 	"github.com/rajasoun/aws-hub/services/aws"
 	"github.com/rajasoun/aws-hub/services/cache"
+
+	ini "github.com/rajasoun/go-config-parsers/aws_credentials"
 )
 
 type AWSHandler struct {
@@ -80,4 +82,12 @@ func respondWithJSON(w http.ResponseWriter, code int, payload interface{}) {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(code)
 	w.Write(response)
+}
+
+func readCredentials(w http.ResponseWriter) ini.Sections {
+	sections, err := ini.OpenFile(external.DefaultSharedCredentialsFilename())
+	if err != nil {
+		respondWithError(w, http.StatusInternalServerError, "Couldn't parse credentials file")
+	}
+	return sections
 }
