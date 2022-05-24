@@ -2,6 +2,7 @@ package aws
 
 import (
 	"context"
+	"fmt"
 	"time"
 
 	"github.com/aws/aws-sdk-go-v2/aws"
@@ -36,21 +37,28 @@ func ListUsers(c context.Context, api IAMListUsersAPI, input *iam.ListUsersInput
 	return api.ListUsers(c, input)
 }
 
-func (aws AWS) DescribeIAMUser(cfg aws.Config) (IAMUser, error) {
-	// svc := iam.New(cfg)
-	// req := svc.GetUserRequest(&iam.GetUserInput{})
-	// result, err := req.Send(context.Background())
-
-	client := iam.NewFromConfig(cfg)
+func (aws AWS) IAMListUsers(cfg aws.Config) (int, error) {
+	svc := iam.NewFromConfig(cfg)
 	input := &iam.ListUsersInput{}
-	result, err := ListUsers(context.TODO(), client, input)
+	result, err := ListUsers(context.TODO(), svc, input)
+	if err != nil {
+		fmt.Println(err)
+		return 0, err
+	}
+	return len(result.Users), nil
+}
+
+func (aws AWS) IAMUser(cfg aws.Config) (IAMUser, error) {
+	svc := iam.NewFromConfig(cfg)
+	input := &iam.GetUserInput{}
+	result, err := svc.GetUser(context.TODO(), input)
 
 	if err != nil {
 		return IAMUser{}, err
 	}
 
 	lastUsed := time.Now()
-	if result.Users.PasswordLastUsed != nil {
+	if result.User.PasswordLastUsed != nil {
 		lastUsed = *result.User.PasswordLastUsed
 	}
 
@@ -63,24 +71,6 @@ func (aws AWS) DescribeIAMUser(cfg aws.Config) (IAMUser, error) {
 	}, nil
 }
 
-func (aws AWS) DescribeIAMUsers(cfg aws.Config) (int, error) {
-	client := iam.NewFromConfig(cfg)
-	input := &iam.ListUsersInput{}
-	result, err := ListUsers(context.TODO(), client, input)
-
-	if err != nil {
-		return 0, err
-	}
-	return len(result.Users), nil
-	// for _, user := range result.Users {
-	// 	fmt.Println(*user.UserName+" created on", *user.CreateDate)
-	// }
-
-	// svc := iam.New(cfg)
-	// req := svc.ListUsersRequest(&iam.ListUsersInput{})
-	// result, err := req.Send(context.Background())
-	// if err != nil {
-	// 	return 0, err
-	// }
-	//return len(result.Users), nil
+func GetUser(context context.Context, svc *iam.Client, input *iam.ListUsersInput) {
+	panic("unimplemented")
 }
