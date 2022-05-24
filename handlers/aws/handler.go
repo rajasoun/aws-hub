@@ -45,7 +45,14 @@ func (handler *AWSHandler) respondWithJSONandSetCache(response interface{}, err 
 	}
 }
 
-func loadAwsConfig(multiple bool, profile string, w http.ResponseWriter) awsCredential.Config {
+func (handler *AWSHandler) LoadProfileConfigFor(profile string, r *http.Request,
+	w http.ResponseWriter) awsCredential.Config {
+	cfg, err := loadAwsConfig(handler.multiple, profile)
+	respondOnError(err, w, "Couldn't read "+profile+" profile")
+	return cfg
+}
+
+func loadAwsConfig(multiple bool, profile string) (awsCredential.Config, error) {
 	cfg, err := external.LoadDefaultAWSConfig()
 	if err != nil {
 		log.Fatal(err)
@@ -54,10 +61,8 @@ func loadAwsConfig(multiple bool, profile string, w http.ResponseWriter) awsCred
 	}
 	if multiple {
 		cfg, err = external.LoadDefaultAWSConfig(external.WithSharedConfigProfile(profile))
-		errMsg := "Couldn't read " + profile + " profile"
-		respondOnError(err, w, errMsg)
 	}
-	return cfg
+	return cfg, err
 }
 
 func respondOnError(err error, w http.ResponseWriter, errMsg string) {
