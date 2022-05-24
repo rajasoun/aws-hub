@@ -1,29 +1,38 @@
 package aws
 
 import (
+	"context"
 	"log"
 	"net/http"
 
 	"github.com/aws/aws-sdk-go-v2/aws"
-	"github.com/aws/aws-sdk-go-v2/aws/external"
-	ini "github.com/rajasoun/go-config-parsers/aws_credentials"
+	"github.com/aws/aws-sdk-go-v2/config"
+	ini "github.com/rajasoun/go-parsers/aws_credentials"
 )
 
 func loadLocalAwsConfig(multiple bool, profile string) (aws.Config, error) {
-	cfg, err := external.LoadDefaultAWSConfig()
+	cfg, err := config.LoadDefaultConfig(context.TODO(),
+		config.WithRegion("us-east-1"))
 	if err != nil {
 		log.Fatal(err)
 	} else {
 		log.Printf("Default AWSConfig loaded successfuly")
 	}
+
 	if multiple {
-		cfg, err = external.LoadDefaultAWSConfig(external.WithSharedConfigProfile(profile))
+		cfg, err = config.LoadDefaultConfig(context.TODO(),
+			config.WithRegion("us-east-1"),
+			config.WithSharedConfigFiles(
+				config.DefaultSharedConfigFiles,
+			),
+			config.WithSharedConfigProfile(profile),
+		)
 	}
 	return cfg, err
 }
 
 func readLocalCredentials(w http.ResponseWriter) ini.Sections {
-	sections, err := ini.OpenFile(external.DefaultSharedCredentialsFilename())
+	sections, err := ini.OpenFile(config.DefaultSharedCredentialsFilename())
 	if err != nil {
 		respondWithError(w, http.StatusInternalServerError, "Couldn't parse credentials file")
 	}
