@@ -2,7 +2,11 @@ package aws
 
 import (
 	"encoding/json"
+	"log"
 	"net/http"
+
+	awsCredential "github.com/aws/aws-sdk-go-v2/aws"
+	"github.com/aws/aws-sdk-go-v2/aws/external"
 
 	"github.com/rajasoun/aws-hub/services/aws"
 	"github.com/rajasoun/aws-hub/services/cache"
@@ -29,6 +33,37 @@ func (handler *AWSHandler) GetAWSHandler() aws.AWS {
 
 func (handler *AWSHandler) HasMultipleEnvs() bool {
 	return handler.multiple
+}
+
+func (handler *AWSHandler) respondWithJSONandSetCache(response interface{}, err error,
+	w http.ResponseWriter, errMsg string, key string) {
+	if err != nil {
+		respondWithError(w, http.StatusInternalServerError, errMsg)
+	} else {
+		handler.cache.Set(key, response)
+		respondWithJSON(w, http.StatusOK, response)
+	}
+}
+
+func loadAwsConfig(multiple bool, profile string, w http.ResponseWriter) awsCredential.Config {
+	cfg, err := external.LoadDefaultAWSConfig()
+	if err != nil {
+		log.Fatal(err)
+	} else {
+		log.Printf("Default AWSConfig loaded successfuly")
+	}
+	if multiple {
+		cfg, err = external.LoadDefaultAWSConfig(external.WithSharedConfigProfile(profile))
+		errMsg := "Couldn't read " + profile + " profile"
+		respondOnError(err, w, errMsg)
+	}
+	return cfg
+}
+
+func respondOnError(err error, w http.ResponseWriter, errMsg string) {
+	if err != nil {
+		respondWithError(w, http.StatusInternalServerError, errMsg)
+	}
 }
 
 func respondWithError(w http.ResponseWriter, code int, msg string) {
