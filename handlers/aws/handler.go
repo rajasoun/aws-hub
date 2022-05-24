@@ -2,6 +2,7 @@ package aws
 
 import (
 	"encoding/json"
+	"fmt"
 	"log"
 	"net/http"
 
@@ -35,6 +36,38 @@ func (handler *AWSHandler) GetAWSHandler() aws.AWS {
 
 func (handler *AWSHandler) HasMultipleEnvs() bool {
 	return handler.multiple
+}
+
+func (handler *AWSHandler) API(r *http.Request, w http.ResponseWriter,
+	apiName string, keyCode string, errMsg string) {
+	profile := r.Header.Get("profile")
+	cfg := handler.LoadProfileConfigFor(profile, r, w)
+	key := fmt.Sprintf(keyCode, profile)
+	response, foundInCache := handler.cache.Get(key)
+	if foundInCache {
+		respondWithJSON(w, http.StatusOK, response)
+	} else {
+		response, err := handler.awsAPI(cfg, apiName)
+		handler.respondWithJSONandSetCache(response, err, w, errMsg, key)
+	}
+}
+
+func (handler *AWSHandler) awsAPI(cfg awsCredential.Config, apiName string) (interface{}, error) {
+	var response interface{}
+	var err error
+	switch {
+	case apiName == "DescribeIAMUsers":
+		response, err = handler.aws.DescribeIAMUsers(cfg)
+	case apiName == "DescribeIAMUser":
+		response, err = handler.aws.DescribeIAMUser(cfg)
+	case apiName == "DescribeCostAndUsage":
+		response, err = handler.aws.DescribeCostAndUsage(cfg)
+	case apiName == "DescribeCostAndUsagePerInstanceType":
+		response, err = handler.aws.DescribeCostAndUsagePerInstanceType(cfg)
+	case apiName == "DescribeForecastPrice":
+		response, err = handler.aws.DescribeForecastPrice(cfg)
+	}
+	return response, err
 }
 
 func (handler *AWSHandler) respondWithJSONandSetCache(response interface{}, err error,
