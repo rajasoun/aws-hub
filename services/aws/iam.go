@@ -18,21 +18,12 @@ type IAMUser struct {
 }
 
 // IAMListUsersAPI defines the interface for the ListUsers function.
-// We use this interface to test the function using a mocked service.
 type IAMListUsersAPI interface {
 	ListUsers(ctx context.Context,
 		params *iam.ListUsersInput,
 		optFns ...func(*iam.Options)) (*iam.ListUsersOutput, error)
 }
 
-// ListUsers retrieves a list of your AWS Identity and Access Management (IAM) users.
-// Inputs:
-//     c is the context of the method call, which includes the AWS Region.
-//     api is the interface that defines the method call.
-//     input defines the input arguments to the service call.
-// Output:
-//     If successful, a ListUsersOutput object containing the result of the service call and nil.
-//     Otherwise, nil and an error from the call to ListUsers.
 func ListUsers(c context.Context, api IAMListUsersAPI, input *iam.ListUsersInput) (*iam.ListUsersOutput, error) {
 	return api.ListUsers(c, input)
 }
@@ -48,10 +39,21 @@ func (aws AWS) IAMListUsers(cfg aws.Config) (int, error) {
 	return len(result.Users), nil
 }
 
+// IAMGetUserAPI defines the interface for the GetUser function.
+type IAMGetUserAPI interface {
+	GetUser(ctx context.Context,
+		params *iam.GetUserInput,
+		optFns ...func(*iam.Options)) (*iam.GetUserOutput, error)
+}
+
+func GetUser(c context.Context, api IAMGetUserAPI, input *iam.GetUserInput) (*iam.GetUserOutput, error) {
+	return api.GetUser(c, input)
+}
+
 func (aws AWS) IAMUser(cfg aws.Config) (IAMUser, error) {
 	svc := iam.NewFromConfig(cfg)
 	input := &iam.GetUserInput{}
-	result, err := svc.GetUser(context.TODO(), input)
+	result, err := GetUser(context.TODO(), svc, input)
 
 	if err != nil {
 		return IAMUser{}, err
@@ -69,8 +71,4 @@ func (aws AWS) IAMUser(cfg aws.Config) (IAMUser, error) {
 		UserId:           *result.User.UserId,
 		PasswordLastUsed: lastUsed,
 	}, nil
-}
-
-func GetUser(context context.Context, svc *iam.Client, input *iam.ListUsersInput) {
-	panic("unimplemented")
 }
