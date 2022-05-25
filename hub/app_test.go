@@ -30,7 +30,7 @@ func TestApp_setUpApp(t *testing.T) {
 	}
 }
 
-func Test_setFlags(t *testing.T) {
+func Test_setUpFlags(t *testing.T) {
 	assert := assert.New(t)
 	t.Parallel()
 	app := NewApp()
@@ -41,10 +41,10 @@ func Test_setFlags(t *testing.T) {
 		want  string
 	}{
 		{"Check For Flag port", 0, "--port"},
-		{"Check For Flag port", 1, "--duration"},
-		{"Check For Flag port", 2, "--redis"},
-		{"Check For Flag port", 3, "--dataset"},
-		{"Check For Flag port", 4, "--multiple"},
+		{"Check For Flag duration", 1, "--duration"},
+		{"Check For Flag redis", 2, "--redis"},
+		{"Check For Flag dataset", 3, "--dataset"},
+		{"Check For Flag multiple", 4, "--multiple"},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
