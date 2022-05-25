@@ -23,7 +23,7 @@ func TestApp_setUpApp(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			app.setUpIdentity()
-			appMap := app.structToMap()
+			appMap := app.StructToMap()
 			got := appMap[tt.key]
 			assert.Equal(got, tt.want, "setUp() = %v , want = %v", got, tt.want)
 		})
@@ -49,7 +49,7 @@ func Test_setUpFlags(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			app.setUpFlags()
-			got := sliceToStrMap(app.cli.Flags)
+			got := SliceToStrMap(app.cli.Flags)
 			assert.Containsf(got[tt.index], tt.want, "setFlags(tt.app) = %v, want = %v", got, tt.want)
 		})
 	}

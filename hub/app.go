@@ -90,13 +90,13 @@ func (app *App) setUpCommands() {
 	app.cli.CommandNotFound = commandNotFound
 }
 
-func (app *App) structToMap() map[string]interface{} {
+func (app *App) StructToMap() map[string]interface{} {
 	s := structs.New(app.cli)
 	m := s.Map()
 	return m
 }
 
-func sliceToStrMap(elements []cli.Flag) map[int]string {
+func SliceToStrMap(elements []cli.Flag) map[int]string {
 	elementMap := make(map[int]string)
 	for index, s := range elements {
 		elementMap[index] = s.String()
