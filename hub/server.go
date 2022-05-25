@@ -7,7 +7,6 @@ import (
 	"os"
 
 	"github.com/gorilla/handlers"
-	"github.com/gorilla/mux"
 	"github.com/rajasoun/aws-hub/handlers/aws"
 	"github.com/rajasoun/aws-hub/services/cache"
 	"github.com/robfig/cron"
@@ -28,19 +27,6 @@ func setUpCron() {
 	c.Start()
 }
 
-func setUpRoutes(awsHandler *aws.AWSHandler) *mux.Router {
-	router := mux.NewRouter()
-	router.HandleFunc("/aws/profiles", awsHandler.ConfigProfilesHandler)
-	router.HandleFunc("/aws/iam/users", awsHandler.IAMListUsersHandler)
-	router.HandleFunc("/aws/iam/account", awsHandler.IAMUserHandler)
-	router.HandleFunc("/aws/cost/current", awsHandler.CurrentCostHandler)
-	router.HandleFunc("/aws/cost/history", awsHandler.CostAndUsageHandler)
-	router.HandleFunc("/aws/cost/forecast", awsHandler.DescribeForecastPriceHandler)
-	router.HandleFunc("/aws/cost/instance_type", awsHandler.CostAndUsagePerInstanceTypeHandler)
-	router.HandleFunc("/health", awsHandler.HealthCheckHandler)
-	return router
-}
-
 func setUpCors() *cors.Cors {
 	corsOptions := cors.New(cors.Options{
 		AllowedOrigins: []string{"*"},
@@ -53,7 +39,7 @@ func setUpCors() *cors.Cors {
 func setUpServer(cache cache.Cache, multiple bool) http.Handler {
 	awsHandler := setUpCache(cache, multiple)
 	setUpCron()
-	awsRoutes := setUpRoutes(awsHandler)
+	awsRoutes := awsHandler.SetUpRoutes()
 	//awsRoutes.PathPrefix("/").Handler(http.FileServer(assetFS()))
 	corsOptions := setUpCors()
 	loggedRouter := handlers.LoggingHandler(os.Stdout, corsOptions.Handler(awsRoutes))
@@ -71,11 +57,12 @@ func startServer(port int, loggedRouter http.Handler) {
 }
 
 func New() *cli.App {
-	app := &cli.App{}
-	setUpApp(app)
-	setFlags(app)
-	setUpCommands(app)
-	return app
+	app := NewApp()
+	app.setUpApp()
+	app.setUpAuthors()
+	setUpFlags(app.cli)
+	setUpCommands(app.cli)
+	return app.cli
 }
 
 func Execute(args []string) {

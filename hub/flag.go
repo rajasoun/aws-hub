@@ -4,7 +4,7 @@ import "github.com/urfave/cli/v2"
 
 var flags []cli.Flag
 
-func setFlags(app *cli.App) {
+func setUpFlags(app *cli.App) {
 	flags = []cli.Flag{
 		&cli.IntFlag{
 			Name:  "port, p",

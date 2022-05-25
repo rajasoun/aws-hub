@@ -4,7 +4,7 @@ import (
 	"time"
 
 	"github.com/rajasoun/aws-hub/services/cache"
-	structs "github.com/rajasoun/go-ds"
+
 	"github.com/urfave/cli/v2"
 )
 
@@ -12,24 +12,6 @@ const (
 	DefaultPort     = 3000
 	DefaultDuration = 30
 )
-
-func getAuthors() []*cli.Author {
-	authors := []*cli.Author{
-		{
-			Name:  "Raja Soundaramourty",
-			Email: "rajasoun@cisco.com",
-		},
-	}
-	return authors
-}
-
-func setUpApp(app *cli.App) {
-	app.Name = "AWS Hub"
-	app.Usage = "AWS Cost Explorer"
-	app.Version = "0.0.1"
-	app.Authors = getAuthors()
-	app.Compiled = time.Now()
-}
 
 func parseArgs(c *cli.Context) (int, cache.Cache, bool) {
 	port := c.Int("port")
@@ -57,10 +39,4 @@ func parseArgs(c *cli.Context) (int, cache.Cache, bool) {
 		}
 	}
 	return port, cacheHandler, multiple
-}
-
-func StructToMap(app *cli.App) map[string]interface{} {
-	s := structs.New(app)
-	m := s.Map()
-	return m
 }
