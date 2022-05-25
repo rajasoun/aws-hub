@@ -17,7 +17,7 @@ func TestNewServer(t *testing.T) {
 		name string
 		want string
 	}{
-		{"Check NewServer ", "Mux Server 0.1"},
+		{"Check NewServer Name", "Mux Server 0.1"},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
