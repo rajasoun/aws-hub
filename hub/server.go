@@ -7,11 +7,19 @@ import (
 	"os"
 
 	"github.com/gorilla/handlers"
+	"github.com/gorilla/mux"
 	"github.com/rajasoun/aws-hub/handlers/aws"
 	"github.com/rajasoun/aws-hub/services/cache"
-	"github.com/robfig/cron"
 	"github.com/rs/cors"
 )
+
+type Server struct {
+	name        string
+	httpHandler http.Handler
+	awsHandler  *aws.AWSHandler
+	routes      *mux.Router
+	cors        *cors.Cors
+}
 
 var awsHandler *aws.AWSHandler
 
@@ -19,11 +27,6 @@ func setUpCache(cache cache.Cache, multiple bool) *aws.AWSHandler {
 	cache.Connect()
 	awsHandler = aws.NewAWSHandler(cache, multiple)
 	return awsHandler
-}
-
-func setUpCron() {
-	c := cron.New()
-	c.Start()
 }
 
 func setUpCors() *cors.Cors {
@@ -35,18 +38,18 @@ func setUpCors() *cors.Cors {
 	return corsOptions
 }
 
-func setUp(cache cache.Cache, multiple bool) http.Handler {
-	awsHandler := setUpCache(cache, multiple)
-	setUpCron()
-	awsRoutes := awsHandler.SetUpRoutes()
-	//awsRoutes.PathPrefix("/").Handler(http.FileServer(assetFS()))
-	corsOptions := setUpCors()
-	loggedRouter := handlers.LoggingHandler(os.Stdout, corsOptions.Handler(awsRoutes))
-	return loggedRouter
+func NewServer(cache cache.Cache, multiple bool) *Server {
+	server := Server{}
+	server.name = "Mux Server 0.1"
+	server.awsHandler = setUpCache(cache, multiple)
+	server.routes = awsHandler.SetUpRoutes()
+	server.cors = setUpCors()
+	server.httpHandler = handlers.LoggingHandler(os.Stdout, server.cors.Handler(server.routes))
+	return &server
 }
 
-func start(port int, loggedRouter http.Handler) {
-	err := http.ListenAndServe(fmt.Sprintf(":%d", port), loggedRouter)
+func (server *Server) start(port int) {
+	err := http.ListenAndServe(fmt.Sprintf(":%d", port), server.httpHandler)
 	if err != nil {
 		log.Println("Error in Starting Application")
 		log.Fatal(err)

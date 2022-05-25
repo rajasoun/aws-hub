@@ -80,8 +80,6 @@ github.com/rajasoun/go-ds v0.0.0-20220522214234-b13d68338290 h1:R/iK+Ef9K4+d9bLp
 github.com/rajasoun/go-ds v0.0.0-20220522214234-b13d68338290/go.mod h1:17zACo5Y4X8K/tRpXpSjE0/giTINnpFmm7r5v9GKNz8=
 github.com/rajasoun/go-parsers v0.0.0-20220524120756-230aa30f24d5 h1:niE6BCoz1XJTfKLGzA73kQBY8WkIMolz/pcr0TrdQpU=
 github.com/rajasoun/go-parsers v0.0.0-20220524120756-230aa30f24d5/go.mod h1:YTvhzZPZprYUFosOSnIHzkAuddKehWmvQHVNWt8arJU=
-github.com/robfig/cron v1.2.0 h1:ZjScXvvxeQ63Dbyxy76Fj3AT3Ut0aKsyd2/tl3DTMuQ=
-github.com/robfig/cron v1.2.0/go.mod h1:JGuDeoQd7Z6yL4zQhZ3OPEVHB7fL6Ka6skscFHfmt2k=
 github.com/rs/cors v1.8.2 h1:KCooALfAYGs415Cwu5ABvv9n9509fSiG5SQJn/AQo4U=
 github.com/rs/cors v1.8.2/go.mod h1:XyqrcTp5zjWr1wsJ8PIRZssZ8b/WMcMf71DJnit4EMU=
 github.com/russross/blackfriday/v2 v2.1.0 h1:JIOH55/0cWyOuilr9/qlrm0BSXldqnqwMsf35Ld67mk=

@@ -12,7 +12,6 @@ require (
 	github.com/patrickmn/go-cache v2.1.0+incompatible
 	github.com/rajasoun/go-ds v0.0.0-20220522214234-b13d68338290
 	github.com/rajasoun/go-parsers v0.0.0-20220524120756-230aa30f24d5
-	github.com/robfig/cron v1.2.0
 	github.com/rs/cors v1.8.2
 	github.com/urfave/cli/v2 v2.8.1
 
