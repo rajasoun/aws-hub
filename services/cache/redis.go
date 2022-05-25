@@ -19,11 +19,17 @@ func (r *Redis) Connect() {
 		Addr: r.Addr,
 		DB:   0,
 	})
+	r.Ping()
+}
+
+func (r *Redis) Ping() error {
 	_, err := r.client.Ping().Result()
 	if err != nil {
 		log.Fatal("Cloudn't connect to Redis:", err)
+		return err
 	} else {
 		log.Println("Successfully connected to Redis")
+		return nil
 	}
 }
 
