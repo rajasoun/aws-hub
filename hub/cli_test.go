@@ -38,7 +38,7 @@ func Test_parseArgs(t *testing.T) {
 		wantPort     int
 		wantMultiple bool
 	}{
-		{"Check Port and Multiple", &cli.Context{}, 3000, false},
+		{"Check Args port and multiple", &cli.Context{}, 3000, false},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
