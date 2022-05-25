@@ -12,6 +12,10 @@ type Memory struct {
 	cache      *memoryCache.Cache
 }
 
+func (m *Memory) Type() string {
+	return "InMemoryCache"
+}
+
 func (m *Memory) Connect() {
 	m.cache = memoryCache.New(time.Duration(m.Expiration)*time.Minute, time.Duration(m.Expiration)*time.Minute)
 	log.Println("Using in-memory cache")

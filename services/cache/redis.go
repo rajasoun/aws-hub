@@ -14,6 +14,10 @@ type Redis struct {
 	client     *redis.Client
 }
 
+func (r *Redis) Type() string {
+	return "RedisCache"
+}
+
 func (r *Redis) Connect() {
 	r.client = redis.NewClient(&redis.Options{
 		Addr: r.Addr,

@@ -72,9 +72,9 @@ func (app *App) setUpCommands() {
 			Usage: "Start Server",
 			Flags: app.cli.Flags,
 			Action: func(appCtx *cli.Context) error {
-				port, cacheHandler, multiple := parseArgs(appCtx)
-				loggedRouter := setUp(cacheHandler, multiple)
-				start(port, loggedRouter)
+				cliContext := NewCliContext(appCtx)
+				loggedRouter := setUp(cliContext.Cache(), cliContext.IsMultipleAwsProfiles())
+				start(cliContext.Port(), loggedRouter)
 				return nil
 			},
 		},
