@@ -9,6 +9,10 @@ import (
 	"github.com/aws/aws-sdk-go-v2/service/iam"
 )
 
+type IAMUsersCount struct {
+	UsersCount int `json:"usercount"`
+}
+
 type IAMUser struct {
 	Username         string    `json:"username"`
 	ARN              string    `json:"arn"`
@@ -28,15 +32,19 @@ func ListUsers(c context.Context, api IAMListUsersAPI, input *iam.ListUsersInput
 	return api.ListUsers(c, input)
 }
 
-func (aws AWS) IAMListUsers(cfg aws.Config) (int, error) {
+func (aws AWS) IAMListUsers(cfg aws.Config) (IAMUsersCount, error) {
 	svc := iam.NewFromConfig(cfg)
 	input := &iam.ListUsersInput{}
 	result, err := ListUsers(context.TODO(), svc, input)
 	if err != nil {
 		fmt.Println(err)
-		return 0, err
+		return IAMUsersCount{
+			UsersCount: 0,
+		}, err
 	}
-	return len(result.Users), nil
+	return IAMUsersCount{
+		UsersCount: len(result.Users),
+	}, nil
 }
 
 // IAMGetUserAPI defines the interface for the GetUser function.
