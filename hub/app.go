@@ -17,6 +17,10 @@ func NewApp() *App {
 	app := App{
 		cli: &cli.App{},
 	}
+	app.setUpIdentity()
+	app.setUpAuthors()
+	app.setUpFlags()
+	app.setUpCommands()
 	return &app
 }
 
@@ -106,9 +110,5 @@ func SliceToStrMap(elements []cli.Flag) map[int]string {
 
 func Execute(args []string) {
 	app := NewApp()
-	app.setUpIdentity()
-	app.setUpAuthors()
-	app.setUpFlags()
-	app.setUpCommands()
 	app.cli.Run(args)
 }

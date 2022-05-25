@@ -1,4 +1,4 @@
-package hub
+package test
 
 import (
 	"net/http"
@@ -6,14 +6,15 @@ import (
 	"testing"
 
 	"github.com/gavv/httpexpect"
+	"github.com/rajasoun/aws-hub/hub"
 	"github.com/urfave/cli/v2"
 )
 
 func TestAPI_All(t *testing.T) {
 	t.Parallel()
-	cliContext := NewCliContext(&cli.Context{})
-	server := NewServer(cliContext.Cache(), cliContext.IsMultipleAwsProfiles())
-	awsHandler := server.awsHandler
+	cliContext := hub.NewCliContext(&cli.Context{})
+	server := hub.NewServer(cliContext.Cache(), cliContext.IsMultipleAwsProfiles())
+	awsHandler := server.GetAWSHandler()
 	mux := http.NewServeMux()
 
 	t.Run("HealthCheck API /health", func(t *testing.T) {

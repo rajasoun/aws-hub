@@ -47,6 +47,10 @@ func NewServer(cache cache.Cache, multiple bool) *Server {
 	return &server
 }
 
+func (server *Server) GetAWSHandler() *aws.AWSHandler {
+	return server.awsHandler
+}
+
 func (server *Server) start(port int) {
 	err := http.ListenAndServe(fmt.Sprintf(":%d", port), server.httpHandler)
 	if err != nil {
