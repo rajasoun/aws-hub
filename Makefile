@@ -39,7 +39,10 @@ tdd-cover: ## Go Coverage
 	go test ./... -v --cover -coverprofile coverage/coverage.out
 	go tool cover -html=coverage/coverage.out
 
-tdd-summary: ## Prints formatted test output
+tdd-unit: ## Prints formatted unit test output
+	export SKIP_E2E=true && gotestsum --format testname -- -coverprofile=coverage/coverage.out ./...
+
+tdd-integration: ## Prints formatted integration test output
 	gotestsum --format testname -- -coverprofile=coverage/coverage.out ./...
 
 install-packages: ## Install go packages
