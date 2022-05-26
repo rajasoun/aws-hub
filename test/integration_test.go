@@ -11,6 +11,8 @@ import (
 )
 
 func TestAPI_All(t *testing.T) {
+	//ToDo: Secure way of Passing Credentials
+	t.Skip("Skipping INTEGRATION Tests")
 	t.Parallel()
 	cliContext := hub.NewCliContext(&cli.Context{})
 	server := hub.NewServer(cliContext.Cache(), cliContext.IsMultipleAwsProfiles())
