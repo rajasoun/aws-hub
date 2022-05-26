@@ -15,6 +15,7 @@ require (
 	github.com/rajasoun/go-ds v0.0.0-20220522214234-b13d68338290
 	github.com/rajasoun/go-parsers v0.0.0-20220524120756-230aa30f24d5
 	github.com/rs/cors v1.8.2
+	github.com/steinfletcher/apitest v1.5.12
 	github.com/urfave/cli/v2 v2.8.1
 
 )
