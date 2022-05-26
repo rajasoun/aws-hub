@@ -3,6 +3,7 @@ package test
 import (
 	"net/http"
 	"net/http/httptest"
+	"os"
 	"testing"
 
 	"github.com/gavv/httpexpect"
@@ -12,7 +13,9 @@ import (
 
 func TestAPI_All(t *testing.T) {
 	//ToDo: Secure way of Passing Credentials
-	t.Skip("Skipping INTEGRATION Tests")
+	if os.Getenv("SKIP_E2E") != "" {
+		t.Skip("Skipping INTEGRATION Tests")
+	}
 	t.Parallel()
 	cliContext := hub.NewCliContext(&cli.Context{})
 	server := hub.NewServer(cliContext.Cache(), cliContext.IsMultipleAwsProfiles())
