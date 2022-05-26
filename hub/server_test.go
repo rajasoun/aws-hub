@@ -7,20 +7,22 @@ import (
 	"github.com/urfave/cli/v2"
 )
 
-func Test_setUp(t *testing.T) {
+func TestNewServer(t *testing.T) {
+
 	assert := assert.New(t)
+	t.Parallel()
+	cliContext := NewCliContext(&cli.Context{})
+	server := NewServer(cliContext.Cache(), cliContext.IsMultipleAwsProfiles())
 	tests := []struct {
 		name string
-		app  *cli.App
 		want string
 	}{
-		{"Check for start command", New(), "start"},
+		{"Check NewServer Name", "Mux Server 0.1"},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got := tt.app.Command("start").Name
-			// tt.app.Command("start").Action(&cli.Context{})
-			assert.Equal(tt.want, got, "setUp() = %v, want = %v", tt.want, got)
+			got := server.name
+			assert.Equal(got, tt.want, "server.name = %v, want %v", got, tt.want)
 		})
 	}
 }

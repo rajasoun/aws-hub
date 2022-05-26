@@ -4,16 +4,16 @@ import (
 	"net/http"
 )
 
-func (handler *AWSHandler) IAMUsersHandler(w http.ResponseWriter, r *http.Request) {
+func (handler *AWSHandler) IAMListUsersHandler(w http.ResponseWriter, r *http.Request) {
 	keyCode := "aws.%s.iam.users"
 	errMsg := "iam:ListUsers - Credential Missing or Policy Denied"
-	apiName := "DescribeIAMUsers"
+	apiName := "IAMListUsers"
 	handler.API(r, w, apiName, keyCode, errMsg)
 }
 
 func (handler *AWSHandler) IAMUserHandler(w http.ResponseWriter, r *http.Request) {
 	keyCode := "aws.%s.iam.user"
 	errMsg := "iam:GetUser - Credential Missing or Policy Denied"
-	apiName := "DescribeIAMUser"
+	apiName := "IAMUser"
 	handler.API(r, w, apiName, keyCode, errMsg)
 }
