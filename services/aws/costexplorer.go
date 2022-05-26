@@ -1,11 +1,19 @@
 package aws
 
 import (
+	"context"
+
 	"github.com/aws/aws-sdk-go-v2/aws"
+	"github.com/aws/aws-sdk-go-v2/service/costexplorer"
+
 	awsModel "github.com/rajasoun/aws-hub/models/aws"
 )
 
 func (aws AWS) DescribeCostAndUsage(cfg aws.Config) (awsModel.Bill, error) {
+	svc := costexplorer.NewFromConfig(cfg)
+	input := &costexplorer.GetCostAndUsageInput{}
+	svc.GetCostAndUsage(context.TODO(), input)
+	//result, err := GetCostAndUsageRequest(context.TODO(), svc, input)
 	// currentTime := time.Now().Local()
 	// start := currentTime.AddDate(0, -6, 0).Format("2006-01-02")
 	// end := currentTime.Format("2006-01-02")
