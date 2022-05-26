@@ -14,16 +14,26 @@ type Redis struct {
 	client     *redis.Client
 }
 
+func (r *Redis) Type() string {
+	return "RedisCache"
+}
+
 func (r *Redis) Connect() {
 	r.client = redis.NewClient(&redis.Options{
 		Addr: r.Addr,
 		DB:   0,
 	})
+	r.Ping()
+}
+
+func (r *Redis) Ping() error {
 	_, err := r.client.Ping().Result()
 	if err != nil {
 		log.Fatal("Cloudn't connect to Redis:", err)
+		return err
 	} else {
 		log.Println("Successfully connected to Redis")
+		return nil
 	}
 }
 

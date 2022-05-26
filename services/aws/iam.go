@@ -2,12 +2,16 @@ package aws
 
 import (
 	"context"
+	"fmt"
 	"time"
 
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/service/iam"
-	"github.com/aws/aws-sdk-go-v2/service/organizations"
 )
+
+type IAMUsersCount struct {
+	UsersCount int `json:"usercount"`
+}
 
 type IAMUser struct {
 	Username         string    `json:"username"`
@@ -17,26 +21,48 @@ type IAMUser struct {
 	UserId           string    `json:"userId"`
 }
 
-type Organization struct {
-	Status string `json:"status"`
-	Name   string `json:"name"`
-	Email  string `json:"email"`
+// IAMListUsersAPI defines the interface for the ListUsers function.
+type IAMListUsersAPI interface {
+	ListUsers(ctx context.Context,
+		params *iam.ListUsersInput,
+		optFns ...func(*iam.Options)) (*iam.ListUsersOutput, error)
 }
 
-func (aws AWS) DescribeIAMRoles(cfg aws.Config) (int, error) {
-	svc := iam.New(cfg)
-	req := svc.ListRolesRequest(&iam.ListRolesInput{})
-	result, err := req.Send(context.Background())
+func ListUsers(c context.Context, api IAMListUsersAPI, input *iam.ListUsersInput) (*iam.ListUsersOutput, error) {
+	return api.ListUsers(c, input)
+}
+
+func (aws AWS) IAMListUsers(cfg aws.Config) (IAMUsersCount, error) {
+	svc := iam.NewFromConfig(cfg)
+	input := &iam.ListUsersInput{}
+	result, err := ListUsers(context.TODO(), svc, input)
 	if err != nil {
-		return 0, err
+		fmt.Println(err)
+		return IAMUsersCount{
+			UsersCount: 0,
+		}, err
 	}
-	return len(result.Roles), nil
+	return IAMUsersCount{
+		UsersCount: len(result.Users),
+	}, nil
 }
 
-func (aws AWS) DescribeIAMUser(cfg aws.Config) (IAMUser, error) {
-	svc := iam.New(cfg)
-	req := svc.GetUserRequest(&iam.GetUserInput{})
-	result, err := req.Send(context.Background())
+// IAMGetUserAPI defines the interface for the GetUser function.
+type IAMGetUserAPI interface {
+	GetUser(ctx context.Context,
+		params *iam.GetUserInput,
+		optFns ...func(*iam.Options)) (*iam.GetUserOutput, error)
+}
+
+func GetUser(c context.Context, api IAMGetUserAPI, input *iam.GetUserInput) (*iam.GetUserOutput, error) {
+	return api.GetUser(c, input)
+}
+
+func (aws AWS) IAMUser(cfg aws.Config) (IAMUser, error) {
+	svc := iam.NewFromConfig(cfg)
+	input := &iam.GetUserInput{}
+	result, err := GetUser(context.TODO(), svc, input)
+
 	if err != nil {
 		return IAMUser{}, err
 	}
@@ -53,60 +79,4 @@ func (aws AWS) DescribeIAMUser(cfg aws.Config) (IAMUser, error) {
 		UserId:           *result.User.UserId,
 		PasswordLastUsed: lastUsed,
 	}, nil
-}
-
-func (aws AWS) DescribeIAMUsers(cfg aws.Config) (int, error) {
-	svc := iam.New(cfg)
-	req := svc.ListUsersRequest(&iam.ListUsersInput{})
-	result, err := req.Send(context.Background())
-	if err != nil {
-		return 0, err
-	}
-	return len(result.Users), nil
-}
-
-func (aws AWS) DescribeIAMGroups(cfg aws.Config) (int, error) {
-	svc := iam.New(cfg)
-	req := svc.ListGroupsRequest(&iam.ListGroupsInput{})
-	result, err := req.Send(context.Background())
-	if err != nil {
-		return 0, err
-	}
-	return len(result.Groups), nil
-}
-
-func (aws AWS) DescribeIAMPolicies(cfg aws.Config) (int, error) {
-	svc := iam.New(cfg)
-	req := svc.ListPoliciesRequest(&iam.ListPoliciesInput{})
-	result, err := req.Send(context.Background())
-	if err != nil {
-		return 0, err
-	}
-	return len(result.Policies), nil
-}
-
-func (aws AWS) DescribeOrganization(cfg aws.Config) (Organization, error) {
-	svc := organizations.New(cfg)
-	req := svc.DescribeOrganizationRequest(&organizations.DescribeOrganizationInput{})
-	result, err := req.Send(context.Background())
-	if err != nil {
-		return Organization{}, err
-	}
-
-	reqAccount := svc.DescribeAccountRequest(&organizations.DescribeAccountInput{
-		AccountId: result.Organization.MasterAccountId,
-	})
-	resultAccount, err := reqAccount.Send(context.Background())
-	if err != nil {
-		return Organization{}, err
-	}
-
-	status, _ := resultAccount.Account.Status.MarshalValue()
-	organization := Organization{
-		Status: status,
-		Name:   *resultAccount.Account.Name,
-		Email:  *resultAccount.Account.Email,
-	}
-
-	return organization, nil
 }
