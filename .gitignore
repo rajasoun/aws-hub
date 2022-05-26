@@ -226,3 +226,5 @@ credentials
 .dev
 .ops
 .env.bak
+.sequence
+
