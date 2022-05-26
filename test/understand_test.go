@@ -2,6 +2,7 @@ package test
 
 import (
 	"net/http"
+	"os"
 	"testing"
 
 	"github.com/rajasoun/aws-hub/handlers/aws"
@@ -36,7 +37,9 @@ func newRouter() *mux.Router {
 
 func Test_Flow(t *testing.T) {
 	//ToDo: Secure way of Passing Credentials
-	t.Skip("Skipping INTEGRATION Tests")
+	if os.Getenv("SKIP_E2E") != "" {
+		t.Skip("Skipping INTEGRATION Tests")
+	}
 	t.Parallel()
 	router := newRouter()
 	t.Run("HealthCheck API /health", func(t *testing.T) {
