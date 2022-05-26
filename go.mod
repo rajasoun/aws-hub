@@ -5,6 +5,7 @@ go 1.18
 require (
 	github.com/aws/aws-sdk-go-v2 v1.16.4
 	github.com/aws/aws-sdk-go-v2/config v1.15.7
+	github.com/aws/aws-sdk-go-v2/service/costexplorer v1.18.5
 	github.com/aws/aws-sdk-go-v2/service/iam v1.18.5
 	github.com/gavv/httpexpect v2.0.0+incompatible
 	github.com/go-redis/redis v6.15.9+incompatible
