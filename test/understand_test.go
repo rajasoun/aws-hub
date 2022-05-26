@@ -35,7 +35,8 @@ func newRouter() *mux.Router {
 }
 
 func Test_Flow(t *testing.T) {
-	//t.Skip("Skipping INTEGRATION Tests")
+	//ToDo: Secure way of Passing Credentials
+	t.Skip("Skipping INTEGRATION Tests")
 	t.Parallel()
 	router := newRouter()
 	t.Run("HealthCheck API /health", func(t *testing.T) {
