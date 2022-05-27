@@ -13,14 +13,6 @@ type IAMUsersCount struct {
 	UsersCount int `json:"usercount"`
 }
 
-type IAMUser struct {
-	Username         string    `json:"username"`
-	ARN              string    `json:"arn"`
-	CreateDate       time.Time `json:"createDate"`
-	PasswordLastUsed time.Time `json:"passwordLastUsed"`
-	UserId           string    `json:"userId"`
-}
-
 // IAMListUsersAPI defines the interface for the ListUsers function.
 type IAMListUsersAPI interface {
 	ListUsers(ctx context.Context,
@@ -45,6 +37,14 @@ func (aws AWS) IAMListUsers(cfg aws.Config) (IAMUsersCount, error) {
 	return IAMUsersCount{
 		UsersCount: len(result.Users),
 	}, nil
+}
+
+type IAMUser struct {
+	Username         string    `json:"username"`
+	ARN              string    `json:"arn"`
+	CreateDate       time.Time `json:"createDate"`
+	PasswordLastUsed time.Time `json:"passwordLastUsed"`
+	UserId           string    `json:"userId"`
 }
 
 // IAMGetUserAPI defines the interface for the GetUser function.
