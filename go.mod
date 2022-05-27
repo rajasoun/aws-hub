@@ -7,7 +7,6 @@ require (
 	github.com/aws/aws-sdk-go-v2/config v1.15.7
 	github.com/aws/aws-sdk-go-v2/service/costexplorer v1.18.5
 	github.com/aws/aws-sdk-go-v2/service/iam v1.18.5
-	github.com/gavv/httpexpect v2.0.0+incompatible
 	github.com/go-redis/redis v6.15.9+incompatible
 	github.com/gorilla/handlers v1.5.1
 	github.com/gorilla/mux v1.8.0
@@ -15,7 +14,6 @@ require (
 	github.com/rajasoun/go-ds v0.0.0-20220522214234-b13d68338290
 	github.com/rajasoun/go-parsers v0.0.0-20220524120756-230aa30f24d5
 	github.com/rs/cors v1.8.2
-	github.com/steinfletcher/apitest v1.5.12
 	github.com/urfave/cli/v2 v2.8.1
 
 )
@@ -68,5 +66,7 @@ require (
 // Test
 require (
 	github.com/alicebob/miniredis/v2 v2.21.0
+	github.com/gavv/httpexpect v2.0.0+incompatible
+	github.com/steinfletcher/apitest v1.5.12
 	github.com/stretchr/testify v1.7.1
 )
