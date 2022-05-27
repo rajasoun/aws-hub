@@ -22,17 +22,21 @@ func (mock mockGetUserImpl) GetUser(ctx context.Context,
 }
 
 func TestGetUser(t *testing.T) {
-	assert := assert.New(t)
-	api := &mockGetUserImpl{}
-	input := &iam.GetUserInput{}
-	want := &iam.GetUserOutput{User: &types.User{UserName: new(string)}}
-	got, err := GetUser(context.TODO(), api, input)
-	assert.NoError(err, "err = %v, want = nil", err)
-	assert.Equal(got, want, "got = %v , want = %v", got, want)
+	t.Run("Check GetUser", func(t *testing.T) {
+		assert := assert.New(t)
+		api := &mockGetUserImpl{}
+		input := &iam.GetUserInput{}
+		want := &iam.GetUserOutput{User: &types.User{UserName: new(string)}}
+		got, err := GetUser(context.TODO(), api, input)
+		assert.NoError(err, "err = %v, want = nil", err)
+		assert.Equal(got, want, "got = %v , want = %v", got, want)
+	})
 }
 
 func TestGetUserIdentity(t *testing.T) {
-	assert := assert.New(t)
-	_, err := GetUserIdentity(aws.Config{})
-	assert.Error(err, "err = %v, want = nil", err)
+	t.Run("Check GetUserIdentity returns err with aws.Config{}", func(t *testing.T) {
+		assert := assert.New(t)
+		_, err := GetUserIdentity(aws.Config{})
+		assert.Error(err, "err = %v, want = nil", err)
+	})
 }

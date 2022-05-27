@@ -23,17 +23,21 @@ func (mock mockListUsersImpl) ListUsers(ctx context.Context,
 }
 
 func TestListUsers(t *testing.T) {
-	assert := assert.New(t)
-	api := &mockListUsersImpl{}
-	input := &iam.ListUsersInput{}
-	want := 1
-	got, err := ListUsers(context.TODO(), api, input)
-	assert.NoError(err, "err = %v, want = nil", err)
-	assert.Equal(want, len(got.Users), "got = %v , want = %v", got, want)
+	t.Run("Check GetListUsers", func(t *testing.T) {
+		assert := assert.New(t)
+		api := &mockListUsersImpl{}
+		input := &iam.ListUsersInput{}
+		want := 1
+		got, err := ListUsers(context.TODO(), api, input)
+		assert.NoError(err, "err = %v, want = nil", err)
+		assert.Equal(want, len(got.Users), "got = %v , want = %v", got, want)
+	})
 }
 
 func TestGetUserCount(t *testing.T) {
-	assert := assert.New(t)
-	_, err := GetUserCount(aws.Config{})
-	assert.Error(err, "err = %v, want = nil", err)
+	t.Run("Check GetUserCount returns err with aws.Config{}", func(t *testing.T) {
+		assert := assert.New(t)
+		_, err := GetUserCount(aws.Config{})
+		assert.Error(err, "err = %v, want = nil", err)
+	})
 }
