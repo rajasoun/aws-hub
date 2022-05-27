@@ -79,4 +79,18 @@ func TestAPI_All(t *testing.T) {
 			JSON().Object().ContainsKey("username").
 			NotEmpty()
 	})
+	t.Run("Account Alias API /aws/iam/alias", func(t *testing.T) {
+		mux.HandleFunc("/aws/iam/alias", func(w http.ResponseWriter, r *http.Request) {
+			awsHandler.IAMAliasHandler(w, r)
+		})
+		server := httptest.NewServer(mux)
+		defer server.Close()
+		expect := httpexpect.New(t, server.URL)
+
+		expect.GET("/aws/iam/alias").
+			Expect().
+			Status(http.StatusOK).
+			JSON().Object().ContainsKey("list").
+			NotEmpty()
+	})
 }

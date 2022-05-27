@@ -15,6 +15,8 @@ func (aws AWS) ExternalServiceGateway(cfg aws.Config, apiName string) (interface
 		response, err = iam.GetUserCount(cfg)
 	case apiName == "IAMUser":
 		response, err = iam.GetUserIdentity(cfg)
+	case apiName == "IAMAliases":
+		response, err = iam.GetAliases(cfg)
 	}
 	return response, err
 }
