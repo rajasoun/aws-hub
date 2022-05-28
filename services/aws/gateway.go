@@ -2,6 +2,7 @@ package aws
 
 import (
 	"github.com/aws/aws-sdk-go-v2/aws"
+	awsiam "github.com/aws/aws-sdk-go-v2/service/iam"
 	"github.com/rajasoun/aws-hub/services/aws/iam"
 )
 
@@ -12,7 +13,7 @@ func (aws AWS) ExternalServiceGateway(cfg aws.Config, apiName string) (interface
 	var err error
 	switch {
 	case apiName == "IAMListUsers":
-		response, err = iam.GetUserCountForAccount(cfg)
+		response, err = iam.GetUserCount(cfg, awsiam.NewFromConfig(cfg))
 	case apiName == "IAMUser":
 		response, err = iam.GetUserIdentity(cfg)
 	case apiName == "IAMAliases":

@@ -41,7 +41,3 @@ func GetUserCount(cfg aws.Config, client IAMListUsersAPI) (UserList, error) {
 	}
 	return UserList{Count: len(result.Users)}, nil
 }
-
-func GetUserCountForAccount(cfg aws.Config) (UserList, error) {
-	return GetUserCount(cfg, iam.NewFromConfig(cfg))
-}

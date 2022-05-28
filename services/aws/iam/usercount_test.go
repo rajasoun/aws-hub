@@ -62,33 +62,10 @@ func TestGetObjectFromS3(t *testing.T) {
 	}
 }
 
-//ListUsers Mock
-// func (mock MockIAMListUsersAPI) ListUsers(ctx context.Context,
-// 	params *iam.ListUsersInput, optFns ...func(*iam.Options)) (*iam.ListUsersOutput, error) {
-// 	log.Println("[usercount_test.go] (mock MockListUsersAPI) ListUsers ")
-// 	userList := []types.User{
-// 		{UserName: aws.String("test1@example.com")},
-// 		{UserName: aws.String("test2@example.com")},
-// 	}
-// 	return &iam.ListUsersOutput{Users: userList}, nil
-// }
-
-// func TestListUsers(t *testing.T) {
-// 	t.Run("Check GetListUsers", func(t *testing.T) {
-// 		assert := assert.New(t)
-// 		client := new(MockListUsersAPI)
-// 		input := &iam.ListUsersInput{}
-// 		want := 2
-// 		got, err := ListUsers(context.TODO(), client, input)
-// 		assert.NoError(err, "err = %v, want = nil", err)
-// 		assert.Equal(want, len(got.Users), "got = %v , want = %v", got, want)
-// 	})
-// }
-
-// func TestGetUserCount(t *testing.T) {
-// 	t.Run("Check GetUserCount returns err with Invalid aws.Config{}", func(t *testing.T) {
-// 		assert := assert.New(t)
-// 		_, err := GetUserCount(aws.Config{})
-// 		assert.Error(err, "err = %v, want = nil", err)
-// 	})
-// }
+func TestGetUserCount(t *testing.T) {
+	t.Run("Check GetUserCount returns err with Invalid aws.Config{}", func(t *testing.T) {
+		assert := assert.New(t)
+		_, err := GetUserCount(aws.Config{}, iam.NewFromConfig(aws.Config{}))
+		assert.Error(err, "err = %v, want = nil", err)
+	})
+}
