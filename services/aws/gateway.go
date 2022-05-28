@@ -12,7 +12,7 @@ func (aws AWS) ExternalServiceGateway(cfg aws.Config, apiName string) (interface
 	var err error
 	switch {
 	case apiName == "IAMListUsers":
-		response, err = iam.GetUserCount(cfg)
+		response, err = iam.GetUserCountForAccount(cfg)
 	case apiName == "IAMUser":
 		response, err = iam.GetUserIdentity(cfg)
 	case apiName == "IAMAliases":

@@ -31,13 +31,17 @@ func ListUsers(ctx context.Context, client IAMListUsersAPI,
 // Output:
 //     If successful, a Users object containing the count and nil.
 //     Otherwise, nil and an error from the call.
-func GetUserCount(cfg aws.Config) (UserList, error) {
+func GetUserCount(cfg aws.Config, client IAMListUsersAPI) (UserList, error) {
 	ctx := context.TODO()
-	client := iam.NewFromConfig(cfg)
+	//client := iam.NewFromConfig(cfg)
 	input := &iam.ListUsersInput{}
 	result, err := ListUsers(ctx, client, input)
 	if err != nil {
 		return UserList{Count: 0}, err
 	}
 	return UserList{Count: len(result.Users)}, nil
+}
+
+func GetUserCountForAccount(cfg aws.Config) (UserList, error) {
+	return GetUserCount(cfg, iam.NewFromConfig(cfg))
 }
