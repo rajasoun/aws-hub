@@ -11,7 +11,10 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-type MockListUsersAPI struct{}
+//type MockListUsersAPI struct{}
+type MockListUsersAPI func(ctx context.Context,
+	params *iam.ListUsersInput,
+	optFns ...func(*iam.Options)) (*iam.ListUsersOutput, error)
 
 func (mock MockListUsersAPI) ListUsers(ctx context.Context,
 	params *iam.ListUsersInput, optFns ...func(*iam.Options)) (*iam.ListUsersOutput, error) {
@@ -26,7 +29,7 @@ func (mock MockListUsersAPI) ListUsers(ctx context.Context,
 func TestListUsers(t *testing.T) {
 	t.Run("Check GetListUsers", func(t *testing.T) {
 		assert := assert.New(t)
-		client := &MockListUsersAPI{}
+		client := new(MockListUsersAPI)
 		input := &iam.ListUsersInput{}
 		want := 2
 		got, err := ListUsers(context.TODO(), client, input)
