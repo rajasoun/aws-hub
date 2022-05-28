@@ -5,17 +5,17 @@ import (
 )
 
 func (handler *AWSHandler) IAMListUsersHandler(w http.ResponseWriter, r *http.Request) {
-	keyCode := "aws.%s.iam.users"
-	errMsg := "iam:ListUsers - Credential Missing or Policy Denied"
-	apiName := "IAMListUsers"
-	handler.API(r, w, apiName, keyCode, errMsg)
+	cacheKey := "aws.%s.iam.users"
+	apiToBeInvoked := "IAMListUsers"
+	onErrMsg := "iam:ListUsers - Credential Missing or Policy Denied"
+	handler.API(r, w, apiToBeInvoked, cacheKey, onErrMsg)
 }
 
 func (handler *AWSHandler) IAMUserHandler(w http.ResponseWriter, r *http.Request) {
-	keyCode := "aws.%s.iam.user"
-	errMsg := "iam:GetUser - Credential Missing or Policy Denied"
-	apiName := "IAMUser"
-	handler.API(r, w, apiName, keyCode, errMsg)
+	cacheKey := "aws.%s.iam.user"
+	apiToBeInvoked := "IAMUser"
+	onErrMsg := "iam:GetUser - Credential Missing or Policy Denied"
+	handler.API(r, w, apiToBeInvoked, cacheKey, onErrMsg)
 }
 
 func (handler *AWSHandler) IAMAliasHandler(w http.ResponseWriter, r *http.Request) {
