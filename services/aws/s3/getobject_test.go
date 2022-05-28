@@ -39,22 +39,20 @@ func TestGetObjectFromS3(t *testing.T) {
 	t.Parallel()
 
 	cases := []struct {
-		name    string
-		client  func(t *testing.T) S3GetObjectAPI
-		bucket  string
-		key     string
-		expect  []byte
-		wantErr bool
+		name   string
+		client func(t *testing.T) S3GetObjectAPI
+		bucket string
+		key    string
+		expect []byte
 	}{
 		{
 			name: "Check Get Object From S3",
 			client: func(t *testing.T) S3GetObjectAPI {
 				return mockS3GetObjectAPI(t)
 			},
-			bucket:  "testBucket",
-			key:     "testKey",
-			expect:  []byte(bucketContent),
-			wantErr: false,
+			bucket: "testBucket",
+			key:    "testKey",
+			expect: []byte(bucketContent),
 		},
 	}
 
