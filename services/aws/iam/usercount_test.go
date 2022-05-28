@@ -25,10 +25,10 @@ func (mock mockListUsersImpl) ListUsers(ctx context.Context,
 func TestListUsers(t *testing.T) {
 	t.Run("Check GetListUsers", func(t *testing.T) {
 		assert := assert.New(t)
-		api := &mockListUsersImpl{}
+		client := &mockListUsersImpl{}
 		input := &iam.ListUsersInput{}
 		want := 1
-		got, err := ListUsers(context.TODO(), api, input)
+		got, err := ListUsers(client, context.TODO(), input)
 		assert.NoError(err, "err = %v, want = nil", err)
 		assert.Equal(want, len(got.Users), "got = %v , want = %v", got, want)
 	})

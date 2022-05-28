@@ -22,9 +22,9 @@ type ListUsersAPI interface {
 
 // Wrapper Function to ListUsers with api to be called as argument
 // This will enable TDD using mocking the wrapped function
-func ListUsers(c context.Context, api ListUsersAPI,
+func ListUsers(client ListUsersAPI, c context.Context,
 	input *iam.ListUsersInput) (*iam.ListUsersOutput, error) {
-	return api.ListUsers(c, input)
+	return client.ListUsers(c, input)
 }
 
 // GetUserCount retrieves the user accounty for an AWS account.
@@ -34,9 +34,9 @@ func ListUsers(c context.Context, api ListUsersAPI,
 //     If successful, a Users object containing the count and nil.
 //     Otherwise, nil and an error from the call.
 func GetUserCount(cfg aws.Config) (UserList, error) {
-	api := iam.NewFromConfig(cfg)
+	client := iam.NewFromConfig(cfg)
 	input := &iam.ListUsersInput{}
-	result, err := ListUsers(context.TODO(), api, input)
+	result, err := ListUsers(client, context.TODO(), input)
 	if err != nil {
 		return UserList{Count: 0}, err
 	}
