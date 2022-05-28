@@ -28,7 +28,7 @@ func TestListUsers(t *testing.T) {
 		client := &mockListUsersImpl{}
 		input := &iam.ListUsersInput{}
 		want := 1
-		got, err := ListUsers(client, context.TODO(), input)
+		got, err := ListUsers(context.TODO(), client, input)
 		assert.NoError(err, "err = %v, want = nil", err)
 		assert.Equal(want, len(got.Users), "got = %v , want = %v", got, want)
 	})
