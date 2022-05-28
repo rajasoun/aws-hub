@@ -2,6 +2,7 @@ package iam
 
 import (
 	"context"
+	"log"
 
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/service/iam"
@@ -24,6 +25,7 @@ type ListUsersAPI interface {
 // This will enable TDD using mocking the wrapped function
 func ListUsers(c context.Context, client ListUsersAPI,
 	input *iam.ListUsersInput) (*iam.ListUsersOutput, error) {
+	log.Println("[usercount.go][ListUsers] client -> ", client)
 	return client.ListUsers(c, input)
 }
 
@@ -34,9 +36,10 @@ func ListUsers(c context.Context, client ListUsersAPI,
 //     If successful, a Users object containing the count and nil.
 //     Otherwise, nil and an error from the call.
 func GetUserCount(cfg aws.Config) (UserList, error) {
+	ctx := context.TODO()
 	client := iam.NewFromConfig(cfg)
 	input := &iam.ListUsersInput{}
-	result, err := ListUsers(context.TODO(), client, input)
+	result, err := ListUsers(ctx, client, input)
 	if err != nil {
 		return UserList{Count: 0}, err
 	}
