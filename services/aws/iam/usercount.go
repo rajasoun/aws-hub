@@ -2,7 +2,6 @@ package iam
 
 import (
 	"context"
-	"log"
 
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/service/iam"
@@ -12,21 +11,18 @@ type UserList struct {
 	Count int `json:"usercount"`
 }
 
-// Interface wraps up the underlying AWS Function
+// Interface for Amazon IAM API operations required by ListUsers function
 // This will enable TDD using mocking the wrapped function
-
-type ListUsersAPI interface {
+type IAMListUsersAPI interface {
 	ListUsers(ctx context.Context,
 		params *iam.ListUsersInput,
 		optFns ...func(*iam.Options)) (*iam.ListUsersOutput, error)
 }
 
-// Wrapper Function to ListUsers with api to be called as argument
-// This will enable TDD using mocking the wrapped function
-func ListUsers(c context.Context, client ListUsersAPI,
+// Amazon IAM client’s ListUsers method,
+func ListUsers(ctx context.Context, client IAMListUsersAPI,
 	input *iam.ListUsersInput) (*iam.ListUsersOutput, error) {
-	log.Println("[usercount.go][ListUsers] client -> ", client)
-	return client.ListUsers(c, input)
+	return client.ListUsers(ctx, input)
 }
 
 // GetUserCount retrieves the user accounty for an AWS account.
