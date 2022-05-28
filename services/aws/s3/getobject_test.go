@@ -13,13 +13,17 @@ import (
 
 var bucketContent = "this is the body foo bar baz"
 
-type MockGetObjectAPI func(ctx context.Context, params *s3.GetObjectInput, optFns ...func(*s3.Options)) (*s3.GetObjectOutput, error)
+type MockGetObjectAPI func(ctx context.Context,
+	params *s3.GetObjectInput,
+	optFns ...func(*s3.Options)) (*s3.GetObjectOutput, error)
 
-func (m MockGetObjectAPI) GetObject(ctx context.Context, params *s3.GetObjectInput, optFns ...func(*s3.Options)) (*s3.GetObjectOutput, error) {
-	return m(ctx, params, optFns...)
+func (mock MockGetObjectAPI) GetObject(ctx context.Context,
+	params *s3.GetObjectInput,
+	optFns ...func(*s3.Options)) (*s3.GetObjectOutput, error) {
+	return mock(ctx, params, optFns...)
 }
 
-func mockAPI() S3GetObjectAPI {
+func mockAPIClient() S3GetObjectAPI {
 	return MockGetObjectAPI(
 		func(ctx context.Context,
 			params *s3.GetObjectInput,
@@ -40,7 +44,7 @@ func TestGetObjectFromS3(t *testing.T) {
 		want     int
 	}{
 		{
-			client:   func() S3GetObjectAPI { return mockAPI() },
+			client:   func() S3GetObjectAPI { return mockAPIClient() },
 			bucket:   "testBucket",
 			key:      "testKey",
 			expected: []byte(bucketContent),
@@ -52,8 +56,7 @@ func TestGetObjectFromS3(t *testing.T) {
 		t.Run(strconv.Itoa(i), func(t *testing.T) {
 			assert := assert.New(t)
 			ctx := context.TODO()
-			client := tt.client()
-			content, err := GetObjectFromS3(ctx, client, tt.bucket, tt.key)
+			content, err := GetObjectFromS3(ctx, tt.client(), tt.bucket, tt.key)
 			assert.NoError(err, "expect no error, got %v", err)
 			got := bytes.Compare(tt.expected, content)
 			assert.Equal(tt.want, got, "got byte recived = %v, want = %v", got, tt.want)
