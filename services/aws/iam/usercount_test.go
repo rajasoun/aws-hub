@@ -11,11 +11,12 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-//type MockListUsersAPI struct{}
+//Mock Interface
 type MockListUsersAPI func(ctx context.Context,
 	params *iam.ListUsersInput,
 	optFns ...func(*iam.Options)) (*iam.ListUsersOutput, error)
 
+//ListUsers Mock
 func (mock MockListUsersAPI) ListUsers(ctx context.Context,
 	params *iam.ListUsersInput, optFns ...func(*iam.Options)) (*iam.ListUsersOutput, error) {
 	log.Println("[usercount_test.go] (mock MockListUsersAPI) ListUsers ")
