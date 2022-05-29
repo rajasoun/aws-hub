@@ -23,7 +23,7 @@ func (mock MockIAMGetUserAPI) GetUser(ctx context.Context,
 	return mock(ctx, params, optFns...)
 }
 
-func mockOutput() IAMGetUserAPI {
+func mockIAMGetUserAPIOutput() IAMGetUserAPI {
 	return MockIAMGetUserAPI(func(ctx context.Context,
 		params *iam.GetUserInput,
 		optFns ...func(*iam.Options)) (*iam.GetUserOutput, error) {
@@ -51,7 +51,7 @@ func TestGetUserIdentity(t *testing.T) {
 		{
 			name: "Check GetUserIdentity For Account",
 			client: func() IAMGetUserAPI {
-				return mockOutput()
+				return mockIAMGetUserAPIOutput()
 			},
 			want: testUserName,
 		},

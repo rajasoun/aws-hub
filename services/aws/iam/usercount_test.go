@@ -22,7 +22,7 @@ func (mock MockIAMListUsersAPI) ListUsers(ctx context.Context,
 	return mock(ctx, params, optFns...)
 }
 
-func mockIAMListUsersAPI() IAMListUsersAPI {
+func mockIAMListUsersAPIOutput() IAMListUsersAPI {
 	return MockIAMListUsersAPI(func(ctx context.Context,
 		params *iam.ListUsersInput,
 		optFns ...func(*iam.Options)) (*iam.ListUsersOutput, error) {
@@ -47,7 +47,7 @@ func TestGetUserCount(t *testing.T) {
 		{
 			name: "Check Get Object From S3",
 			client: func() IAMListUsersAPI {
-				return mockIAMListUsersAPI()
+				return mockIAMListUsersAPIOutput()
 			},
 			want: 2,
 		},
