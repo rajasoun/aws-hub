@@ -53,7 +53,7 @@ func TestAPI_All(t *testing.T) {
 
 	t.Run("UserCount API /aws/iam/users", func(t *testing.T) {
 		mux.HandleFunc("/aws/iam/users", func(w http.ResponseWriter, r *http.Request) {
-			awsHandler.IAMListUsersHandler(w, r)
+			awsHandler.IAMGetUserCountHandler(w, r)
 		})
 		server := httptest.NewServer(mux)
 		defer server.Close()
@@ -67,7 +67,7 @@ func TestAPI_All(t *testing.T) {
 	})
 	t.Run("User Identity API /aws/iam/account", func(t *testing.T) {
 		mux.HandleFunc("/aws/iam/account", func(w http.ResponseWriter, r *http.Request) {
-			awsHandler.IAMUserHandler(w, r)
+			awsHandler.IAMGetUserIdentityHandler(w, r)
 		})
 		server := httptest.NewServer(mux)
 		defer server.Close()
@@ -81,7 +81,7 @@ func TestAPI_All(t *testing.T) {
 	})
 	t.Run("Account Alias API /aws/iam/alias", func(t *testing.T) {
 		mux.HandleFunc("/aws/iam/alias", func(w http.ResponseWriter, r *http.Request) {
-			awsHandler.IAMAliasHandler(w, r)
+			awsHandler.IAMGetAliasesHandler(w, r)
 		})
 		server := httptest.NewServer(mux)
 		defer server.Close()

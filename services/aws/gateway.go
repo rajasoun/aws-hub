@@ -13,11 +13,11 @@ func (aws AWS) ExternalServiceGateway(cfg aws.Config, apiName string) (interface
 	var err error
 	var client *iam.Client = iam.NewFromConfig(cfg)
 	switch {
-	case apiName == "IAMListUsers":
+	case apiName == "GetUserCount":
 		response, err = hubIAM.GetUserCount(client)
-	case apiName == "IAMUser":
+	case apiName == "GetUserIdentity":
 		response, err = hubIAM.GetUserIdentity(client)
-	case apiName == "IAMAliases":
+	case apiName == "GetAliases":
 		response, err = hubIAM.GetAliases(client)
 	}
 	return response, err
