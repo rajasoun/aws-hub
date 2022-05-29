@@ -32,7 +32,6 @@ func ListUsers(ctx context.Context, client IAMListUsersAPI,
 //     Otherwise, nil and an error from the call.
 func GetUserCount(client IAMListUsersAPI) (UserList, error) {
 	ctx := context.TODO()
-	//client := iam.NewFromConfig(cfg)
 	input := &iam.ListUsersInput{}
 	result, err := ListUsers(ctx, client, input)
 	if err != nil {
