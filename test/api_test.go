@@ -41,8 +41,6 @@ func TestAPI(t *testing.T) {
 		mux.HandleFunc("/aws/profiles", func(w http.ResponseWriter, r *http.Request) {
 			awsHandler.ConfigProfilesHandler(w, r)
 		})
-		server := httptest.NewServer(mux)
-		defer server.Close()
 		expect := httpexpect.New(t, server.URL)
 
 		expect.GET("/aws/profiles").
@@ -55,8 +53,6 @@ func TestAPI(t *testing.T) {
 		mux.HandleFunc("/aws/iam/users", func(w http.ResponseWriter, r *http.Request) {
 			awsHandler.IAMGetUserCountHandler(w, r)
 		})
-		server := httptest.NewServer(mux)
-		defer server.Close()
 		expect := httpexpect.New(t, server.URL)
 
 		expect.GET("/aws/iam/users").
@@ -69,8 +65,6 @@ func TestAPI(t *testing.T) {
 		mux.HandleFunc("/aws/iam/account", func(w http.ResponseWriter, r *http.Request) {
 			awsHandler.IAMGetUserIdentityHandler(w, r)
 		})
-		server := httptest.NewServer(mux)
-		defer server.Close()
 		expect := httpexpect.New(t, server.URL)
 
 		expect.GET("/aws/iam/account").
@@ -83,8 +77,6 @@ func TestAPI(t *testing.T) {
 		mux.HandleFunc("/aws/iam/alias", func(w http.ResponseWriter, r *http.Request) {
 			awsHandler.IAMGetAliasesHandler(w, r)
 		})
-		server := httptest.NewServer(mux)
-		defer server.Close()
 		expect := httpexpect.New(t, server.URL)
 
 		expect.GET("/aws/iam/alias").
