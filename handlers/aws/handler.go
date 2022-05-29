@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"time"
 
 	"github.com/rajasoun/aws-hub/services/aws"
 	"github.com/rajasoun/aws-hub/services/cache"
@@ -13,6 +14,12 @@ type AWSHandler struct {
 	cache    cache.Cache
 	multiple bool
 	aws      aws.AWS
+}
+
+func NewDefaultAWSHandler(multiple bool) *AWSHandler {
+	cache := &cache.Memory{Expiration: time.Duration(30)}
+	cache.Connect()
+	return NewAWSHandler(cache, multiple)
 }
 
 func NewAWSHandler(cache cache.Cache, multiple bool) *AWSHandler {
