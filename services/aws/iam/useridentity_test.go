@@ -13,18 +13,23 @@ import (
 
 var testUserName string = "test@example.com"
 
-type MockIAMGetUserAPI func(ctx context.Context,
+// Mock Receiver
+type MockUserIdentity struct{}
+
+//Mock Function
+type MockIAMGetUserAPIClient func(ctx context.Context,
 	params *iam.GetUserInput,
 	optFns ...func(*iam.Options)) (*iam.GetUserOutput, error)
 
-func (mock MockIAMGetUserAPI) GetUser(ctx context.Context,
+// Implement AWS IAM GetUser Method with Mock Function Receiver
+func (mock MockIAMGetUserAPIClient) GetUser(ctx context.Context,
 	params *iam.GetUserInput,
 	optFns ...func(*iam.Options)) (*iam.GetUserOutput, error) {
 	return mock(ctx, params, optFns...)
 }
 
-func mockIAMGetUserAPIOutput() IAMGetUserAPIClient {
-	return MockIAMGetUserAPI(func(ctx context.Context,
+func (mock MockUserIdentity) NewMockClient() IAMGetUserAPIClient {
+	client := MockIAMGetUserAPIClient(func(ctx context.Context,
 		params *iam.GetUserInput,
 		optFns ...func(*iam.Options)) (*iam.GetUserOutput, error) {
 		user := &types.User{
@@ -37,36 +42,31 @@ func mockIAMGetUserAPIOutput() IAMGetUserAPIClient {
 		result := &iam.GetUserOutput{User: user}
 		return result, nil
 	})
+	return client
 }
 
 func TestGetUserIdentity(t *testing.T) {
 	assert := assert.New(t)
 	t.Parallel()
+	mock := MockUserIdentity{}
 
 	cases := []struct {
-		name   string
-		client func() IAMGetUserAPIClient
-		want   string
+		name string
+		want string
 	}{
-		{
-			name: "Check GetUserIdentity For Account",
-			client: func() IAMGetUserAPIClient {
-				return mockIAMGetUserAPIOutput()
-			},
-			want: testUserName,
-		},
+		{"Check GetUserIdentity For Account", testUserName},
 	}
 
 	for _, tt := range cases {
 		t.Run(tt.name, func(t *testing.T) {
-			got, err := GetUserIdentity(tt.client())
+			got, err := GetUserIdentity(mock.NewMockClient())
 			assert.NoError(err, "expect no error, got %v", err)
 			assert.Equal(tt.want, got.Username, "got GetUserIdentity = %v, want = %v", got.Username, tt.want)
 		})
 	}
 	t.Run("Check GetUserIdentity returns err with Empty aws.Config{}", func(t *testing.T) {
 		emptyCfg := aws.Config{}
-		noOpClient := iam.NewFromConfig(emptyCfg)
+		noOpClient := iam.NewFromConfig(emptyCfg) //mock.NewMockClient(emptyCfg)
 		_, err := GetUserIdentity(noOpClient)
 		assert.Error(err, "err = %v, want = nil", err)
 	})
