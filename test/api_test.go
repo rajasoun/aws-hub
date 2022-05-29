@@ -11,23 +11,23 @@ import (
 	"github.com/urfave/cli/v2"
 )
 
-func TestAPI_All(t *testing.T) {
+func TestAPI(t *testing.T) {
 	//ToDo: Secure way of Passing Credentials
 	if os.Getenv("SKIP_E2E") != "" {
 		t.Skip("Skipping INTEGRATION Tests")
 	}
 	t.Parallel()
-	cliContext := hub.NewCliContext(&cli.Context{})
-	server := hub.NewServer(cliContext.Cache(), cliContext.IsMultipleAwsProfiles())
-	awsHandler := server.GetAWSHandler()
+	hubCliCtx := hub.NewCliContext(&cli.Context{})
+	hub := hub.NewServer(hubCliCtx.Cache(), hubCliCtx.IsMultipleAwsProfiles())
+	awsHandler := hub.GetAWSHandler()
 	mux := http.NewServeMux()
+	server := httptest.NewServer(mux)
+	defer server.Close()
 
 	t.Run("HealthCheck API /health", func(t *testing.T) {
 		mux.HandleFunc("/health", func(w http.ResponseWriter, r *http.Request) {
 			awsHandler.HealthCheckHandler(w, r)
 		})
-		server := httptest.NewServer(mux)
-		defer server.Close()
 		expect := httpexpect.New(t, server.URL)
 
 		expect.GET("/health").
@@ -53,7 +53,7 @@ func TestAPI_All(t *testing.T) {
 
 	t.Run("UserCount API /aws/iam/users", func(t *testing.T) {
 		mux.HandleFunc("/aws/iam/users", func(w http.ResponseWriter, r *http.Request) {
-			awsHandler.IAMListUsersHandler(w, r)
+			awsHandler.IAMGetUserCountHandler(w, r)
 		})
 		server := httptest.NewServer(mux)
 		defer server.Close()
@@ -67,7 +67,7 @@ func TestAPI_All(t *testing.T) {
 	})
 	t.Run("User Identity API /aws/iam/account", func(t *testing.T) {
 		mux.HandleFunc("/aws/iam/account", func(w http.ResponseWriter, r *http.Request) {
-			awsHandler.IAMUserHandler(w, r)
+			awsHandler.IAMGetUserIdentityHandler(w, r)
 		})
 		server := httptest.NewServer(mux)
 		defer server.Close()
@@ -77,6 +77,20 @@ func TestAPI_All(t *testing.T) {
 			Expect().
 			Status(http.StatusOK).
 			JSON().Object().ContainsKey("username").
+			NotEmpty()
+	})
+	t.Run("Account Alias API /aws/iam/alias", func(t *testing.T) {
+		mux.HandleFunc("/aws/iam/alias", func(w http.ResponseWriter, r *http.Request) {
+			awsHandler.IAMGetAliasesHandler(w, r)
+		})
+		server := httptest.NewServer(mux)
+		defer server.Close()
+		expect := httpexpect.New(t, server.URL)
+
+		expect.GET("/aws/iam/alias").
+			Expect().
+			Status(http.StatusOK).
+			JSON().Object().ContainsKey("list").
 			NotEmpty()
 	})
 }

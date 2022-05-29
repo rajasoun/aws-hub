@@ -1,4 +1,4 @@
-package aws
+package cost
 
 import (
 	"context"
@@ -9,7 +9,7 @@ import (
 	awsModel "github.com/rajasoun/aws-hub/models/aws"
 )
 
-func (aws AWS) DescribeCostAndUsage(cfg aws.Config) (awsModel.Bill, error) {
+func DescribeCostAndUsage(cfg aws.Config) (awsModel.Bill, error) {
 	svc := costexplorer.NewFromConfig(cfg)
 	input := &costexplorer.GetCostAndUsageInput{}
 	svc.GetCostAndUsage(context.TODO(), input)
@@ -84,7 +84,7 @@ func (aws AWS) DescribeCostAndUsage(cfg aws.Config) (awsModel.Bill, error) {
 	}, nil
 }
 
-func (aws AWS) DescribeCostAndUsagePerInstanceType(cfg aws.Config) (awsModel.Bill, error) {
+func DescribeCostAndUsagePerInstanceType(cfg aws.Config) (awsModel.Bill, error) {
 	// currentTime := time.Now().Local()
 	// start := currentTime.AddDate(0, -6, 0).Format("2006-01-02")
 	// end := currentTime.Format("2006-01-02")
@@ -161,7 +161,7 @@ func (aws AWS) DescribeCostAndUsagePerInstanceType(cfg aws.Config) (awsModel.Bil
 	}, nil
 }
 
-func (aws AWS) DescribeForecastPrice(cfg aws.Config) (string, error) {
+func DescribeForecastPrice(cfg aws.Config) (string, error) {
 	// currentTime := time.Now().Local()
 	// start := currentTime.AddDate(0, 0, 1).Format("2006-01-02")
 	// end := currentTime.AddDate(0, 1, -currentTime.Day()).Format("2006-01-02")
