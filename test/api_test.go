@@ -11,7 +11,7 @@ import (
 	"github.com/urfave/cli/v2"
 )
 
-func Test_API(t *testing.T) {
+func TestAPI(t *testing.T) {
 	//ToDo: Secure way of Passing Credentials
 	if os.Getenv("SKIP_E2E") != "" {
 		t.Skip("Skipping INTEGRATION Tests")
