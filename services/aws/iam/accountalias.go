@@ -13,18 +13,11 @@ type Aliases struct {
 
 // Interface for Amazon IAM ListAccountAliases API
 // This will enable TDD using mocking
-type IAMListAccountAliasesAPI interface {
+type IAMListAccountAliasesAPIClient interface {
 	iam.ListAccountAliasesAPIClient // Only for Refernce to Actual Client
 	ListAccountAliases(ctx context.Context,
 		params *iam.ListAccountAliasesInput,
 		optFns ...func(*iam.Options)) (*iam.ListAccountAliasesOutput, error)
-}
-
-// Wrapper Function to AWS IAM ListAccountAliases API with client as argument
-// This will enable TDD by passing mock client
-func ListAccountAliases(ctx context.Context, client IAMListAccountAliasesAPI,
-	input *iam.ListAccountAliasesInput) (*iam.ListAccountAliasesOutput, error) {
-	return client.ListAccountAliases(ctx, input)
 }
 
 // GetAccountAliases retrieves the aliases for your AWS Identity and Access Management (IAM) account.
@@ -33,10 +26,10 @@ func ListAccountAliases(ctx context.Context, client IAMListAccountAliasesAPI,
 // Output:
 //     If successful, a ListAccountAliasesOutput object containing the result of the service call and nil.
 //     Otherwise, nil and an error from the call to ListAccountAliases.
-func GetAliases(client IAMListAccountAliasesAPI) (Aliases, error) {
+func GetAliases(client IAMListAccountAliasesAPIClient) (Aliases, error) {
 	var ctx context.Context = context.TODO()
 	input := &iam.ListAccountAliasesInput{}
-	result, err := ListAccountAliases(ctx, client, input)
+	result, err := client.ListAccountAliases(ctx, input)
 	if err != nil {
 		log.Println("Got an error retrieving account aliases")
 		return Aliases{List: []string{}}, err

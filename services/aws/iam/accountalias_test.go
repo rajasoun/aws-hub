@@ -23,7 +23,7 @@ func (mock MockIAMListAccountAliasesAPI) ListAccountAliases(ctx context.Context,
 	return mock(ctx, params, optFns...)
 }
 
-func mockIAMListAccountAliasesAPIOutput() IAMListAccountAliasesAPI {
+func mockIAMListAccountAliasesAPIOutput() IAMListAccountAliasesAPIClient {
 	return MockIAMListAccountAliasesAPI(func(ctx context.Context,
 		params *iam.ListAccountAliasesInput,
 		optFns ...func(*iam.Options)) (*iam.ListAccountAliasesOutput, error) {
@@ -41,12 +41,12 @@ func TestGetAliases(t *testing.T) {
 
 	cases := []struct {
 		name   string
-		client func() IAMListAccountAliasesAPI
+		client func() IAMListAccountAliasesAPIClient
 		want   string
 	}{
 		{
 			name: "Check Get Aliases",
-			client: func() IAMListAccountAliasesAPI {
+			client: func() IAMListAccountAliasesAPIClient {
 				return mockIAMListAccountAliasesAPIOutput()
 			},
 			want: testAlias,

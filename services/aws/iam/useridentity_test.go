@@ -23,7 +23,7 @@ func (mock MockIAMGetUserAPI) GetUser(ctx context.Context,
 	return mock(ctx, params, optFns...)
 }
 
-func mockIAMGetUserAPIOutput() IAMGetUserAPI {
+func mockIAMGetUserAPIOutput() IAMGetUserAPIClient {
 	return MockIAMGetUserAPI(func(ctx context.Context,
 		params *iam.GetUserInput,
 		optFns ...func(*iam.Options)) (*iam.GetUserOutput, error) {
@@ -45,12 +45,12 @@ func TestGetUserIdentity(t *testing.T) {
 
 	cases := []struct {
 		name   string
-		client func() IAMGetUserAPI
+		client func() IAMGetUserAPIClient
 		want   string
 	}{
 		{
 			name: "Check GetUserIdentity For Account",
-			client: func() IAMGetUserAPI {
+			client: func() IAMGetUserAPIClient {
 				return mockIAMGetUserAPIOutput()
 			},
 			want: testUserName,
