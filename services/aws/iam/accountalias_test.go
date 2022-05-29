@@ -41,7 +41,9 @@ func TestGetAccountAliases(t *testing.T) {
 func TestGetAliases(t *testing.T) {
 	t.Run("Check GetAliases returns err with aws.Config{}", func(t *testing.T) {
 		assert := assert.New(t)
-		_, err := GetAliases(aws.Config{})
+		emptyCfg := aws.Config{}
+		noOpClient := iam.NewFromConfig(emptyCfg)
+		_, err := GetAliases(noOpClient)
 		assert.Error(err, "err = %v, want = nil", err)
 	})
 }

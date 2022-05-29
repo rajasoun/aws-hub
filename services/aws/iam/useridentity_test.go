@@ -36,7 +36,9 @@ func TestGetUser(t *testing.T) {
 func TestGetUserIdentity(t *testing.T) {
 	t.Run("Check GetUserIdentity returns err with aws.Config{}", func(t *testing.T) {
 		assert := assert.New(t)
-		_, err := GetUserIdentity(aws.Config{})
+		emptyCfg := aws.Config{}
+		noOpClient := iam.NewFromConfig(emptyCfg)
+		_, err := GetUserIdentity(noOpClient)
 		assert.Error(err, "err = %v, want = nil", err)
 	})
 }

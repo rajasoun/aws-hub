@@ -16,9 +16,9 @@ func (aws AWS) ExternalServiceGateway(cfg aws.Config, apiName string) (interface
 	case apiName == "IAMListUsers":
 		response, err = hubIAM.GetUserCount(client)
 	case apiName == "IAMUser":
-		response, err = hubIAM.GetUserIdentity(cfg)
+		response, err = hubIAM.GetUserIdentity(client)
 	case apiName == "IAMAliases":
-		response, err = hubIAM.GetAliases(cfg)
+		response, err = hubIAM.GetAliases(client)
 	}
 	return response, err
 }

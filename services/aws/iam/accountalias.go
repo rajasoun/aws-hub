@@ -4,7 +4,6 @@ import (
 	"context"
 	"log"
 
-	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/service/iam"
 )
 
@@ -14,7 +13,7 @@ type Aliases struct {
 
 // Interface wraps up the underlying AWS Function
 // This will enable TDD using mocking the wrapped function
-type ListAccountAliasesAPI interface {
+type IAMListAccountAliasesAPI interface {
 	ListAccountAliases(ctx context.Context,
 		params *iam.ListAccountAliasesInput,
 		optFns ...func(*iam.Options)) (*iam.ListAccountAliasesOutput, error)
@@ -28,16 +27,16 @@ type ListAccountAliasesAPI interface {
 // Output:
 //     If successful, a ListAccountAliasesOutput object containing the result of the service call and nil.
 //     Otherwise, nil and an error from the call to ListAccountAliases.
-func GetAccountAliases(c context.Context, api ListAccountAliasesAPI,
+func GetAccountAliases(c context.Context, client IAMListAccountAliasesAPI,
 	input *iam.ListAccountAliasesInput) (*iam.ListAccountAliasesOutput, error) {
-	return api.ListAccountAliases(c, input)
+	return client.ListAccountAliases(c, input)
 
 }
 
-func GetAliases(cfg aws.Config) (Aliases, error) {
-	client := iam.NewFromConfig(cfg)
+func GetAliases(client IAMListAccountAliasesAPI) (Aliases, error) {
+	var ctx context.Context = context.TODO()
 	input := &iam.ListAccountAliasesInput{}
-	result, err := GetAccountAliases(context.TODO(), client, input)
+	result, err := GetAccountAliases(ctx, client, input)
 	if err != nil {
 		log.Println("Got an error retrieving account aliases")
 		return Aliases{List: []string{}}, err

@@ -4,7 +4,6 @@ import (
 	"context"
 	"time"
 
-	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/service/iam"
 )
 
@@ -16,31 +15,31 @@ type User struct {
 	UserId           string    `json:"userId"`
 }
 
-// Interface wraps up the underlying AWS Function
-// This will enable TDD using mocking the wrapped function
-type GetUserAPI interface {
+// Interface for Amazon IAM GetUser API
+// This will enable TDD using mocking
+type IAMGetUserAPI interface {
 	GetUser(ctx context.Context,
 		params *iam.GetUserInput,
 		optFns ...func(*iam.Options)) (*iam.GetUserOutput, error)
 }
 
-// Wrapper Function to ListUsers with api to be called as argument
-// This will enable TDD using mocking the wrapped function
-func GetUser(c context.Context, api GetUserAPI,
+// Wrapper Function to AWS IAM GetUser API with client as argument
+// This will enable TDD by passing mock client
+func GetUser(c context.Context, client IAMGetUserAPI,
 	input *iam.GetUserInput) (*iam.GetUserOutput, error) {
-	return api.GetUser(c, input)
+	return client.GetUser(c, input)
 }
 
 // GetUserIdentity retrieves the user details from an AWS account.
 // Inputs:
-//     cfg is the context of the method call, which includes the AWS Region.
+//     client is iam.NewFromConfig(cfg) & cfg is the context of the method call
 // Output:
 //     If successful, a Users object containing the account details and nil.
 //     Otherwise, nil and an error from the call.
-func GetUserIdentity(cfg aws.Config) (User, error) {
-	api := iam.NewFromConfig(cfg)
+func GetUserIdentity(client IAMGetUserAPI) (User, error) {
+	var ctx context.Context = context.TODO()
 	input := &iam.GetUserInput{}
-	result, err := GetUser(context.TODO(), api, input)
+	result, err := GetUser(ctx, client, input)
 
 	if err != nil {
 		return User{}, err
