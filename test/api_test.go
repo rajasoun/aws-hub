@@ -7,8 +7,9 @@ import (
 	"testing"
 
 	"github.com/gavv/httpexpect"
+	"github.com/gorilla/handlers"
 	"github.com/rajasoun/aws-hub/hub"
-	"github.com/urfave/cli/v2"
+	"github.com/rajasoun/aws-hub/services/cache"
 )
 
 func TestAPI(t *testing.T) {
@@ -17,72 +18,52 @@ func TestAPI(t *testing.T) {
 		t.Skip("Skipping INTEGRATION Tests")
 	}
 	t.Parallel()
-	hubCliCtx := hub.NewCliContext(&cli.Context{})
-	hub := hub.NewServer(hubCliCtx.Cache(), hubCliCtx.IsMultipleAwsProfiles())
-	awsHandler := hub.GetAWSHandler()
-	mux := http.NewServeMux()
-	server := httptest.NewServer(mux)
+
+	_, router := hub.NewServer(&cache.Memory{}, false)
+	server := httptest.NewServer(handlers.LoggingHandler(os.Stdout, router))
 	defer server.Close()
+	expect := httpexpect.New(t, server.URL)
 
-	t.Run("HealthCheck API /health", func(t *testing.T) {
-		mux.HandleFunc("/health", func(w http.ResponseWriter, r *http.Request) {
-			awsHandler.HealthCheckHandler(w, r)
+	tests := []struct {
+		name     string
+		endPoint string
+		wantKey  string
+	}{
+		{
+			name:     "HealthCheck API /health",
+			endPoint: "/health",
+			wantKey:  "http-server-alive",
+		},
+		{
+			name:     "UserCount API /aws/iam/users",
+			endPoint: "/aws/iam/users",
+			wantKey:  "usercount",
+		},
+		{
+			name:     "User Identity API /aws/iam/account",
+			endPoint: "/aws/iam/account",
+			wantKey:  "username",
+		},
+		{
+			name:     "Account Alias API /aws/iam/alias",
+			endPoint: "/aws/iam/alias",
+			wantKey:  "list",
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			expect.GET(tt.endPoint).
+				Expect().
+				Status(http.StatusOK).
+				JSON().Object().ContainsKey(tt.wantKey).
+				NotEmpty()
 		})
-		expect := httpexpect.New(t, server.URL)
-
-		expect.GET("/health").
-			Expect().
-			Status(http.StatusOK).
-			JSON().Object().ContainsKey("http-server-alive").
-			ValueEqual("http-server-alive", "Ok")
-	})
+	}
 
 	t.Run("Profiles API /aws/profiles", func(t *testing.T) {
-		mux.HandleFunc("/aws/profiles", func(w http.ResponseWriter, r *http.Request) {
-			awsHandler.ConfigProfilesHandler(w, r)
-		})
-		expect := httpexpect.New(t, server.URL)
-
 		expect.GET("/aws/profiles").
 			Expect().
 			Status(http.StatusOK).
 			JSON().Array().Empty()
-	})
-
-	t.Run("UserCount API /aws/iam/users", func(t *testing.T) {
-		mux.HandleFunc("/aws/iam/users", func(w http.ResponseWriter, r *http.Request) {
-			awsHandler.IAMGetUserCountHandler(w, r)
-		})
-		expect := httpexpect.New(t, server.URL)
-
-		expect.GET("/aws/iam/users").
-			Expect().
-			Status(http.StatusOK).
-			JSON().Object().ContainsKey("usercount").
-			NotEmpty()
-	})
-	t.Run("User Identity API /aws/iam/account", func(t *testing.T) {
-		mux.HandleFunc("/aws/iam/account", func(w http.ResponseWriter, r *http.Request) {
-			awsHandler.IAMGetUserIdentityHandler(w, r)
-		})
-		expect := httpexpect.New(t, server.URL)
-
-		expect.GET("/aws/iam/account").
-			Expect().
-			Status(http.StatusOK).
-			JSON().Object().ContainsKey("username").
-			NotEmpty()
-	})
-	t.Run("Account Alias API /aws/iam/alias", func(t *testing.T) {
-		mux.HandleFunc("/aws/iam/alias", func(w http.ResponseWriter, r *http.Request) {
-			awsHandler.IAMGetAliasesHandler(w, r)
-		})
-		expect := httpexpect.New(t, server.URL)
-
-		expect.GET("/aws/iam/alias").
-			Expect().
-			Status(http.StatusOK).
-			JSON().Object().ContainsKey("list").
-			NotEmpty()
 	})
 }

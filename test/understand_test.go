@@ -6,8 +6,8 @@ import (
 	"testing"
 
 	"github.com/rajasoun/aws-hub/hub"
+	"github.com/rajasoun/aws-hub/services/cache"
 	"github.com/steinfletcher/apitest"
-	"github.com/urfave/cli/v2"
 )
 
 func Test_Flow(t *testing.T) {
@@ -16,10 +16,8 @@ func Test_Flow(t *testing.T) {
 		t.Skip("Skipping INTEGRATION Tests")
 	}
 	t.Parallel()
-	cliContext := hub.NewCliContext(&cli.Context{})
-	server := hub.NewServer(cliContext.Cache(), cliContext.IsMultipleAwsProfiles())
-	awsHandler := server.GetAWSHandler()
-	router := awsHandler.SetUpRoutes()
+
+	_, router := hub.NewServer(&cache.Memory{}, false)
 
 	t.Run("HealthCheck API /health", func(t *testing.T) {
 		apitest.New("Health Check API  /health").

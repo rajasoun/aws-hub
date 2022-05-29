@@ -77,7 +77,7 @@ func (app *App) setUpCommands() {
 			Flags: app.cli.Flags,
 			Action: func(appCtx *cli.Context) error {
 				cliContext := NewCliContext(appCtx)
-				server := NewServer(cliContext.Cache(), cliContext.IsMultipleAwsProfiles())
+				server, _ := NewServer(cliContext.Cache(), cliContext.IsMultipleAwsProfiles())
 				server.start(cliContext.Port())
 				return nil
 			},
