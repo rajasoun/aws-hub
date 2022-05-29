@@ -35,6 +35,11 @@ func TestAPI(t *testing.T) {
 			wantKey:  "http-server-alive",
 		},
 		{
+			name:     "Profiles API /aws/profiles",
+			endPoint: "/aws/profiles",
+			wantKey:  "multiple",
+		},
+		{
 			name:     "UserCount API /aws/iam/users",
 			endPoint: "/aws/iam/users",
 			wantKey:  "usercount",
@@ -59,11 +64,4 @@ func TestAPI(t *testing.T) {
 				NotEmpty()
 		})
 	}
-
-	t.Run("Profiles API /aws/profiles", func(t *testing.T) {
-		expect.GET("/aws/profiles").
-			Expect().
-			Status(http.StatusOK).
-			JSON().Array().Empty()
-	})
 }
