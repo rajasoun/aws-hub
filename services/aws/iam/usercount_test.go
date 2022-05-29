@@ -55,7 +55,7 @@ func TestGetObjectFromS3(t *testing.T) {
 
 	for _, tt := range cases {
 		t.Run(tt.name, func(t *testing.T) {
-			got, err := GetUserCount(*aws.NewConfig(), tt.client())
+			got, err := GetUserCount(tt.client())
 			assert.NoError(err, "expect no error, got %v", err)
 			assert.Equal(tt.want, got.Count, "got GetUserCount = %v, want = %v", got.Count, tt.want)
 		})
@@ -63,9 +63,11 @@ func TestGetObjectFromS3(t *testing.T) {
 }
 
 func TestGetUserCount(t *testing.T) {
-	t.Run("Check GetUserCount returns err with Invalid aws.Config{}", func(t *testing.T) {
+	t.Run("Check GetUserCount returns err with Empty aws.Config{}", func(t *testing.T) {
 		assert := assert.New(t)
-		_, err := GetUserCount(aws.Config{}, iam.NewFromConfig(aws.Config{}))
+		emptyCfg := aws.Config{}
+		noOpClient := iam.NewFromConfig(emptyCfg)
+		_, err := GetUserCount(noOpClient)
 		assert.Error(err, "err = %v, want = nil", err)
 	})
 }
