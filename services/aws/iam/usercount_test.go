@@ -10,18 +10,19 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-//Mock Interface
+//Mock Function
 type MockIAMListUsersAPI func(ctx context.Context,
 	params *iam.ListUsersInput,
 	optFns ...func(*iam.Options)) (*iam.ListUsersOutput, error)
 
+// AWS IAM ListUsers Method with Mock Function Receiver
 func (mock MockIAMListUsersAPI) ListUsers(ctx context.Context,
 	params *iam.ListUsersInput,
 	optFns ...func(*iam.Options)) (*iam.ListUsersOutput, error) {
 	return mock(ctx, params, optFns...)
 }
 
-func mockS3GetObjectAPI() IAMListUsersAPI {
+func mockIAMListUsersAPI() IAMListUsersAPI {
 	return MockIAMListUsersAPI(func(ctx context.Context,
 		params *iam.ListUsersInput,
 		optFns ...func(*iam.Options)) (*iam.ListUsersOutput, error) {
@@ -34,9 +35,8 @@ func mockS3GetObjectAPI() IAMListUsersAPI {
 	})
 }
 
-func TestGetObjectFromS3(t *testing.T) {
+func TestGetUserCount(t *testing.T) {
 	assert := assert.New(t)
-	// ctx := context.TODO()
 	t.Parallel()
 
 	cases := []struct {
@@ -47,7 +47,7 @@ func TestGetObjectFromS3(t *testing.T) {
 		{
 			name: "Check Get Object From S3",
 			client: func() IAMListUsersAPI {
-				return mockS3GetObjectAPI()
+				return mockIAMListUsersAPI()
 			},
 			want: 2,
 		},
@@ -60,11 +60,7 @@ func TestGetObjectFromS3(t *testing.T) {
 			assert.Equal(tt.want, got.Count, "got GetUserCount = %v, want = %v", got.Count, tt.want)
 		})
 	}
-}
-
-func TestGetUserCount(t *testing.T) {
 	t.Run("Check GetUserCount returns err with Empty aws.Config{}", func(t *testing.T) {
-		assert := assert.New(t)
 		emptyCfg := aws.Config{}
 		noOpClient := iam.NewFromConfig(emptyCfg)
 		_, err := GetUserCount(noOpClient)
