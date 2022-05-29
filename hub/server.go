@@ -37,14 +37,15 @@ func setUpCors() *cors.Cors {
 	return corsOptions
 }
 
-func NewServer(cache cache.Cache, multiple bool) *Server {
+func NewServer(cache cache.Cache, multiple bool) (*Server, *mux.Router) {
 	server := Server{}
 	server.name = "Mux Server 0.1"
 	server.awsHandler = setUpCache(cache, multiple)
-	server.routes = server.awsHandler.SetUpRoutes()
+	router := server.awsHandler.SetUpRoutes()
+	server.routes = router
 	server.cors = setUpCors()
 	server.httpHandler = handlers.LoggingHandler(os.Stdout, server.cors.Handler(server.routes))
-	return &server
+	return &server, router
 }
 
 func (server *Server) GetAWSHandler() *aws.AWSHandler {
