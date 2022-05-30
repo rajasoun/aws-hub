@@ -1,7 +1,6 @@
 package aws
 
 import (
-	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/service/iam"
 	"github.com/gorilla/mux"
 
@@ -24,10 +23,9 @@ func (handler *AWSHandler) SetUpRoutes() *mux.Router {
 
 // ToDo Technical Debt - Use Interface to call the right method
 // Use Dependency Injection
-func (handler *AWSHandler) SdkWrapperAPI(cfg aws.Config, apiName string) (interface{}, error) {
+func (handler *AWSHandler) SdkWrapperAPI(client *iam.Client, apiName string) (interface{}, error) {
 	var response interface{}
 	var err error
-	var client *iam.Client = iam.NewFromConfig(cfg)
 	switch {
 	case apiName == "GetUserCount":
 		response, err = hubIAM.GetUserCount(client)

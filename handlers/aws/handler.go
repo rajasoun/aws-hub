@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/aws/aws-sdk-go-v2/service/iam"
 	"github.com/rajasoun/aws-hub/services/aws"
 	"github.com/rajasoun/aws-hub/services/cache"
 )
@@ -48,7 +49,8 @@ func (handler *AWSHandler) API(r *http.Request, w http.ResponseWriter,
 	if foundInCache {
 		respondWithJSON(w, http.StatusOK, response)
 	} else {
-		response, err := handler.SdkWrapperAPI(cfg, apiName)
+		client := iam.NewFromConfig(cfg)
+		response, err := handler.SdkWrapperAPI(client, apiName)
 		handler.respondWithJSONandSetCache(response, err, w, errMsg, key)
 	}
 }
