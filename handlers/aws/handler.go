@@ -48,7 +48,7 @@ func (handler *AWSHandler) API(r *http.Request, w http.ResponseWriter,
 	if foundInCache {
 		respondWithJSON(w, http.StatusOK, response)
 	} else {
-		response, err := handler.ExternalServiceGateway(cfg, apiName)
+		response, err := handler.AwsSdkAPI(cfg, apiName)
 		handler.respondWithJSONandSetCache(response, err, w, errMsg, key)
 	}
 }
