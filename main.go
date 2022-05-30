@@ -7,5 +7,5 @@ import (
 )
 
 func main() {
-	hub.Execute(os.Args)
+	hub.Execute(os.Args, os.Stdout)
 }

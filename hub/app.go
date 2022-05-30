@@ -2,6 +2,7 @@ package hub
 
 import (
 	"fmt"
+	"io"
 	"log"
 	"time"
 
@@ -108,7 +109,8 @@ func SliceToStrMap(elements []cli.Flag) map[int]string {
 	return elementMap
 }
 
-func Execute(args []string) {
+func Execute(args []string, writer io.Writer) {
 	app := NewApp()
+	app.cli.Writer = writer
 	app.cli.Run(args)
 }
