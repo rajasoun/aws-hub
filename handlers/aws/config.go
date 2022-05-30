@@ -10,23 +10,28 @@ import (
 	ini "github.com/rajasoun/go-parsers/aws_credentials"
 )
 
-func loadLocalAwsConfig(multiple bool, profile string) (aws.Config, error) {
-	cfg, err := config.LoadDefaultConfig(context.TODO(),
-		config.WithRegion("us-east-1"))
+func handleErr(err error, msg string) {
 	if err != nil {
-		log.Fatal(err)
+		log.Fatal(msg+" Load Failed err = %v", err)
 	} else {
-		log.Printf("Default AWSConfig loaded successfuly")
+		log.Println(msg + "loaded successfuly")
 	}
+}
 
+func loadLocalAwsConfig(multiple bool, profile string) (aws.Config, error) {
+	var cfg aws.Config
+	var err error
+	log.Println("Profile -> ", profile)
 	if multiple {
 		cfg, err = config.LoadDefaultConfig(context.TODO(),
 			config.WithRegion("us-east-1"),
-			config.WithSharedConfigFiles(
-				config.DefaultSharedConfigFiles,
-			),
+			config.WithSharedConfigFiles(config.DefaultSharedConfigFiles),
 			config.WithSharedConfigProfile(profile),
 		)
+		handleErr(err, "AWSConfig For multiple Profile ")
+	} else {
+		cfg, err = config.LoadDefaultConfig(context.TODO(), config.WithRegion("us-east-1"))
+		handleErr(err, "Default AWSConfig")
 	}
 	return cfg, err
 }
