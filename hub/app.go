@@ -79,8 +79,8 @@ func (app *App) setUpCommands() {
 			Action: func(appCtx *cli.Context) error {
 				cliContext := NewCliContext(appCtx)
 				server, _ := NewServer(cliContext.Cache(), cliContext.IsMultipleAwsProfiles())
-				server.start(cliContext.Port())
-				return nil
+				err := server.start(cliContext.Port())
+				return err
 			},
 		},
 	}
@@ -109,8 +109,9 @@ func SliceToStrMap(elements []cli.Flag) map[int]string {
 	return elementMap
 }
 
-func Execute(args []string, writer io.Writer) {
+func Execute(args []string, writer io.Writer) error {
 	app := NewApp()
 	app.cli.Writer = writer
-	app.cli.Run(args)
+	err := app.cli.Run(args)
+	return err
 }

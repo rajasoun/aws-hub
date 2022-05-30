@@ -2,7 +2,6 @@ package hub
 
 import (
 	"fmt"
-	"log"
 	"net/http"
 	"os"
 
@@ -52,12 +51,7 @@ func (server *Server) GetAWSHandler() *aws.AWSHandler {
 	return server.awsHandler
 }
 
-func (server *Server) start(port int) {
+func (server *Server) start(port int) error {
 	err := http.ListenAndServe(fmt.Sprintf(":%d", port), server.httpHandler)
-	if err != nil {
-		log.Println("Error in Starting Application")
-		log.Fatal(err)
-	} else {
-		log.Printf("Server started on port %d", port)
-	}
+	return err
 }

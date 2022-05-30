@@ -83,7 +83,7 @@ func Test_setUpCommands(t *testing.T) {
 	}
 }
 
-func TestExecute(t *testing.T) {
+func TestExecuteWithInvalidCommand(t *testing.T) {
 	assert := assert.New(t)
 	args := os.Args[0:1]
 	t.Parallel()
@@ -101,7 +101,8 @@ func TestExecute(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			var buf bytes.Buffer
-			Execute(tt.args, &buf)
+			err := Execute(tt.args, &buf)
+			assert.NoError(err, "Execute err = %v", err)
 			got := buf.String()
 			assert.Equal(tt.want, got, "got = %v, want = %v ", got, tt.want)
 		})
