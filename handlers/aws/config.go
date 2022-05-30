@@ -21,7 +21,6 @@ func handleErr(err error, msg string) {
 func loadLocalAwsConfig(multiple bool, profile string) (aws.Config, error) {
 	var cfg aws.Config
 	var err error
-	log.Println("Profile -> ", profile)
 	if multiple {
 		cfg, err = config.LoadDefaultConfig(context.TODO(),
 			config.WithRegion("us-east-1"),
