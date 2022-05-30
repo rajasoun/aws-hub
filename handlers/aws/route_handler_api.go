@@ -24,7 +24,7 @@ func (handler *AWSHandler) SetUpRoutes() *mux.Router {
 
 // ToDo Technical Debt - Use Interface to call the right method
 // Use Dependency Injection
-func (handler *AWSHandler) AwsSdkAPI(cfg aws.Config, apiName string) (interface{}, error) {
+func (handler *AWSHandler) SdkWrapperAPI(cfg aws.Config, apiName string) (interface{}, error) {
 	var response interface{}
 	var err error
 	var client *iam.Client = iam.NewFromConfig(cfg)
