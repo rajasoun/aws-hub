@@ -77,9 +77,7 @@ func (app *App) setUpCommands() {
 			Usage: "Start Server",
 			Flags: app.cli.Flags,
 			Action: func(appCtx *cli.Context) error {
-				cliContext := NewCliContext(appCtx)
-				server, _ := NewServer(cliContext.Cache(), cliContext.IsMultipleAwsProfiles())
-				err := server.start(cliContext.Port())
+				err := StartCommandRunner(appCtx)
 				return err
 			},
 		},
@@ -93,6 +91,13 @@ func (app *App) setUpCommands() {
 
 	app.cli.Commands = commands
 	app.cli.CommandNotFound = commandNotFound
+}
+
+func StartCommandRunner(appCtx *cli.Context) error {
+	cliContext := NewCliContext(appCtx)
+	server, _ := NewServer(cliContext.Cache(), cliContext.IsMultipleAwsProfiles())
+	err := server.start(cliContext.Port())
+	return err
 }
 
 func (app *App) StructToMap() map[string]interface{} {
