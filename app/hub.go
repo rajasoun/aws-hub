@@ -13,7 +13,7 @@ func NewApp() *App {
 	app := App{&cli.App{}}
 	app.SetUpInfo()
 	app.cli.Flags = flag.GetFlags()
-	app.cli.Commands = cmd.GetCommands()
+	app.cli.Commands = cmd.GetCommands(cmd.StartCommandHandler)
 	return &app
 }
 

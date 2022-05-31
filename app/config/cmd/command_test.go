@@ -22,7 +22,7 @@ func TestGetCommands(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			cmds := GetCommands()
+			cmds := GetCommands(StartCommandHandler)
 			gotCommandsLen := len(cmds)
 			assert.Equal(tt.wantCommandsLen, gotCommandsLen,
 				"len(cmd.GetCommands() = %v , want = %v", gotCommandsLen, tt.wantCommandsLen)
