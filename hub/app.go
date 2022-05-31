@@ -83,10 +83,7 @@ func (app *App) setUpCommands() {
 		},
 	}
 	commandNotFound := func(appCtx *cli.Context, command string) {
-		_, err := fmt.Fprintf(appCtx.App.Writer, "Command not found %q !", command)
-		if err != nil {
-			log.Println(appCtx.App.Writer, "Command not found %q !", command)
-		}
+		CommandNotFoundRunner(appCtx, command)
 	}
 
 	app.cli.Commands = commands
@@ -98,6 +95,13 @@ func StartCommandRunner(appCtx *cli.Context) error {
 	server, _ := NewServer(cliContext.Cache(), cliContext.IsMultipleAwsProfiles())
 	err := server.start(cliContext.Port())
 	return err
+}
+
+func CommandNotFoundRunner(appCtx *cli.Context, command string) {
+	_, err := fmt.Fprintf(appCtx.App.Writer, "Command not found %q !", command)
+	if err != nil {
+		log.Println(appCtx.App.Writer, "Command not found %q !", command)
+	}
 }
 
 func (app *App) StructToMap() map[string]interface{} {
