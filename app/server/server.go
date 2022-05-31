@@ -1,7 +1,6 @@
 package server
 
 import (
-	"fmt"
 	"net/http"
 	"os"
 
@@ -52,6 +51,28 @@ func (server *Server) GetAWSHandler() *aws.AWSHandler {
 }
 
 func (server *Server) Start(port int) error {
-	err := http.ListenAndServe(fmt.Sprintf(":%d", port), server.httpHandler)
+	httpServer := NewHTTPServer(string(rune(port)), server.httpHandler)
+	err := httpServer.StartHTTPServer()
 	return err
+}
+
+type HTTPServer struct {
+	*http.Server
+}
+
+func NewHTTPServer(adr string, handler http.Handler) HTTPServer {
+	return HTTPServer{
+		&http.Server{
+			Addr:    adr,
+			Handler: handler,
+		},
+	}
+}
+
+func (httpServer HTTPServer) StartHTTPServer() error {
+	err := httpServer.ListenAndServe()
+	if err != nil && err != http.ErrServerClosed {
+		return err
+	}
+	return nil
 }

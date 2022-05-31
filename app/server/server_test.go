@@ -1,7 +1,9 @@
 package server
 
 import (
+	"context"
 	"testing"
+	"time"
 
 	"github.com/rajasoun/aws-hub/app/config/arg"
 	"github.com/stretchr/testify/assert"
@@ -28,5 +30,19 @@ func TestNewServer(t *testing.T) {
 			err := server.Start(999999999)
 			assert.Error(err, "Invalid Port err = %v ", err)
 		})
+	}
+}
+
+func TestHTTPServerStart(t *testing.T) {
+	cliContext := arg.NewCliContext(&cli.Context{})
+	server, _ := NewServer(cliContext.GetCache(), cliContext.GetAwsProfileType())
+	srv := NewHTTPServer(":45566", server.httpHandler)
+	go func() {
+		time.Sleep(1 * time.Second)
+		srv.Shutdown(context.Background())
+	}()
+	err := srv.StartHTTPServer()
+	if err != nil {
+		t.Error("unexpected error:", err)
 	}
 }
