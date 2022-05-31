@@ -3,6 +3,7 @@ package app
 import (
 	"testing"
 
+	"github.com/rajasoun/aws-hub/app/args"
 	"github.com/stretchr/testify/assert"
 	"github.com/urfave/cli/v2"
 )
@@ -11,7 +12,7 @@ func TestNewServer(t *testing.T) {
 
 	assert := assert.New(t)
 	t.Parallel()
-	cliContext := NewCliContext(&cli.Context{})
+	cliContext := args.NewCliContext(&cli.Context{})
 	server, _ := NewServer(cliContext.Cache(), cliContext.IsMultipleAwsProfiles())
 	tests := []struct {
 		name string

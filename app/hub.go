@@ -7,10 +7,6 @@ import (
 	"github.com/urfave/cli/v2"
 )
 
-type App struct {
-	cli *cli.App
-}
-
 func NewApp() *App {
 	app := App{&cli.App{}}
 	app.SetUpInfo()
