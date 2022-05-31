@@ -7,7 +7,7 @@ import (
 	"github.com/urfave/cli/v2"
 )
 
-func Test_ArgsAll(t *testing.T) {
+func Test_Args(t *testing.T) {
 	assert := assert.New(t)
 	cliContext := NewCliContext(&cli.Context{})
 	t.Parallel()
