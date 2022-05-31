@@ -36,7 +36,7 @@ func TestNewServer(t *testing.T) {
 func TestHTTPServerStart(t *testing.T) {
 	cliContext := arg.NewCliContext(&cli.Context{})
 	server, _ := NewServer(cliContext.GetCache(), cliContext.GetAwsProfileType())
-	srv := NewHTTPServer(":45566", server.httpHandler)
+	srv := server.NewHTTPServer(":45566")
 	go func() {
 		time.Sleep(1 * time.Second)
 		srv.Shutdown(context.Background())

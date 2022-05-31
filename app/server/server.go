@@ -51,7 +51,7 @@ func (server *Server) GetAWSHandler() *aws.AWSHandler {
 }
 
 func (server *Server) Start(port int) error {
-	httpServer := NewHTTPServer(string(rune(port)), server.httpHandler)
+	httpServer := server.NewHTTPServer(string(rune(port)))
 	err := httpServer.StartHTTPServer()
 	return err
 }
@@ -60,11 +60,11 @@ type HTTPServer struct {
 	*http.Server
 }
 
-func NewHTTPServer(adr string, handler http.Handler) HTTPServer {
+func (server *Server) NewHTTPServer(adr string) HTTPServer {
 	return HTTPServer{
 		&http.Server{
 			Addr:    adr,
-			Handler: handler,
+			Handler: server.httpHandler,
 		},
 	}
 }
