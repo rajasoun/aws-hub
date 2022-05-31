@@ -70,7 +70,7 @@ func TestExecuteWithInvalidCommand(t *testing.T) {
 		{
 			name: "Check Starting App with wrong command",
 			args: append(args, "dummy"),
-			want: "Command not found \"dummy\" !",
+			want: "Command Not Found",
 		},
 	}
 	for _, tt := range tests {
@@ -79,7 +79,7 @@ func TestExecuteWithInvalidCommand(t *testing.T) {
 			err := Execute(tt.args, &buf)
 			assert.NoError(err, "Execute err = %v", err)
 			got := buf.String()
-			assert.Equal(tt.want, got, "got = %v, want = %v ", got, tt.want)
+			assert.Contains(got, tt.want, "got = %v, want = %v ", got, tt.want)
 		})
 	}
 }

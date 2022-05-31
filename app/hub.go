@@ -2,6 +2,7 @@ package app
 
 import (
 	"io"
+	"log"
 	"time"
 
 	"github.com/rajasoun/aws-hub/app/config/cmd"
@@ -68,6 +69,7 @@ func NewApp() *Hub {
 
 func Execute(args []string, writer io.Writer) error {
 	app := NewApp()
+	log.SetOutput(writer)
 	app.cli.Writer = writer
 	err := app.cli.Run(args)
 	return err
