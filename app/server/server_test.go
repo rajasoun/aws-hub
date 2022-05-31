@@ -1,4 +1,4 @@
-package cmd
+package server
 
 import (
 	"testing"
@@ -9,7 +9,6 @@ import (
 )
 
 func TestNewServer(t *testing.T) {
-
 	assert := assert.New(t)
 	t.Parallel()
 	cliContext := arg.NewCliContext(&cli.Context{})
