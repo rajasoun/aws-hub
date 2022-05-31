@@ -1,12 +1,7 @@
 package cmd
 
 import (
-	"fmt"
-	"log"
-
-	"github.com/rajasoun/aws-hub/app/config/arg"
 	"github.com/rajasoun/aws-hub/app/config/flag"
-	"github.com/rajasoun/aws-hub/app/server"
 	"github.com/urfave/cli/v2"
 )
 
@@ -28,20 +23,4 @@ func CreateCommand(handler func(appCtx *cli.Context) error) cli.Command {
 func GetCommand(handler func(appCtx *cli.Context) error) cli.Command {
 	cmd := CreateCommand(handler)
 	return cmd
-}
-
-func StartCommandHandler(appCtx *cli.Context) error {
-	cliContext := arg.NewCliContext(appCtx)
-	server, _ := server.NewServer(cliContext.GetCache(), cliContext.GetAwsProfileType())
-	err := server.Start(cliContext.GetPort())
-	return err
-}
-
-func GetErrCommand() func(appCtx *cli.Context, command string) {
-	return func(appCtx *cli.Context, command string) {
-		_, err := fmt.Fprintf(appCtx.App.Writer, "Command not found %q !", command)
-		if err != nil {
-			log.Println(appCtx.App.Writer, "Command not found %q !", command)
-		}
-	}
 }
