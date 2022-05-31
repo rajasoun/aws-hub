@@ -9,22 +9,25 @@ import (
 	"github.com/urfave/cli/v2"
 )
 
-func GetCommands() []*cli.Command {
-	commands := []*cli.Command{
-		{
-			Name:  "start",
-			Usage: "Start Server",
-			Flags: flag.GetFlags(),
-			Action: func(appCtx *cli.Context) error {
-				err := StartCommandRunner(appCtx)
-				return err
-			},
+func CreateStartCommand(handler func(appCtx *cli.Context) error) cli.Command {
+	command := cli.Command{
+		Name:  "start",
+		Usage: "Start Server",
+		Flags: flag.GetFlags(),
+		Action: func(appCtx *cli.Context) error {
+			err := handler(appCtx)
+			return err
 		},
 	}
+	return command
+}
+func GetCommands() []*cli.Command {
+	startCommand := CreateStartCommand(StartCommandHandler)
+	commands := []*cli.Command{&startCommand}
 	return commands
 }
 
-func StartCommandRunner(appCtx *cli.Context) error {
+func StartCommandHandler(appCtx *cli.Context) error {
 	cliContext := arg.NewCliContext(appCtx)
 	server, _ := NewServer(cliContext.GetCache(), cliContext.GetAwsProfileType())
 	err := server.Start(cliContext.GetPort())

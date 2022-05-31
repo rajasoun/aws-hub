@@ -49,11 +49,6 @@ func TestGetErrCommand(t *testing.T) {
 			got := reflect.TypeOf(GetErrCommand())
 			want := reflect.TypeOf(tt.want)
 			assert.Equal(want, got, "reflect.TypeOf(GetErrCommand() = %v , want = %v", got, want)
-			// var buf bytes.Buffer
-			// log.SetOutput(&buf)
-			// GetErrCommand()
-			// errOutput := buf.String()
-			// assert.Equal("", errOutput, "got = %v, want = %v", got, want)
 		})
 	}
 }
