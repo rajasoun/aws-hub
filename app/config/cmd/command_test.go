@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"log"
 	"reflect"
 	"testing"
 
@@ -33,6 +34,7 @@ func TestGetCommands(t *testing.T) {
 }
 
 func TestGetErrCommand(t *testing.T) {
+	t.Parallel()
 	assert := assert.New(t)
 	tests := []struct {
 		name string
@@ -51,4 +53,20 @@ func TestGetErrCommand(t *testing.T) {
 			assert.Equal(want, got, "reflect.TypeOf(GetErrCommand() = %v , want = %v", got, want)
 		})
 	}
+}
+
+func mockStartCommandHandler(appCtx *cli.Context) error {
+	log.Println("mockStartCommandHandler ")
+	return nil
+}
+
+func TestCreateStartCommand(t *testing.T) {
+	assert := assert.New(t)
+	t.Parallel()
+	t.Run("", func(t *testing.T) {
+		cmd := CreateStartCommand(mockStartCommandHandler)
+		assert.Equal("start", cmd.Name, "")
+		err := mockStartCommandHandler(&cli.Context{})
+		assert.NoError(err, "")
+	})
 }
