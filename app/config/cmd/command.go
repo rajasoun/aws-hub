@@ -10,14 +10,7 @@ import (
 	"github.com/urfave/cli/v2"
 )
 
-// Interface for Command Handler
-// This will enable TDD using mocking
-type CommandHandler interface {
-	StartCommandHandler(appCtx *cli.Context) error
-}
-
 // Create Start Command with the supplied handler
-// This will enable TDD using mocking
 func CreateCommand(handler func(appCtx *cli.Context) error) cli.Command {
 	command := cli.Command{
 		Name:  "start",
