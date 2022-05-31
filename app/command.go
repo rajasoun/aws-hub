@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/rajasoun/aws-hub/app/args"
+	"github.com/rajasoun/aws-hub/app/arg"
 	"github.com/urfave/cli/v2"
 )
 
@@ -29,7 +29,7 @@ func (app *App) setUpCommands() {
 }
 
 func StartCommandRunner(appCtx *cli.Context) error {
-	cliContext := args.NewCliContext(appCtx)
+	cliContext := arg.NewCliContext(appCtx)
 	server, _ := NewServer(cliContext.Cache(), cliContext.IsMultipleAwsProfiles())
 	err := server.Start(cliContext.Port())
 	return err

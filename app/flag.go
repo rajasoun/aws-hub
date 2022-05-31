@@ -1,7 +1,7 @@
 package app
 
 import (
-	"github.com/rajasoun/aws-hub/app/args"
+	"github.com/rajasoun/aws-hub/app/arg"
 	"github.com/urfave/cli/v2"
 )
 
@@ -10,12 +10,12 @@ func (app *App) setUpFlags() {
 		&cli.IntFlag{
 			Name:  "port, p",
 			Usage: "Server port",
-			Value: args.DefaultPort,
+			Value: arg.DefaultPort,
 		},
 		&cli.IntFlag{
 			Name:  "duration, d",
 			Usage: "Cache expiration time",
-			Value: args.DefaultDuration,
+			Value: arg.DefaultDuration,
 		},
 		&cli.StringFlag{
 			Name:  "redis, r",
