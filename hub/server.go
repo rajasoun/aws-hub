@@ -51,7 +51,7 @@ func (server *Server) GetAWSHandler() *aws.AWSHandler {
 	return server.awsHandler
 }
 
-func (server *Server) start(port int) error {
+func (server *Server) Start(port int) error {
 	err := http.ListenAndServe(fmt.Sprintf(":%d", port), server.httpHandler)
 	return err
 }
