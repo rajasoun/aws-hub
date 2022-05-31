@@ -37,6 +37,7 @@ func (hub *Hub) setUpFlags() {
 
 func (hub *Hub) setUpCommands(handler func(appCtx *cli.Context) error) {
 	hub.cli.Commands = cmd.GetCommands(handler)
+	hub.cli.CommandNotFound = cmd.GetErrCommand()
 }
 
 func (hub *Hub) StructToMap(ds interface{}) map[string]interface{} {
