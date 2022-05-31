@@ -1,4 +1,4 @@
-package app
+package flag
 
 import (
 	"github.com/rajasoun/aws-hub/app/config/arg"

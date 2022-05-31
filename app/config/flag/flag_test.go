@@ -1,4 +1,4 @@
-package app
+package flag
 
 import (
 	"testing"
