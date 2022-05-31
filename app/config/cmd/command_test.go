@@ -22,11 +22,8 @@ func TestGetCommands(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			cmds := GetCommands(StartCommandHandler)
-			gotCommandsLen := len(cmds)
-			assert.Equal(tt.wantCommandsLen, gotCommandsLen,
-				"len(cmd.GetCommands() = %v , want = %v", gotCommandsLen, tt.wantCommandsLen)
-			gotCommandName := cmds[0].Name
+			cmds := GetCommand(StartCommandHandler)
+			gotCommandName := cmds.Name
 			assert.Containsf(tt.wantCommandName, gotCommandName,
 				"setUpCommands() = %v , want = %v", gotCommandName, tt.wantCommandName)
 		})
@@ -64,7 +61,7 @@ func TestCreateStartCommand(t *testing.T) {
 	assert := assert.New(t)
 	t.Parallel()
 	t.Run("", func(t *testing.T) {
-		cmd := CreateStartCommand(mockStartCommandHandler)
+		cmd := CreateCommand(mockStartCommandHandler)
 		assert.Equal("start", cmd.Name, "")
 		err := mockStartCommandHandler(&cli.Context{})
 		assert.NoError(err, "")

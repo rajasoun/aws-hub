@@ -35,9 +35,12 @@ func (hub *Hub) setUpFlags() {
 	hub.cli.Flags = flag.GetFlags()
 }
 
-func (hub *Hub) setUpCommands(handler func(appCtx *cli.Context) error) {
-	hub.cli.Commands = cmd.GetCommands(handler)
+func (hub *Hub) setUpCommands() error {
+	startCommand := cmd.GetCommand(cmd.StartCommandHandler)
+	commands := []*cli.Command{&startCommand}
+	hub.cli.Commands = commands
 	hub.cli.CommandNotFound = cmd.GetErrCommand()
+	return nil
 }
 
 func (hub *Hub) StructToMap(ds interface{}) map[string]interface{} {
@@ -59,7 +62,7 @@ func NewApp() *Hub {
 	hub.setUpInfo()
 	hub.setUpAuthors()
 	hub.setUpFlags()
-	hub.setUpCommands(cmd.StartCommandHandler)
+	hub.setUpCommands()
 	return &hub
 }
 

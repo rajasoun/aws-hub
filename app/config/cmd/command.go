@@ -16,7 +16,9 @@ type CommandHandler interface {
 	StartCommandHandler(appCtx *cli.Context) error
 }
 
-func CreateStartCommand(handler func(appCtx *cli.Context) error) cli.Command {
+// Create Start Command with the supplied handler
+// This will enable TDD using mocking
+func CreateCommand(handler func(appCtx *cli.Context) error) cli.Command {
 	command := cli.Command{
 		Name:  "start",
 		Usage: "Start Server",
@@ -28,10 +30,11 @@ func CreateStartCommand(handler func(appCtx *cli.Context) error) cli.Command {
 	}
 	return command
 }
-func GetCommands(handler func(appCtx *cli.Context) error) []*cli.Command {
-	startCommand := CreateStartCommand(handler)
-	commands := []*cli.Command{&startCommand}
-	return commands
+
+// Get all Commands created from the supplied handler
+func GetCommand(handler func(appCtx *cli.Context) error) cli.Command {
+	cmd := CreateCommand(handler)
+	return cmd
 }
 
 func StartCommandHandler(appCtx *cli.Context) error {
