@@ -5,7 +5,7 @@ import (
 	"github.com/urfave/cli/v2"
 )
 
-func (app *App) setUpFlags() {
+func GetFlags() []cli.Flag {
 	flags := []cli.Flag{
 		&cli.IntFlag{
 			Name:  "port, p",
@@ -27,9 +27,5 @@ func (app *App) setUpFlags() {
 			Usage: "Enable multiple AWS accounts",
 		},
 	}
-	app.cli.Flags = flags
-}
-
-func (app *App) SetUpFlags() {
-	app.setUpFlags()
+	return flags
 }
