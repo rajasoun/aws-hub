@@ -44,9 +44,8 @@ func Test_setUpFlags(t *testing.T) {
 	}{
 		{"Check For Flag port", 0, "--port"},
 		{"Check For Flag duration", 1, "--duration"},
-		{"Check For Flag redis", 2, "--redis"},
-		{"Check For Flag dataset", 3, "--dataset"},
-		{"Check For Flag multiple", 4, "--multiple"},
+		{"Check For Flag redis", 2, "--cache"},
+		{"Check For Flag multiple", 3, "--multiple"},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {

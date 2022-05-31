@@ -13,7 +13,7 @@ func TestNewServer(t *testing.T) {
 	assert := assert.New(t)
 	t.Parallel()
 	cliContext := arg.NewCliContext(&cli.Context{})
-	server, _ := NewServer(cliContext.Cache(), cliContext.IsMultipleAwsProfiles())
+	server, _ := NewServer(cliContext.GetCache(), cliContext.GetAwsProfileType())
 	tests := []struct {
 		name string
 		want string

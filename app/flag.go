@@ -18,12 +18,9 @@ func (app *App) setUpFlags() {
 			Value: arg.DefaultDuration,
 		},
 		&cli.StringFlag{
-			Name:  "redis, r",
-			Usage: "Redis server",
-		},
-		&cli.StringFlag{
-			Name:  "dataset, ds",
-			Usage: "BigQuery Bill dataset",
+			Name:  "cache, c",
+			Usage: "Cache Type",
+			Value: arg.DefaultCacheType,
 		},
 		&cli.BoolFlag{
 			Name:  "multiple, m",

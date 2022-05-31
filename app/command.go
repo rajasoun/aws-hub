@@ -30,8 +30,8 @@ func (app *App) setUpCommands() {
 
 func StartCommandRunner(appCtx *cli.Context) error {
 	cliContext := arg.NewCliContext(appCtx)
-	server, _ := NewServer(cliContext.Cache(), cliContext.IsMultipleAwsProfiles())
-	err := server.Start(cliContext.Port())
+	server, _ := NewServer(cliContext.GetCache(), cliContext.GetAwsProfileType())
+	err := server.Start(cliContext.GetPort())
 	return err
 }
 

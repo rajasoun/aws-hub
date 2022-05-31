@@ -9,22 +9,29 @@ import (
 )
 
 const (
-	DefaultPort     = 3000
-	DefaultDuration = 30
+	DefaultPort      = 3000
+	DefaultDuration  = 30
+	DefaultCacheType = "in-memory"
 )
 
 type CliContext struct {
-	ctx *cli.Context
+	ctx                  *cli.Context
+	port                 int
+	duration             int
+	cache                cache.Cache
+	isMultipleAWSProfile bool
 }
 
 func NewCliContext(appCtx *cli.Context) *CliContext {
-	ctx := CliContext{
-		ctx: appCtx,
-	}
+	ctx := CliContext{ctx: appCtx}
+	ctx.port = ctx.GetPort()
+	ctx.duration = ctx.GetDuration()
+	ctx.cache = ctx.GetCache()
+	ctx.isMultipleAWSProfile = ctx.GetAwsProfileType()
 	return &ctx
 }
 
-func (cli *CliContext) Port() int {
+func (cli *CliContext) GetPort() int {
 	port := cli.ctx.Int("port")
 	if port == 0 {
 		port = DefaultPort
@@ -32,30 +39,51 @@ func (cli *CliContext) Port() int {
 	return port
 }
 
-func (cli *CliContext) Duration() int {
+func (cli *CliContext) GetDuration() int {
 	duration := cli.ctx.Int("duration")
 	if duration == 0 {
-		duration = DefaultPort
+		duration = DefaultDuration
 	}
 	return duration
 }
 
-func (cli *CliContext) Cache() cache.Cache {
+func (cli *CliContext) GetCache() cache.Cache {
 	var cacheHandler cache.Cache
-	redis := cli.ctx.String("redis")
-	if redis == "" {
-		cacheHandler = &cache.Memory{
-			Expiration: time.Duration(cli.Duration()),
-		}
-	} else {
-		cacheHandler = &cache.Redis{
-			Addr:       redis,
-			Expiration: time.Duration(cli.Duration()),
-		}
+	cache := cli.ctx.String("cache")
+	if cache == "" {
+		cache = DefaultCacheType
+	}
+	cacheHandler = cli.GetCacheHandler(cache)
+	return cacheHandler
+}
+
+func (cli *CliContext) GetCacheHandler(cacheType string) cache.Cache {
+	var cacheHandler cache.Cache
+	duration := cli.GetDuration()
+	switch {
+	case cacheType == "in-memory":
+		cacheHandler = cli.GetInMemoryCachehandler(duration)
+	case cacheType == "redis":
+		cacheHandler = cli.GetRedisCachehandler(cacheType, duration)
 	}
 	return cacheHandler
 }
 
-func (cli *CliContext) IsMultipleAwsProfiles() bool {
+func (cli *CliContext) GetInMemoryCachehandler(duration int) cache.Cache {
+	cacheHandler := &cache.Memory{
+		Expiration: time.Duration(duration),
+	}
+	return cacheHandler
+}
+
+func (cli *CliContext) GetRedisCachehandler(redis string, duration int) cache.Cache {
+	cacheHandler := &cache.Redis{
+		Addr:       redis,
+		Expiration: time.Duration(duration),
+	}
+	return cacheHandler
+}
+
+func (cli *CliContext) GetAwsProfileType() bool {
 	return cli.ctx.Bool("multiple")
 }
