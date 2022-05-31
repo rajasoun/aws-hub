@@ -1,8 +1,6 @@
 package app
 
 import (
-	"bytes"
-	"os"
 	"testing"
 
 	"github.com/rajasoun/aws-hub/app/config/flag"
@@ -57,54 +55,28 @@ func Test_setUpFlags(t *testing.T) {
 	}
 }
 
-func Test_setUpCommands(t *testing.T) {
-	assert := assert.New(t)
-	t.Parallel()
-	app := NewApp()
-
-	tests := []struct {
-		name            string
-		wantCommandsLen int
-		wantCommandName string
-	}{
-		{"Check start command", 1, "start"},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			app.setUpCommands()
-			commands := app.cli.Commands
-			gotCommandsLen := len(commands)
-			assert.Equal(tt.wantCommandsLen, gotCommandsLen,
-				"len(tt.app.Commands) = %v , want = %v", gotCommandsLen, tt.wantCommandsLen)
-			gotCommandName := commands[0].Name
-			assert.Containsf(tt.wantCommandName, gotCommandName,
-				"setUpCommands() = %v , want = %v", gotCommandName, tt.wantCommandName)
-		})
-	}
-}
-
-func TestExecuteWithInvalidCommand(t *testing.T) {
-	assert := assert.New(t)
-	args := os.Args[0:1]
-	t.Parallel()
-	tests := []struct {
-		name string
-		args []string
-		want string
-	}{
-		{
-			name: "Check Starting App with wrong command",
-			args: append(args, "dummy"),
-			want: "Command not found \"dummy\" !",
-		},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			var buf bytes.Buffer
-			err := Execute(tt.args, &buf)
-			assert.NoError(err, "Execute err = %v", err)
-			got := buf.String()
-			assert.Equal(tt.want, got, "got = %v, want = %v ", got, tt.want)
-		})
-	}
-}
+// func TestExecuteWithInvalidCommand(t *testing.T) {
+// 	assert := assert.New(t)
+// 	args := os.Args[0:1]
+// 	t.Parallel()
+// 	tests := []struct {
+// 		name string
+// 		args []string
+// 		want string
+// 	}{
+// 		{
+// 			name: "Check Starting App with wrong command",
+// 			args: append(args, "dummy"),
+// 			want: "Command not found \"dummy\" !",
+// 		},
+// 	}
+// 	for _, tt := range tests {
+// 		t.Run(tt.name, func(t *testing.T) {
+// 			var buf bytes.Buffer
+// 			err := Execute(tt.args, &buf)
+// 			assert.NoError(err, "Execute err = %v", err)
+// 			got := buf.String()
+// 			assert.Equal(tt.want, got, "got = %v, want = %v ", got, tt.want)
+// 		})
+// 	}
+// }

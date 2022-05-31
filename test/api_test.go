@@ -8,7 +8,7 @@ import (
 
 	"github.com/gavv/httpexpect"
 	"github.com/gorilla/handlers"
-	"github.com/rajasoun/aws-hub/app"
+	"github.com/rajasoun/aws-hub/app/config/cmd"
 	"github.com/rajasoun/aws-hub/services/cache"
 )
 
@@ -19,7 +19,7 @@ func TestAPI(t *testing.T) {
 	}
 	t.Parallel()
 
-	_, router := app.NewServer(&cache.Memory{}, false)
+	_, router := cmd.NewServer(&cache.Memory{}, false)
 	server := httptest.NewServer(handlers.LoggingHandler(os.Stdout, router))
 	defer server.Close()
 	expect := httpexpect.New(t, server.URL)

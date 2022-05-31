@@ -3,6 +3,7 @@ package app
 import (
 	"io"
 
+	"github.com/rajasoun/aws-hub/app/config/cmd"
 	"github.com/rajasoun/aws-hub/app/config/flag"
 	structs "github.com/rajasoun/go-ds"
 	"github.com/urfave/cli/v2"
@@ -12,7 +13,7 @@ func NewApp() *App {
 	app := App{&cli.App{}}
 	app.SetUpInfo()
 	app.cli.Flags = flag.GetFlags()
-	app.SetUpCommands()
+	app.cli.Commands = cmd.GetCommands()
 	return &app
 }
 
