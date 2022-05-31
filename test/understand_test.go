@@ -5,7 +5,7 @@ import (
 	"os"
 	"testing"
 
-	"github.com/rajasoun/aws-hub/hub"
+	"github.com/rajasoun/aws-hub/app"
 	"github.com/rajasoun/aws-hub/services/cache"
 	"github.com/steinfletcher/apitest"
 )
@@ -17,7 +17,7 @@ func Test_Flow(t *testing.T) {
 	}
 	t.Parallel()
 
-	_, router := hub.NewServer(&cache.Memory{}, false)
+	_, router := app.NewServer(&cache.Memory{}, false)
 
 	t.Run("HealthCheck API /health", func(t *testing.T) {
 		apitest.New("Health Check API  /health").
