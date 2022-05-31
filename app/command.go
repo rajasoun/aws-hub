@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/rajasoun/aws-hub/app/arg"
+	"github.com/rajasoun/aws-hub/app/config/arg"
 	"github.com/urfave/cli/v2"
 )
 

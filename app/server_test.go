@@ -3,7 +3,7 @@ package app
 import (
 	"testing"
 
-	"github.com/rajasoun/aws-hub/app/arg"
+	"github.com/rajasoun/aws-hub/app/config/arg"
 	"github.com/stretchr/testify/assert"
 	"github.com/urfave/cli/v2"
 )
