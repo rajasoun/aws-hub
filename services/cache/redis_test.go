@@ -54,7 +54,7 @@ func TestRedisPingGetSet(t *testing.T) {
 	}
 }
 
-func TestRedisGetWithErr(t *testing.T) {
+func TestRedisPingGetSetWithErr(t *testing.T) {
 	assert := assert.New(t)
 	t.Parallel()
 	// start Redis mock server
@@ -67,9 +67,8 @@ func TestRedisGetWithErr(t *testing.T) {
 		value string
 	}{
 		{
-			name:  "Check Redis Cache Connect, Ping, Set & Get with valid JSON",
-			key:   "Key",
-			value: "Test",
+			name: "Check Redis Cache Connect, Ping, Set & Get with valid JSON",
+			key:  "Key",
 		},
 	}
 	r := NewRedisClient(server)
@@ -77,6 +76,11 @@ func TestRedisGetWithErr(t *testing.T) {
 	defer r.client.Close()
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			errInput := map[string]interface{}{
+				"foo": make(chan int),
+			}
+			err := r.Set(tt.key, errInput)
+			assert.Error(err, "Error err = %v ", err)
 			got, foundKey := r.Get(tt.key)
 			assert.False(foundKey, "Cache Set & Get Should Fail with Injected Err = %v", tt.key)
 			assert.Empty(got, "Get () = %v", got)
@@ -87,6 +91,9 @@ func TestRedisGetWithErr(t *testing.T) {
 			r.Set(tt.key, tt.value)
 			gotLog := outputBuffer.String()
 			assert.Contains(gotLog, "Mock Error", "Mock Set Failed")
+			r.Ping()
+			pingLog := outputBuffer.String()
+			assert.Contains(pingLog, "Cloudn't connect to Redis:", "Ping Err Failed")
 		})
 	}
 }

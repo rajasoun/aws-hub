@@ -20,11 +20,12 @@ func TestMemory_All(t *testing.T) {
 	t.Parallel()
 
 	tests := []struct {
-		name  string
-		key   string
-		value string
+		name     string
+		key      string
+		value    string
+		wantType string
 	}{
-		{"Check InMemory Cache ", "Key", "Test"},
+		{"Check InMemory Cache ", "Key", "Test", "InMemoryCache"},
 	}
 	m := NewMemoryCacheClient()
 	m.Connect()
@@ -34,6 +35,7 @@ func TestMemory_All(t *testing.T) {
 			got, found := m.Get(tt.key)
 			assert.True(found, "Cache Set & Get Sequenced Failed for key = %v", tt.key)
 			assert.Equal(tt.value, got, "Get () = %v, want = %v", got, tt.value)
+			assert.Equal(tt.wantType, m.Type(), "Get () = %v, want = %v", m.Type(), tt.wantType)
 		})
 	}
 }
