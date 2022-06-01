@@ -8,8 +8,23 @@ import (
 )
 
 // Client provides the API client to mock operations call for Amazon Simple Queue Service.
+
 type Client struct {
 	mock.Mock
+}
+
+type iamClient interface {
+	ListAccountAliases(ctx context.Context,
+		params *iam.ListAccountAliasesInput,
+		optFns ...func(*iam.Options)) (*iam.ListAccountAliasesOutput, error)
+
+	ListUsers(ctx context.Context,
+		params *iam.ListUsersInput,
+		optFns ...func(*iam.Options)) (*iam.ListUsersOutput, error)
+
+	GetUser(ctx context.Context,
+		params *iam.GetUserInput,
+		optFns ...func(*iam.Options)) (*iam.GetUserOutput, error)
 }
 
 // List Account Aliases Mock
