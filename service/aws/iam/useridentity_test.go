@@ -7,7 +7,6 @@ import (
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/service/iam"
 	"github.com/aws/aws-sdk-go-v2/service/iam/types"
-	"github.com/rajasoun/aws-hub/service/aws/iam/apiclient"
 	"github.com/rajasoun/aws-hub/service/aws/iam/iammock"
 	"github.com/stretchr/testify/assert"
 )
@@ -27,7 +26,7 @@ func TestGetUserIdentity(t *testing.T) {
 
 	for _, tt := range cases {
 		t.Run(tt.name, func(t *testing.T) {
-			mock := apiclient.MockUserIdentity{}
+			mock := iammock.MockUserIdentity{}
 			client := mock.NewClient()
 			got, err := GetUserIdentity(client)
 			assert.NoError(err, "expect no error, got %v", err)

@@ -1,4 +1,4 @@
-package apiclient
+package iammock
 
 import (
 	"context"
@@ -7,6 +7,7 @@ import (
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/service/iam"
 	"github.com/aws/aws-sdk-go-v2/service/iam/types"
+	"github.com/rajasoun/aws-hub/service/aws/iam/apiclient"
 )
 
 // Mock Receiver
@@ -24,7 +25,7 @@ func (mock MockListAccountAliasesAPIClient) ListAccountAliases(ctx context.Conte
 	return mock(ctx, params, optFns...)
 }
 
-func (mock MockAccountAliases) NewClient() IAMListAccountAliasesAPIClient {
+func (mock MockAccountAliases) NewClient() apiclient.IAMListAccountAliasesAPIClient {
 	fn := func(ctx context.Context,
 		params *iam.ListAccountAliasesInput,
 		optFns ...func(*iam.Options)) (*iam.ListAccountAliasesOutput, error) {
@@ -54,7 +55,7 @@ func (mock MockIAMListUsersAPIClient) ListUsers(ctx context.Context,
 	return mock(ctx, params, optFns...)
 }
 
-func (mock MockUser) NewClient() IAMListUsersAPIClient {
+func (mock MockUser) NewClient() apiclient.IAMListUsersAPIClient {
 	client := MockIAMListUsersAPIClient(func(ctx context.Context,
 		params *iam.ListUsersInput,
 		optFns ...func(*iam.Options)) (*iam.ListUsersOutput, error) {
@@ -83,7 +84,7 @@ func (mock MockIAMGetUserAPIClient) GetUser(ctx context.Context,
 	return mock(ctx, params, optFns...)
 }
 
-func (mock MockUserIdentity) NewClient() IAMGetUserAPIClient {
+func (mock MockUserIdentity) NewClient() apiclient.IAMGetUserAPIClient {
 	client := MockIAMGetUserAPIClient(func(ctx context.Context,
 		params *iam.GetUserInput,
 		optFns ...func(*iam.Options)) (*iam.GetUserOutput, error) {

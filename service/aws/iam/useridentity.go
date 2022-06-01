@@ -5,7 +5,7 @@ import (
 	"time"
 
 	"github.com/aws/aws-sdk-go-v2/service/iam"
-	clientAPI "github.com/rajasoun/aws-hub/service/aws/iam/apiclient"
+	"github.com/rajasoun/aws-hub/service/aws/iam/apiclient"
 )
 
 type User struct {
@@ -22,7 +22,7 @@ type User struct {
 // Output:
 //     If successful, a Users object containing the account details and nil.
 //     Otherwise, nil and an error from the call.
-func GetUserIdentity(client clientAPI.IAMGetUserAPIClient) (User, error) {
+func GetUserIdentity(client apiclient.IAMGetUserAPIClient) (User, error) {
 	var ctx context.Context = context.TODO()
 	input := &iam.GetUserInput{}
 	result, err := client.GetUser(ctx, input)

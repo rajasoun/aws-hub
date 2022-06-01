@@ -5,7 +5,7 @@ import (
 	"log"
 
 	"github.com/aws/aws-sdk-go-v2/service/iam"
-	clientAPI "github.com/rajasoun/aws-hub/service/aws/iam/apiclient"
+	"github.com/rajasoun/aws-hub/service/aws/iam/apiclient"
 )
 
 type Aliases struct {
@@ -18,7 +18,7 @@ type Aliases struct {
 // Output:
 //     If successful, a ListAccountAliasesOutput object containing the result of the service call and nil.
 //     Otherwise, nil and an error from the call to ListAccountAliases.
-func GetAliases(client clientAPI.IAMListAccountAliasesAPIClient) (Aliases, error) {
+func GetAliases(client apiclient.IAMListAccountAliasesAPIClient) (Aliases, error) {
 	var ctx context.Context = context.TODO()
 	input := &iam.ListAccountAliasesInput{}
 	result, err := client.ListAccountAliases(ctx, input)

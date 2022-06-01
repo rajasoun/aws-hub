@@ -8,7 +8,6 @@ import (
 
 	"github.com/stretchr/testify/assert"
 
-	clientAPI "github.com/rajasoun/aws-hub/service/aws/iam/apiclient"
 	"github.com/rajasoun/aws-hub/service/aws/iam/iammock"
 )
 
@@ -26,7 +25,7 @@ func TestGetAliases(t *testing.T) {
 
 	for _, tt := range cases {
 		t.Run(tt.name, func(t *testing.T) {
-			mock := clientAPI.MockAccountAliases{}
+			mock := iammock.MockAccountAliases{}
 			client := mock.NewClient()
 			got, err := GetAliases(client)
 			assert.NoError(err, "expect no error, got %v", err)

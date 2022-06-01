@@ -6,7 +6,6 @@ import (
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/service/iam"
 	"github.com/aws/aws-sdk-go-v2/service/iam/types"
-	"github.com/rajasoun/aws-hub/service/aws/iam/apiclient"
 	"github.com/rajasoun/aws-hub/service/aws/iam/iammock"
 	"github.com/stretchr/testify/assert"
 )
@@ -24,7 +23,7 @@ func TestGetUserCount(t *testing.T) {
 
 	for _, tt := range cases {
 		t.Run(tt.name, func(t *testing.T) {
-			mock := apiclient.MockUser{}
+			mock := iammock.MockUser{}
 			client := mock.NewClient()
 			got, err := GetUserCount(client)
 			assert.NoError(err, "expect no error, got %v", err)
