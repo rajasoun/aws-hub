@@ -3,14 +3,13 @@ package iammock
 import (
 	"testing"
 
-	"github.com/aws/aws-sdk-go-v2/aws"
-	"github.com/aws/aws-sdk-go-v2/service/iam"
 	"github.com/stretchr/testify/assert"
 
 	hubIAM "github.com/rajasoun/aws-hub/service/aws/iam"
 )
 
 func TestGetAliases(t *testing.T) {
+	var testAlias string = "aws-test-account-alias"
 	assert := assert.New(t)
 	t.Parallel()
 	mock := MockAccountAliases{}
@@ -27,13 +26,7 @@ func TestGetAliases(t *testing.T) {
 			client := mock.NewMockClient()
 			got, err := hubIAM.GetAliases(client)
 			assert.NoError(err, "expect no error, got %v", err)
-			assert.Equal(tt.want, got.List[0], "got GetUserCount = %v, want = %v", got.List[0], tt.want)
+			assert.Equal(tt.want, got.List[0], "got GetAliases = %v, want = %v", got.List[0], tt.want)
 		})
 	}
-	t.Run("Check GetUserCount returns err with Empty aws.Config{}", func(t *testing.T) {
-		emptyCfg := aws.Config{}
-		noOpClient := iam.NewFromConfig(emptyCfg)
-		_, err := hubIAM.GetAliases(noOpClient)
-		assert.Error(err, "err = %v, want = nil", err)
-	})
 }
