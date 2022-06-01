@@ -1,49 +1,20 @@
 package iam
 
 import (
-	"context"
 	"testing"
 
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/service/iam"
 
 	"github.com/stretchr/testify/assert"
+
+	clientAPI "github.com/rajasoun/aws-hub/service/aws/iam/apiclient"
 )
 
-var testAlias string = "aws-test-account-alias"
-
-// Mock Receiver
-type MockAccountAliases struct{}
-
-//Mock Function
-type MockListAccountAliasesAPIClient func(ctx context.Context,
-	params *iam.ListAccountAliasesInput,
-	optFns ...func(*iam.Options)) (*iam.ListAccountAliasesOutput, error)
-
-// Implement AWS IAM ListAccountAliases Interface with mock reciever
-func (mock MockListAccountAliasesAPIClient) ListAccountAliases(ctx context.Context,
-	params *iam.ListAccountAliasesInput,
-	optFns ...func(*iam.Options)) (*iam.ListAccountAliasesOutput, error) {
-	return mock(ctx, params, optFns...)
-}
-
-func (mock MockAccountAliases) NewMockClient() IAMListAccountAliasesAPIClient {
-	client := MockListAccountAliasesAPIClient(func(ctx context.Context,
-		params *iam.ListAccountAliasesInput,
-		optFns ...func(*iam.Options)) (*iam.ListAccountAliasesOutput, error) {
-		aliases := []string{testAlias}
-		result := &iam.ListAccountAliasesOutput{
-			AccountAliases: aliases,
-		}
-		return result, nil
-	})
-	return client
-}
-
 func TestGetAliases(t *testing.T) {
+	var testAlias string = "aws-test-account-alias"
 	assert := assert.New(t)
 	t.Parallel()
-	mock := MockAccountAliases{}
 
 	cases := []struct {
 		name string
@@ -54,7 +25,9 @@ func TestGetAliases(t *testing.T) {
 
 	for _, tt := range cases {
 		t.Run(tt.name, func(t *testing.T) {
-			got, err := GetAliases(mock.NewMockClient())
+			mock := clientAPI.MockAccountAliases{}
+			client := mock.NewClient()
+			got, err := GetAliases(client)
 			assert.NoError(err, "expect no error, got %v", err)
 			assert.Equal(tt.want, got.List[0], "got GetUserCount = %v, want = %v", got.List[0], tt.want)
 		})

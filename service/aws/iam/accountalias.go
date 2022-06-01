@@ -5,19 +5,11 @@ import (
 	"log"
 
 	"github.com/aws/aws-sdk-go-v2/service/iam"
+	clientAPI "github.com/rajasoun/aws-hub/service/aws/iam/apiclient"
 )
 
 type Aliases struct {
 	List []string `json:"list"`
-}
-
-// Interface for Amazon IAM ListAccountAliases API
-// This will enable TDD using mocking
-type IAMListAccountAliasesAPIClient interface {
-	iam.ListAccountAliasesAPIClient // Only for Refernce to Actual Client
-	ListAccountAliases(ctx context.Context,
-		params *iam.ListAccountAliasesInput,
-		optFns ...func(*iam.Options)) (*iam.ListAccountAliasesOutput, error)
 }
 
 // GetAccountAliases retrieves the aliases for your AWS Identity and Access Management (IAM) account.
@@ -26,7 +18,7 @@ type IAMListAccountAliasesAPIClient interface {
 // Output:
 //     If successful, a ListAccountAliasesOutput object containing the result of the service call and nil.
 //     Otherwise, nil and an error from the call to ListAccountAliases.
-func GetAliases(client iam.ListAccountAliasesAPIClient) (Aliases, error) {
+func GetAliases(client clientAPI.IAMListAccountAliasesAPIClient) (Aliases, error) {
 	var ctx context.Context = context.TODO()
 	input := &iam.ListAccountAliasesInput{}
 	result, err := client.ListAccountAliases(ctx, input)

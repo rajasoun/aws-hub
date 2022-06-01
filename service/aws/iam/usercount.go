@@ -4,19 +4,11 @@ import (
 	"context"
 
 	"github.com/aws/aws-sdk-go-v2/service/iam"
+	clientAPI "github.com/rajasoun/aws-hub/service/aws/iam/apiclient"
 )
 
 type UserList struct {
 	Count int `json:"usercount"`
-}
-
-// Interface for Amazon IAM ListUsers API
-// This will enable TDD using mocking
-type IAMListUsersAPIClient interface {
-	iam.ListUsersAPIClient // Only for Refernce to Actual Client
-	ListUsers(ctx context.Context,
-		params *iam.ListUsersInput,
-		optFns ...func(*iam.Options)) (*iam.ListUsersOutput, error)
 }
 
 // GetUserCount retrieves the user accounty for an AWS account.
@@ -25,7 +17,7 @@ type IAMListUsersAPIClient interface {
 // Output:
 //     If successful, a Users object containing the count and nil.
 //     Otherwise, nil and an error from the call.
-func GetUserCount(client IAMListUsersAPIClient) (UserList, error) {
+func GetUserCount(client clientAPI.IAMListUsersAPIClient) (UserList, error) {
 	var ctx context.Context = context.TODO()
 	input := &iam.ListUsersInput{}
 	result, err := client.ListUsers(ctx, input)
