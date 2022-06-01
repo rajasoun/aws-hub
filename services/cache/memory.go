@@ -25,6 +25,7 @@ func (m *Memory) Get(key string) (interface{}, bool) {
 	return m.cache.Get(key)
 }
 
-func (m *Memory) Set(key string, value interface{}) {
+func (m *Memory) Set(key string, value interface{}) error {
 	m.cache.Set(key, value, time.Duration(m.Expiration)*time.Minute)
+	return nil
 }

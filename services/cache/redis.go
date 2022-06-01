@@ -47,13 +47,15 @@ func (r *Redis) Get(key string) (interface{}, bool) {
 	return data, true
 }
 
-func (r *Redis) Set(key string, value interface{}) {
+func (r *Redis) Set(key string, value interface{}) error {
 	data, err := json.Marshal(value)
 	if err != nil {
-		log.Fatal(err)
+		log.Println("Error in Marshalling JSON ", err)
+		return err
 	}
 	err = r.client.Set(key, data, r.Expiration*time.Minute).Err()
 	if err != nil {
-		log.Fatal(err)
+		log.Println("Error in Cache Set", err)
 	}
+	return err
 }
