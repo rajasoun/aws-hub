@@ -1,11 +1,12 @@
 package cache
 
 import (
+	"bytes"
+	"log"
 	"testing"
 
 	"github.com/alicebob/miniredis/v2"
 	"github.com/go-redis/redis"
-	"github.com/rajasoun/aws-hub/test"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -56,7 +57,8 @@ func TestRedisPing(t *testing.T) {
 				err := client.Ping()
 				assert.NoError(err)
 			case tt.wantErr == true: //Edge Case
-				outputBuffer := test.SetLogOutputToBuffer()
+				var outputBuffer bytes.Buffer
+				log.SetOutput(&outputBuffer)
 				server.SetError("Mock Error")
 				err := client.Ping()
 				assert.Error(err, "Err err = %v ", err)

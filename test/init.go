@@ -1,10 +1,8 @@
 package test
 
 import (
-	"bytes"
 	"flag"
 	"fmt"
-	"log"
 	"testing"
 )
 
@@ -21,10 +19,4 @@ func IsTestRun() bool {
 	verbose := flag.Lookup("test.v").Value.(flag.Getter).Get().(bool)
 	isTest := flag.Lookup("isTest").Value.(flag.Getter).Get().(bool)
 	return verbose || isTest
-}
-
-func SetLogOutputToBuffer() *bytes.Buffer {
-	var outputBuffer bytes.Buffer
-	log.SetOutput(&outputBuffer)
-	return &outputBuffer
 }
