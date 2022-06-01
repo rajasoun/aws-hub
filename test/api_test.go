@@ -9,7 +9,7 @@ import (
 	"github.com/gavv/httpexpect"
 	"github.com/gorilla/handlers"
 	"github.com/rajasoun/aws-hub/app/server"
-	"github.com/rajasoun/aws-hub/services/cache"
+	"github.com/rajasoun/aws-hub/service/cache"
 )
 
 func TestAPI(t *testing.T) {

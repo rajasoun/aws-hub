@@ -6,7 +6,7 @@ import (
 	"testing"
 
 	"github.com/rajasoun/aws-hub/app/server"
-	"github.com/rajasoun/aws-hub/services/cache"
+	"github.com/rajasoun/aws-hub/service/cache"
 	"github.com/steinfletcher/apitest"
 )
 

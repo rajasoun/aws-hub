@@ -7,7 +7,7 @@ import (
 	"github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
 	"github.com/rajasoun/aws-hub/handlers/aws"
-	"github.com/rajasoun/aws-hub/services/cache"
+	"github.com/rajasoun/aws-hub/service/cache"
 	"github.com/rs/cors"
 )
 

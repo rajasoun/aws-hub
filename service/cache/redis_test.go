@@ -118,11 +118,9 @@ func TestRedisGetSet(t *testing.T) {
 				assert.False(foundKey, "Cache Set & Get Should Fail with Injected Err = %v", tt.key)
 				assert.Empty(got, "Get () = %v", got)
 				//With Redis Error
-				outputBuffer := test.SetLogOutputToBuffer()
 				server.SetError("Mock Error")
-				client.Set(tt.key, "dummy")
-				gotLog := outputBuffer.String()
-				assert.Contains(gotLog, "Mock Error", "Mock Set Failed")
+				errMock := client.Set(tt.key, "dummy")
+				assert.Error(errMock, "Simulated Err Failed err = %v ", errMock)
 			}
 		})
 	}

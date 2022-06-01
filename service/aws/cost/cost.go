@@ -4,12 +4,12 @@ import (
 	"context"
 
 	"github.com/aws/aws-sdk-go-v2/aws"
-	"github.com/aws/aws-sdk-go-v2/service/costexplorer"
+	"github.com/rajasoun/aws-hub/service/aws/cost/model"
 
-	awsModel "github.com/rajasoun/aws-hub/models/aws"
+	"github.com/aws/aws-sdk-go-v2/service/costexplorer"
 )
 
-func DescribeCostAndUsage(cfg aws.Config) (awsModel.Bill, error) {
+func DescribeCostAndUsage(cfg aws.Config) (model.Bill, error) {
 	svc := costexplorer.NewFromConfig(cfg)
 	input := &costexplorer.GetCostAndUsageInput{}
 	svc.GetCostAndUsage(context.TODO(), input)
@@ -78,13 +78,13 @@ func DescribeCostAndUsage(cfg aws.Config) (awsModel.Bill, error) {
 	// }, nil
 
 	// Remove Below Lines
-	return awsModel.Bill{
+	return model.Bill{
 		Total:   0,
 		History: nil,
 	}, nil
 }
 
-func DescribeCostAndUsagePerInstanceType(cfg aws.Config) (awsModel.Bill, error) {
+func DescribeCostAndUsagePerInstanceType(cfg aws.Config) (model.Bill, error) {
 	// currentTime := time.Now().Local()
 	// start := currentTime.AddDate(0, -6, 0).Format("2006-01-02")
 	// end := currentTime.Format("2006-01-02")
@@ -155,7 +155,7 @@ func DescribeCostAndUsagePerInstanceType(cfg aws.Config) (awsModel.Bill, error) 
 	// }, nil
 
 	// Remove Below Lines
-	return awsModel.Bill{
+	return model.Bill{
 		Total:   0,
 		History: nil,
 	}, nil

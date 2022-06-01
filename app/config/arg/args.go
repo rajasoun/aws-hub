@@ -3,7 +3,7 @@ package arg
 import (
 	"time"
 
-	"github.com/rajasoun/aws-hub/services/cache"
+	"github.com/rajasoun/aws-hub/service/cache"
 
 	"github.com/urfave/cli/v2"
 )

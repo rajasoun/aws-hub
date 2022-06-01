@@ -4,7 +4,7 @@ import (
 	"github.com/aws/aws-sdk-go-v2/service/iam"
 	"github.com/gorilla/mux"
 
-	hubIAM "github.com/rajasoun/aws-hub/services/aws/iam"
+	hubIAM "github.com/rajasoun/aws-hub/service/aws/iam"
 )
 
 func (handler *AWSHandler) SetUpRoutes() *mux.Router {
