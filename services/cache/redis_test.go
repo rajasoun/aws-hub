@@ -25,32 +25,6 @@ func NewMockRedis(t *testing.T) (*miniredis.Miniredis, *Redis) {
 	return server, client
 }
 
-func pingSuccesPath(client *Redis, assert *assert.Assertions, tt struct {
-	name    string
-	want    string
-	wantErr bool
-}) {
-	outputBuffer := test.SetLogOutputToBuffer()
-	err := client.Ping()
-	assert.NoError(err)
-	gotLog := outputBuffer.String()
-	assert.Contains(gotLog, tt.want, "Ping() got = %v , want = %v ", gotLog, tt.want)
-}
-
-func pingFailurePath(server *miniredis.Miniredis, client *Redis, assert *assert.Assertions, tt struct {
-	name    string
-	want    string
-	wantErr bool
-}) {
-	outputBuffer := test.SetLogOutputToBuffer()
-	server.SetError("Mock Error")
-	err := client.Ping()
-	assert.Error(err, "Err err = %v ", err)
-
-	gotLog := outputBuffer.String()
-	assert.Contains(gotLog, tt.want, "Ping() got = %v , want = %v ", gotLog, tt.want)
-}
-
 func TestRedisPing(t *testing.T) {
 	assert := assert.New(t)
 	t.Parallel()
@@ -58,6 +32,7 @@ func TestRedisPing(t *testing.T) {
 	server, client := NewMockRedis(t)
 	defer server.Close()
 	defer client.client.Close()
+
 	tests := []struct {
 		name    string
 		want    string
@@ -78,51 +53,18 @@ func TestRedisPing(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			switch {
 			case tt.wantErr == false: //Happy Path
-				pingSuccesPath(client, assert, tt)
+				err := client.Ping()
+				assert.NoError(err)
 			case tt.wantErr == true: //Edge Case
-				pingFailurePath(server, client, assert, tt)
+				outputBuffer := test.SetLogOutputToBuffer()
+				server.SetError("Mock Error")
+				err := client.Ping()
+				assert.Error(err, "Err err = %v ", err)
+				gotLog := outputBuffer.String()
+				assert.Contains(gotLog, tt.want, "Ping() got = %v , want = %v ", gotLog, tt.want)
 			}
 		})
 	}
-}
-
-func redisGetSetSucessPath(client *Redis, tt struct {
-	name     string
-	key      string
-	value    interface{}
-	wantType string
-	wantMsg  string
-	wantErr  bool
-}, assert *assert.Assertions) {
-	err := client.Set(tt.key, tt.value)
-	assert.NoError(err, "Error err = %v ", err)
-	got, foundKey := client.Get(tt.key)
-	assert.True(foundKey, "Cache Set & Get Sequenced Failed for key = %v", tt.key)
-	assert.Equal(tt.value, got, "Get () = %v, want = %v", got, tt.value)
-	assert.Equal(tt.wantType, client.Type(), "Get () = %v, want = %v", client.Type(), tt.wantType)
-}
-
-func redisGetSetFailurePath(client *Redis, tt struct {
-	name     string
-	key      string
-	value    interface{}
-	wantType string
-	wantMsg  string
-	wantErr  bool
-}, assert *assert.Assertions, server *miniredis.Miniredis) {
-	//With Wrong Value
-	err := client.Set(tt.key, tt.value)
-	assert.Error(err, "Error err = %v ", err)
-	//With InValid Key
-	got, foundKey := client.Get("Invalid")
-	assert.False(foundKey, "Cache Set & Get Should Fail with Injected Err = %v", tt.key)
-	assert.Empty(got, "Get () = %v", got)
-	//With Redis Error
-	outputBuffer := test.SetLogOutputToBuffer()
-	server.SetError("Mock Error")
-	client.Set(tt.key, "dummy")
-	gotErrLog := outputBuffer.String()
-	assert.Contains(gotErrLog, tt.wantMsg, "Mock Set Failed")
 }
 
 func TestRedisGetSet(t *testing.T) {
@@ -137,7 +79,7 @@ func TestRedisGetSet(t *testing.T) {
 		key      string
 		value    interface{}
 		wantType string
-		wantMsg  string
+		want     string
 		wantErr  bool
 	}{
 		{
@@ -145,7 +87,7 @@ func TestRedisGetSet(t *testing.T) {
 			key:      "Key",
 			value:    "Test",
 			wantType: "RedisCache",
-			wantMsg:  "Successfully connected to Redis",
+			want:     "Successfully connected to Redis",
 			wantErr:  false,
 		},
 		{
@@ -153,7 +95,7 @@ func TestRedisGetSet(t *testing.T) {
 			key:      "Key",
 			value:    map[string]interface{}{"foo": make(chan int)},
 			wantType: "RedisCache",
-			wantMsg:  "Mock Error",
+			want:     "Mock Error",
 			wantErr:  true,
 		},
 	}
@@ -161,9 +103,26 @@ func TestRedisGetSet(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			switch {
 			case tt.wantErr == false: //Happy Path
-				redisGetSetSucessPath(client, tt, assert)
+				err := client.Set(tt.key, tt.value)
+				assert.NoError(err, "Error err = %v ", err)
+				got, foundKey := client.Get(tt.key)
+				assert.True(foundKey, "Cache Set & Get Sequenced Failed for key = %v", tt.key)
+				assert.Equal(tt.value, got, "Get () = %v, want = %v", got, tt.value)
+				assert.Equal(tt.wantType, client.Type(), "Get () = %v, want = %v", client.Type(), tt.wantType)
 			case tt.wantErr == true: //Edge Case
-				redisGetSetFailurePath(client, tt, assert, server)
+				//With Wrong Value
+				err := client.Set(tt.key, tt.value)
+				assert.Error(err, "Error err = %v ", err)
+				//With InValid Key
+				got, foundKey := client.Get("Invalid")
+				assert.False(foundKey, "Cache Set & Get Should Fail with Injected Err = %v", tt.key)
+				assert.Empty(got, "Get () = %v", got)
+				//With Redis Error
+				outputBuffer := test.SetLogOutputToBuffer()
+				server.SetError("Mock Error")
+				client.Set(tt.key, "dummy")
+				gotLog := outputBuffer.String()
+				assert.Contains(gotLog, "Mock Error", "Mock Set Failed")
 			}
 		})
 	}
