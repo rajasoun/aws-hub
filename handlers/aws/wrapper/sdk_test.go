@@ -9,10 +9,9 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-var client = new(iammock.MockClient)
-
 func TestAccountExecute(t *testing.T) {
 	assert := assert.New(t)
+	client := new(iammock.MockClient)
 	t.Parallel()
 	cases := []struct {
 		name           string
@@ -31,14 +30,19 @@ func TestAccountExecute(t *testing.T) {
 	for _, tt := range cases {
 		t.Run(tt.name, func(t *testing.T) {
 			client.InjectFunctionMock(client, tt.injectFunction, tt.expectedOutput)
-			receiver := New(&Account{
-				client: client,
-				alias:  hubIAM.Aliases{},
-			})
+			receiver := NewAccount(client)
 			err := receiver.Wrapper.Execute()
 			got := receiver.Wrapper.alias
 			assert.NoError(err, "expect no error, got %v", err)
 			assert.Equal(tt.want, got.List[0], "got GetAliases = %v, want = %v", got.List[0], tt.want)
 		})
 	}
+}
+
+func NewAccount(client *iammock.MockClient) *SDK[*Account] {
+	receiver := New(&Account{
+		client: client,
+		alias:  hubIAM.Aliases{},
+	})
+	return receiver
 }
