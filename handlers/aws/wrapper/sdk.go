@@ -5,16 +5,6 @@ import (
 	"github.com/rajasoun/aws-hub/service/aws/iam/apiclient"
 )
 
-type SDKV2 interface {
-	Execute() error
-}
-
-type SDK struct{}
-
-func (sdk SDK) ExecuteAPI(sdkv2 SDKV2) error {
-	return sdkv2.Execute()
-}
-
 type Account struct {
 	client apiclient.IAMListAccountAliasesAPIClient
 	alias  hubIAM.Aliases
@@ -46,4 +36,23 @@ func (userIdentity *UserIdentity) Execute() error {
 	response, err := hubIAM.GetUserIdentity(userIdentity.client)
 	userIdentity.identity = response
 	return err
+}
+
+type AWS interface {
+	*Account | *UserCount | *UserIdentity
+	Execute() error
+}
+
+type SDK[T AWS] struct {
+	Wrapper T
+}
+
+func New[T AWS](wrapper T) *SDK[T] {
+	return &SDK[T]{
+		Wrapper: wrapper,
+	}
+}
+
+func (aws *SDK[T]) ExecuteAPI() error {
+	return aws.Wrapper.Execute()
 }
