@@ -1,12 +1,13 @@
 package raja
 
 import (
+	"errors"
 	"log"
 	"os"
 	"testing"
 
-	"github.com/rajasoun/aws-hub/test/e2e/raja/mock"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/mock"
 )
 
 func TestE2E(t *testing.T) {
@@ -32,11 +33,29 @@ func TestFlowOpenOrCreate(t *testing.T) {
 		want := "e2e.md"
 		assert.Equal(want, got.Name(), "Flow.OpenOrCreate() = %v, want %v", got.Name(), want)
 	})
-	t.Run("Check File Open Create For Error", func(t *testing.T) {
+}
+
+type MockIt struct {
+	mock.Mock
+}
+
+func (c *MockIt) openFilefunc(name string, flag int, perm os.FileMode) (*os.File, error) {
+	args := c.Called(name, flag, perm)
+	if args.Get(0) == nil {
+		return nil, args.Error(1)
+	}
+	return args.Get(0).(*os.File), args.Error(1)
+}
+
+func TestFlowOpenOrCreateErr(t *testing.T) {
+	t.Run("Check File Open Create For Error with Framework Mock", func(t *testing.T) {
 		assert := assert.New(t)
 		flow := &Flow{}
-		mock := mock.Mock{}
-		_, err := flow.OpenOrCreate(mock.OpenFile())
+		mockIt := new(MockIt)
+		mockIt.
+			On("openFilefunc", mock.Anything, mock.Anything, mock.Anything).
+			Return(nil, errors.New("simulated error"))
+		_, err := flow.OpenOrCreate(mockIt.openFilefunc)
 		assert.Error(err, "Flow.OpenOrCreate() Err = %v", err)
 	})
 }

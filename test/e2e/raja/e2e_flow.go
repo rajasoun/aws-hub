@@ -5,8 +5,6 @@ import (
 	"io"
 	"log"
 	"os"
-
-	iface "github.com/rajasoun/aws-hub/test/e2e/raja/interface"
 )
 
 var startDoc = "```mermaid \nsequenceDiagram\n	actor User"
@@ -25,10 +23,10 @@ func (flow *Flow) Start(writer io.Writer) {
 	log.Println(startDoc)
 }
 
-func (*Flow) OpenOrCreate(openFile iface.OpenFile) (*os.File, error) {
+func (*Flow) OpenOrCreate(openFilefunc func(name string, flag int, perm os.FileMode) (*os.File, error)) (*os.File, error) {
 	Options := os.O_RDWR | os.O_CREATE
 	fileName := "e2e.md"
-	logFile, err := openFile(fileName, Options, 0666)
+	logFile, err := openFilefunc(fileName, Options, 0666)
 	if err != nil {
 		log.Printf("Error Opening File %s Err = %v", fileName, err)
 		return nil, err
