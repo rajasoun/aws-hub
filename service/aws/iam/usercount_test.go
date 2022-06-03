@@ -1,15 +1,90 @@
 package iam
 
 import (
+	"context"
 	"testing"
 
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/service/iam"
 	"github.com/aws/aws-sdk-go-v2/service/iam/types"
-	"github.com/rajasoun/aws-hub/service/aws/iam/iammock"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/mock"
 )
 
+// Client provides the API client to mock AWS operations
+type MockListUsers struct {
+	mock.Mock
+}
+
+/**
+* Mock using testify Framework
+ */
+
+// List Users Mock
+func (c *MockListUsers) ListUsers(ctx context.Context,
+	params *iam.ListUsersInput,
+	optFns ...func(*iam.Options)) (*iam.ListUsersOutput, error) {
+	args := c.Called(ctx, params, optFns)
+	if args.Get(0) == nil {
+		return nil, args.Error(1)
+	}
+	return args.Get(0).(*iam.ListUsersOutput), args.Error(1)
+}
+
+func TestGetUserCountViaMockFramework(t *testing.T) {
+	assert := assert.New(t)
+	t.Parallel()
+	t.Run("Check ListUsers via Mocking Framework ", func(t *testing.T) {
+		client := new(MockListUsers)
+		userList := []types.User{
+			{UserName: aws.String("test1@example.com")},
+			{UserName: aws.String("test2@example.com")},
+		}
+		expectedOutput := &iam.ListUsersOutput{Users: userList}
+
+		// Inject Mock Function to be Called along with Resturn values as Parameter
+		client.
+			On("ListUsers", mock.Anything, mock.Anything, mock.Anything).
+			Return(expectedOutput, nil)
+		wantUserCount := 2
+		got, err := GetUserCount(client)
+		assert.NoError(err, "expect no error, got %v", err)
+		assert.Equal(wantUserCount, got.Count, "got GetAliases = %v, want = %v", got.Count, wantUserCount)
+	})
+}
+
+/**
+* Mock via manual creation - Just For Reference
+ */
+
+// Mock Receiver
+type MockUser struct{}
+
+//Mock Function
+type MockIAMListUsersAPIClient func(ctx context.Context,
+	params *iam.ListUsersInput,
+	optFns ...func(*iam.Options)) (*iam.ListUsersOutput, error)
+
+// Implement AWS IAM ListUsers Method with Mock Function Receiver
+func (mock MockIAMListUsersAPIClient) ListUsers(ctx context.Context,
+	params *iam.ListUsersInput,
+	optFns ...func(*iam.Options)) (*iam.ListUsersOutput, error) {
+	return mock(ctx, params, optFns...)
+}
+
+func (mock MockUser) NewClient() IAMListUsersAPIClient {
+	client := MockIAMListUsersAPIClient(func(ctx context.Context,
+		params *iam.ListUsersInput,
+		optFns ...func(*iam.Options)) (*iam.ListUsersOutput, error) {
+		userList := []types.User{
+			{UserName: aws.String("test1@example.com")},
+			{UserName: aws.String("test2@example.com")},
+		}
+		result := &iam.ListUsersOutput{Users: userList}
+		return result, nil
+	})
+	return client
+}
 func TestGetUserCount(t *testing.T) {
 	assert := assert.New(t)
 	t.Parallel()
@@ -23,7 +98,7 @@ func TestGetUserCount(t *testing.T) {
 
 	for _, tt := range cases {
 		t.Run(tt.name, func(t *testing.T) {
-			mock := iammock.MockUser{}
+			mock := MockUser{}
 			client := mock.NewClient()
 			got, err := GetUserCount(client)
 			assert.NoError(err, "expect no error, got %v", err)
@@ -35,24 +110,5 @@ func TestGetUserCount(t *testing.T) {
 		noOpClient := iam.NewFromConfig(emptyCfg) //mock.NewMockClient(emptyCfg)
 		_, err := GetUserCount(noOpClient)
 		assert.Error(err, "err = %v, want = nil", err)
-	})
-}
-
-func TestGetUserCountViaMockFramework(t *testing.T) {
-	assert := assert.New(t)
-	t.Parallel()
-	t.Run("Check ListUsers via Mocking Framework ", func(t *testing.T) {
-		client := new(iammock.MockClient)
-		userList := []types.User{
-			{UserName: aws.String("test1@example.com")},
-			{UserName: aws.String("test2@example.com")},
-		}
-		expectedOutput := &iam.ListUsersOutput{Users: userList}
-
-		client.InjectFunctionMock(client, "ListUsers", expectedOutput)
-		wantUserCount := 2
-		got, err := GetUserCount(client)
-		assert.NoError(err, "expect no error, got %v", err)
-		assert.Equal(wantUserCount, got.Count, "got GetAliases = %v, want = %v", got.Count, wantUserCount)
 	})
 }
