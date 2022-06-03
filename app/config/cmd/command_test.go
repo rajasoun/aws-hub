@@ -12,7 +12,7 @@ import (
 	"github.com/urfave/cli/v2"
 )
 
-func Test_app_cmd_GetCommands(t *testing.T) {
+func Test_app_cmd_GetCommand(t *testing.T) {
 	assert := assert.New(t)
 	t.Parallel()
 
@@ -33,23 +33,12 @@ func Test_app_cmd_GetCommands(t *testing.T) {
 	}
 }
 
-func mockStartCommandHandler(appCtx *cli.Context) error {
+func mockStartCommand(appCtx *cli.Context) error {
 	log.Println("mockStartCommandHandler !!!")
 	return nil
 }
 
-func Test_app_cmd_CreateStartCommand(t *testing.T) {
-	assert := assert.New(t)
-	t.Parallel()
-	t.Run("Check Create Start Command", func(t *testing.T) {
-		cmd := CreateCommand(mockStartCommandHandler)
-		assert.Equal("start", cmd.Name, "")
-		err := mockStartCommandHandler(&cli.Context{})
-		assert.NoError(err, "")
-	})
-}
-
-func Test_app_cmd_StartCommandHandler(t *testing.T) {
+func Test_app_cmd_CreateCommand(t *testing.T) {
 	assert := assert.New(t)
 	t.Parallel()
 	tests := []struct {
@@ -64,7 +53,7 @@ func Test_app_cmd_StartCommandHandler(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			app := &cli.App{}
 			app.Flags = flag.GetFlags()
-			mockCmd := CreateCommand(mockStartCommandHandler)
+			mockCmd := CreateCommand(mockStartCommand)
 			commands := []*cli.Command{&mockCmd}
 			app.Commands = commands
 			app.CommandNotFound = ErrCommand()
