@@ -9,7 +9,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestNewApp(t *testing.T) {
+func Test_hub_NewApp(t *testing.T) {
 	assert := assert.New(t)
 	t.Parallel()
 
@@ -34,7 +34,7 @@ func TestNewApp(t *testing.T) {
 	}
 }
 
-func Test_setUpFlags(t *testing.T) {
+func Test_hub_setUpFlags(t *testing.T) {
 	assert := assert.New(t)
 	t.Parallel()
 	app := NewApp()
@@ -58,7 +58,7 @@ func Test_setUpFlags(t *testing.T) {
 	}
 }
 
-func TestExecuteWithInvalidCommand(t *testing.T) {
+func Test_hub_ExecuteWithInvalidCommand(t *testing.T) {
 	assert := assert.New(t)
 	args := os.Args[0:1]
 	t.Parallel()

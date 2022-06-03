@@ -12,7 +12,7 @@ import (
 	"github.com/urfave/cli/v2"
 )
 
-func TestGetCommands(t *testing.T) {
+func Test_app_cmd_GetCommands(t *testing.T) {
 	assert := assert.New(t)
 	t.Parallel()
 
@@ -38,10 +38,10 @@ func mockStartCommandHandler(appCtx *cli.Context) error {
 	return nil
 }
 
-func TestCreateStartCommand(t *testing.T) {
+func Test_app_cmd_CreateStartCommand(t *testing.T) {
 	assert := assert.New(t)
 	t.Parallel()
-	t.Run("Check Creat Start Command", func(t *testing.T) {
+	t.Run("Check Create Start Command", func(t *testing.T) {
 		cmd := CreateCommand(mockStartCommandHandler)
 		assert.Equal("start", cmd.Name, "")
 		err := mockStartCommandHandler(&cli.Context{})
@@ -49,7 +49,7 @@ func TestCreateStartCommand(t *testing.T) {
 	})
 }
 
-func TestStartCommandHandler(t *testing.T) {
+func Test_app_cmd_StartCommandHandler(t *testing.T) {
 	assert := assert.New(t)
 	t.Parallel()
 	tests := []struct {

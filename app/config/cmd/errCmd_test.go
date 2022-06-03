@@ -8,7 +8,7 @@ import (
 	"github.com/urfave/cli/v2"
 )
 
-func TestGetErrCommand(t *testing.T) {
+func Test_app_cmd_GetErrCommand(t *testing.T) {
 	t.Parallel()
 	assert := assert.New(t)
 	tests := []struct {

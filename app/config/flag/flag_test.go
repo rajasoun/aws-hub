@@ -8,7 +8,7 @@ import (
 	"github.com/urfave/cli/v2"
 )
 
-func TestGetFlags(t *testing.T) {
+func Test_app_flag_GetFlags(t *testing.T) {
 	tests := []struct {
 		name      string
 		flagIndex int
