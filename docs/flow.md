@@ -9,6 +9,8 @@ Open Terminal and execute.
 
 > aws-env is wrapper to aws-vault tool for securely stoding AWS Credentials Locally
 
+![Overview of Command Line App - aws-hub](images/aws-hub.png)
+
 ```
 aws-env go run main.go start
 ```
