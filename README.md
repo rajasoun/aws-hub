@@ -5,15 +5,15 @@
 
 Go based cost exploration tool for AWS on multiple accounts
 
-## Getting Started 
+## Getting Started
 
-### 1. Setup 
+### 1. Setup
 
 Refer [Setup Instructions](docs/setup.md)
 
 ### 2. Start the Server
 
-1. In Visual Studio Code, Click the Green Button as shown in the image below and select. 
+1. In Visual Studio Code, Click the Green Button as shown in the image below and select.
    - Open Folder in Container... command and select the local folder.
    - Click the ![Green Button](docs/images/remote-status-bar.png)
 
@@ -38,7 +38,7 @@ Get Identity by account - validate setup
    $ aws-whoami <aws_profile>
    ```
 
-### 4. AWS Consolidated Bill 
+### 4. AWS Consolidated Bill
 
 For previous month using aws-vault via aws cli
 
@@ -66,15 +66,15 @@ For previous month using aws-vault via aws cli
    make install-packages
    ```
 
-1. Running All Tests 
+1. Running All Tests
 
    ```sh
-   make tdd-unit 
+   make tdd-unit
    aws-env make tdd-integration
    ```
 
-1. Running Package Level Tests 
+1. Running Package Level Tests
 
-   ```sh 
+   ```sh
    gotestsum --format testname -- -coverprofile=coverage/coverage.out github.com/rajasoun/aws-hub/app/...
    ```
