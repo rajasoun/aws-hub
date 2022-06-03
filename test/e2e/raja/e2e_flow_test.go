@@ -8,7 +8,8 @@ import (
 func TestE2E(t *testing.T) {
 	t.Parallel()
 	flow := Flow{}
-	fileLog := flow.Start()
+	fileLog := flow.OpenOrCreate()
+	flow.Start(fileLog)
 	defer fileLog.Close()
 
 	t.Run("User To main", func(t *testing.T) {

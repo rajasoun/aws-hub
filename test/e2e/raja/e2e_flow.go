@@ -2,6 +2,7 @@ package raja
 
 import (
 	"fmt"
+	"io"
 	"log"
 	"os"
 )
@@ -16,14 +17,19 @@ func (flow *Flow) GetFlow(sender string, reciever string, message string) string
 	return flowDoc
 }
 
-func (flow *Flow) Start() *os.File {
-	logFile, err := os.OpenFile("e2e.md", os.O_RDWR|os.O_CREATE, 0666)
+func (flow *Flow) Start(writer io.Writer) {
+	log.SetOutput(writer)
+	log.SetFlags(0)
+	log.Println(startDoc)
+}
+
+func (*Flow) OpenOrCreate() *os.File {
+	Options := os.O_RDWR | os.O_CREATE
+	FileName := "e2e.md"
+	logFile, err := os.OpenFile(FileName, Options, 0666)
 	if err != nil {
 		log.Fatalf("error opening file: %v", err)
 	}
-	log.SetOutput(logFile)
-	log.SetFlags(0)
-	log.Println(startDoc)
 	return logFile
 }
 
