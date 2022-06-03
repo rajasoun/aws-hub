@@ -5,11 +5,11 @@ sequenceDiagram
     autonumber
     actor User
     User->>main : aws-env go run main.go start 
-    main->>hub.app: Execute()
+    main->>app.hub: Execute()
     opt app
-        hub.app->>hub.app: app:= NewApp()
-        hub.app->>hub.app: app.setUpCommand()
+        app.hub->>app.hub: app:= NewApp()
+        app.hub->>app.hub: app.setUpCommand()
     end
     Note right of hub.server: Server Started!
-    hub.app->>hub.server: app.cli.Run(args)   
+    app.hub->>hub.server: app.cli.Run(args)   
 ```
