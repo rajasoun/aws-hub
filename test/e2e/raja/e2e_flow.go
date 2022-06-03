@@ -23,7 +23,9 @@ func (flow *Flow) Start(writer io.Writer) {
 	log.Println(startDoc)
 }
 
-func (*Flow) OpenOrCreate(openFilefunc func(name string, flag int, perm os.FileMode) (*os.File, error)) (*os.File, error) {
+type OpenFileFunc func(name string, flag int, perm os.FileMode) (*os.File, error)
+
+func (*Flow) OpenOrCreate(openFilefunc OpenFileFunc) (*os.File, error) {
 	Options := os.O_RDWR | os.O_CREATE
 	fileName := "e2e.md"
 	logFile, err := openFilefunc(fileName, Options, 0666)

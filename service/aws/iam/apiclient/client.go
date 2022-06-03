@@ -6,15 +6,6 @@ import (
 	"github.com/aws/aws-sdk-go-v2/service/iam"
 )
 
-// Interface for Amazon IAM ListAccountAliases API
-// This will enable TDD using mocking
-type IAMListAccountAliasesAPIClient interface {
-	iam.ListAccountAliasesAPIClient // Only for Refernce to Actual Client
-	ListAccountAliases(ctx context.Context,
-		params *iam.ListAccountAliasesInput,
-		optFns ...func(*iam.Options)) (*iam.ListAccountAliasesOutput, error)
-}
-
 // Interface for Amazon IAM ListUsers API
 // This will enable TDD using mocking
 type IAMListUsersAPIClient interface {

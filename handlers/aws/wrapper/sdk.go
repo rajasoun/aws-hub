@@ -6,7 +6,7 @@ import (
 )
 
 type Account struct {
-	client   apiclient.IAMListAccountAliasesAPIClient
+	client   hubIAM.IAMListAccountAliasesAPIClient
 	response hubIAM.Aliases
 }
 
@@ -16,7 +16,7 @@ func (account *Account) Execute() error {
 	return err
 }
 
-func (account *Account) NewReceiver(client apiclient.IAMListAccountAliasesAPIClient) *SDK[*Account] {
+func (account *Account) NewReceiver(client hubIAM.IAMListAccountAliasesAPIClient) *SDK[*Account] {
 	receiver := Account{
 		client:   client,
 		response: hubIAM.Aliases{},

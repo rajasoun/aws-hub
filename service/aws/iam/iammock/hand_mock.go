@@ -10,35 +10,35 @@ import (
 	"github.com/rajasoun/aws-hub/service/aws/iam/apiclient"
 )
 
-// Mock Receiver
-type MockAccountAliases struct{}
+// // Mock Receiver
+// type MockAccountAliases struct{}
 
-//Mock Function
-type MockListAccountAliasesAPIClient func(ctx context.Context,
-	params *iam.ListAccountAliasesInput,
-	optFns ...func(*iam.Options)) (*iam.ListAccountAliasesOutput, error)
+// //Mock Function
+// type MockListAccountAliasesAPIClient func(ctx context.Context,
+// 	params *iam.ListAccountAliasesInput,
+// 	optFns ...func(*iam.Options)) (*iam.ListAccountAliasesOutput, error)
 
-// Implement AWS IAM ListAccountAliases Interface with mock reciever
-func (mock MockListAccountAliasesAPIClient) ListAccountAliases(ctx context.Context,
-	params *iam.ListAccountAliasesInput,
-	optFns ...func(*iam.Options)) (*iam.ListAccountAliasesOutput, error) {
-	return mock(ctx, params, optFns...)
-}
+// // Implement AWS IAM ListAccountAliases Interface with mock reciever
+// func (mock MockListAccountAliasesAPIClient) ListAccountAliases(ctx context.Context,
+// 	params *iam.ListAccountAliasesInput,
+// 	optFns ...func(*iam.Options)) (*iam.ListAccountAliasesOutput, error) {
+// 	return mock(ctx, params, optFns...)
+// }
 
-func (mock MockAccountAliases) NewClient() apiclient.IAMListAccountAliasesAPIClient {
-	fn := func(ctx context.Context,
-		params *iam.ListAccountAliasesInput,
-		optFns ...func(*iam.Options)) (*iam.ListAccountAliasesOutput, error) {
-		var testAlias string = "aws-test-account-alias"
-		aliases := []string{testAlias}
-		result := &iam.ListAccountAliasesOutput{
-			AccountAliases: aliases,
-		}
-		return result, nil
-	}
-	client := MockListAccountAliasesAPIClient(fn)
-	return client
-}
+// func (mock MockAccountAliases) NewClient() apiclient.IAMListAccountAliasesAPIClient {
+// 	fn := func(ctx context.Context,
+// 		params *iam.ListAccountAliasesInput,
+// 		optFns ...func(*iam.Options)) (*iam.ListAccountAliasesOutput, error) {
+// 		var testAlias string = "aws-test-account-alias"
+// 		aliases := []string{testAlias}
+// 		result := &iam.ListAccountAliasesOutput{
+// 			AccountAliases: aliases,
+// 		}
+// 		return result, nil
+// 	}
+// 	client := MockListAccountAliasesAPIClient(fn)
+// 	return client
+// }
 
 // Mock Receiver
 type MockUser struct{}
