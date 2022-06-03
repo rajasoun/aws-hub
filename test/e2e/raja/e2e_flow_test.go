@@ -3,12 +3,14 @@ package raja
 import (
 	"log"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func TestE2E(t *testing.T) {
 	t.Parallel()
 	flow := Flow{}
-	fileLog := flow.OpenOrCreate()
+	fileLog, _ := flow.OpenOrCreate()
 	flow.Start(fileLog)
 	defer fileLog.Close()
 
@@ -17,4 +19,14 @@ func TestE2E(t *testing.T) {
 		log.Println("\t" + flowDoc)
 	})
 	flow.End()
+}
+
+func TestFlow_OpenOrCreate(t *testing.T) {
+	t.Run("Check File Open Create", func(t *testing.T) {
+		assert := assert.New(t)
+		flow := &Flow{}
+		got, _ := flow.OpenOrCreate()
+		want := "e2e.md"
+		assert.Equal(want, got.Name(), "Flow.OpenOrCreate() = %v, want %v", got.Name(), want)
+	})
 }

@@ -23,14 +23,14 @@ func (flow *Flow) Start(writer io.Writer) {
 	log.Println(startDoc)
 }
 
-func (*Flow) OpenOrCreate() *os.File {
+func (*Flow) OpenOrCreate() (*os.File, error) {
 	Options := os.O_RDWR | os.O_CREATE
 	FileName := "e2e.md"
 	logFile, err := os.OpenFile(FileName, Options, 0666)
 	if err != nil {
-		log.Fatalf("error opening file: %v", err)
+		return nil, err
 	}
-	return logFile
+	return logFile, nil
 }
 
 func (flow *Flow) End() {
