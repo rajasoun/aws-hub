@@ -11,7 +11,7 @@ import (
 	"github.com/stretchr/testify/mock"
 )
 
-// Client provides the API client to mock AWS operations
+// To mock AWS operations
 type MockListUsers struct {
 	mock.Mock
 }
@@ -50,6 +50,12 @@ func TestGetUserCountViaMockFramework(t *testing.T) {
 		got, err := GetUserCount(client)
 		assert.NoError(err, "expect no error, got %v", err)
 		assert.Equal(wantUserCount, got.Count, "got GetAliases = %v, want = %v", got.Count, wantUserCount)
+	})
+	t.Run("Check GetUserCount returns err with Empty aws.Config{}", func(t *testing.T) {
+		emptyCfg := aws.Config{}
+		noOpClient := iam.NewFromConfig(emptyCfg) //mock.NewMockClient(emptyCfg)
+		_, err := GetUserCount(noOpClient)
+		assert.Error(err, "err = %v, want = nil", err)
 	})
 }
 
@@ -105,10 +111,4 @@ func TestGetUserCount(t *testing.T) {
 			assert.Equal(tt.want, got.Count, "got GetUserCount = %v, want = %v", got.Count, tt.want)
 		})
 	}
-	t.Run("Check GetUserCount returns err with Empty aws.Config{}", func(t *testing.T) {
-		emptyCfg := aws.Config{}
-		noOpClient := iam.NewFromConfig(emptyCfg) //mock.NewMockClient(emptyCfg)
-		_, err := GetUserCount(noOpClient)
-		assert.Error(err, "err = %v, want = nil", err)
-	})
 }

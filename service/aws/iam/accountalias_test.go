@@ -11,7 +11,7 @@ import (
 	"github.com/stretchr/testify/mock"
 )
 
-// Client provides the API client to mock AWS operations
+// To mock AWS operations
 type MockAccountAliases struct {
 	mock.Mock
 }
@@ -35,10 +35,10 @@ func (mockFunc *MockAccountAliases) ListAccountAliases(ctx context.Context,
 	return result.Get(0).(*iam.ListAccountAliasesOutput), result.Error(1)
 }
 
-func TestListAccountAliases(t *testing.T) {
+func TestListAccountAliasesViaMockFramework(t *testing.T) {
 	assert := assert.New(t)
 	t.Parallel()
-	t.Run("Check ListAccountAliases via Mocking Framework ", func(t *testing.T) {
+	t.Run("Check ListAccountAliases", func(t *testing.T) {
 		//client := new(iammock.MockClient)
 		client := new(MockAccountAliases)
 		var testAlias string = "aws-test-account-alias"

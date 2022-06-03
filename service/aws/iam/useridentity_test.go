@@ -48,7 +48,6 @@ func TestGetUserIdentityViaMockFramework(t *testing.T) {
 		}
 		expectedOutput := &iam.GetUserOutput{User: user}
 
-		//client.InjectFunctionMock(client, "GetUser", expectedOutput)
 		// Inject Mock Function to be Called along with Resturn values as Parameter
 		client.
 			On("GetUser", mock.Anything, mock.Anything, mock.Anything).
@@ -57,6 +56,12 @@ func TestGetUserIdentityViaMockFramework(t *testing.T) {
 		got, err := GetUserIdentity(client)
 		assert.NoError(err, "expect no error, got %v", err)
 		assert.Equal(want, got.Username, "got GetUserIdentity = %v, want = %v", got.Username, want)
+	})
+	t.Run("Check GetUserIdentity returns err with Empty aws.Config{}", func(t *testing.T) {
+		emptyCfg := aws.Config{}
+		noOpClient := iam.NewFromConfig(emptyCfg) //mock.NewMockClient(emptyCfg)
+		_, err := GetUserIdentity(noOpClient)
+		assert.Error(err, "err = %v, want = nil", err)
 	})
 }
 
@@ -113,10 +118,4 @@ func TestGetUserIdentity(t *testing.T) {
 			assert.Equal(tt.want, got.Username, "got GetUserIdentity = %v, want = %v", got.Username, tt.want)
 		})
 	}
-	t.Run("Check GetUserIdentity returns err with Empty aws.Config{}", func(t *testing.T) {
-		emptyCfg := aws.Config{}
-		noOpClient := iam.NewFromConfig(emptyCfg) //mock.NewMockClient(emptyCfg)
-		_, err := GetUserIdentity(noOpClient)
-		assert.Error(err, "err = %v, want = nil", err)
-	})
 }
