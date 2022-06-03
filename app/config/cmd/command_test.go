@@ -67,7 +67,7 @@ func Test_app_cmd_StartCommandHandler(t *testing.T) {
 			mockCmd := CreateCommand(mockStartCommandHandler)
 			commands := []*cli.Command{&mockCmd}
 			app.Commands = commands
-			app.CommandNotFound = GetErrCommand()
+			app.CommandNotFound = ErrCommand()
 			var bufferWriter bytes.Buffer
 			args := os.Args[0:1]
 			args = append(args, tt.cmd)

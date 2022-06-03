@@ -23,7 +23,7 @@ func Test_app_cmd_GetErrCommand(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got := reflect.TypeOf(GetErrCommand())
+			got := reflect.TypeOf(ErrCommand())
 			want := reflect.TypeOf(tt.want)
 			assert.Equal(want, got, "reflect.TypeOf(GetErrCommand() = %v , want = %v", got, want)
 		})
