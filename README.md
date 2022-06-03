@@ -1,93 +1,23 @@
-[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=rajasoun_aws-hub&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=rajasoun_aws-hub)
-
-[![CodeQL - Vulnerability Analysis](https://github.com/rajasoun/aws-hub/workflows/CodeQL/badge.svg)](https://github.com/rajasoun/aws-hub/actions?query=workflow:CodeQL)
-
-[![Dependency Review - Vulnerability Check](https://github.com/rajasoun/aws-hub/workflows/DependencyReview/badge.svg)](https://github.com/rajasoun/aws-hub/actions?query=workflow:DependencyReview)
-
-[![Secrets Scan](https://github.com/rajasoun/aws-hub/workflows/SecretScan/badge.svg)](https://github.com/rajasoun/aws-hub/actions?query=workflow:SecretScan)
-
-[![Go Build](https://github.com/rajasoun/aws-hub/workflows/GoBuild/badge.svg)](https://github.com/rajasoun/aws-hub/actions?query=workflow:GoBuild)
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=rajasoun_aws-hub&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=rajasoun_aws-hub)[![CodeQL - Vulnerability Analysis](https://github.com/rajasoun/aws-hub/workflows/CodeQL/badge.svg)](https://github.com/rajasoun/aws-hub/actions?query=workflow:CodeQL)[![Dependency Review - Vulnerability Check](https://github.com/rajasoun/aws-hub/workflows/DependencyReview/badge.svg)](https://github.com/rajasoun/aws-hub/actions?query=workflow:DependencyReview)[![Secrets Scan](https://github.com/rajasoun/aws-hub/workflows/SecretScan/badge.svg)](https://github.com/rajasoun/aws-hub/actions?query=workflow:SecretScan)[![Go Build](https://github.com/rajasoun/aws-hub/workflows/GoBuild/badge.svg)](https://github.com/rajasoun/aws-hub/actions?query=workflow:GoBuild)
 
 
 # AWS Cot Hub
 
 Go based cost exploration tool for AWS on multiple accounts
 
-## Pre-Requisites
+## Getting Started 
 
-Windows Laptop - Refer to [win10x-onboard](https://github.com/rajasoun/win10x-onboard/blob/main/README.md)
+### 1. Setup 
 
-Mac Laptop - Refer to [mac-onboard](https://github.com/rajasoun/mac-onboard/blob/main/README.md)
+Refer [Setup Instructions](docs/setup.md)
 
-### 1. Clean Start
+### 2. Start the Server
 
-#### Windows
+1. In Visual Studio Code, Click the Green Button as shown in the image below and select. 
+   - Open Folder in Container... command and select the local folder.
+   - Click the ![Green Button](docs/images/remote-status-bar.png)
 
-```sh
-cd ~\workspace\win10x-onboard/
-git pull --rebase
-.\e2e.ps1 bash-it
-nix/assist.sh bash-setup
-nix/assist.sh clean
-nix/assist.sh speed-test
-cd ~/workspace
-git clone https://github.com/rajasoun/aws-hub
-cd aws-hub
-git checkout develop
-git pull --rebase
-touch .dev
-code .
-```
-
-#### macOS
-
-```sh
-wget -O- -q https://raw.githubusercontent.com/rajasoun/aws-toolz/main/all-in-one/speed.sh | bash
-cd ~/workspace
-git clone https://github.com/rajasoun/aws-hub
-cd aws-hub
-git checkout develop
-git pull --rebase
-touch .dev
-code .
-```
-
-
-## 2. Development Setup
-
-1.  In Visual Studio Code, Click the Green Button as shown in the image below and select
-    Open Folder in Container... command and select the local folder.
-
-    ![Click the Green Button](docs/images/remote-status-bar.png)
-
-1.  Grab a Coffee ☕️. Based on your internet speed might take 5 mins to 7 mins with ~50 mbps speed
-
-1. Open Terminal in visual studio code and run `/workspaces/tests/system/e2e_tests.sh ` for automated test of the setup
-
-1. Run `ci-cd config-prerequisite` to configure gpg, pass and aws-vault for AWS Programatic access via API
-
-### 3. Configure gpg, pass and aws-vault
-
-1. Generate a new GPG private key. (Optional if you already have a GPG key setup and trusted on the system)
-   > Note: If you set a passphrase, you will be prompted to enter it.
-
-   ```bash
-   $ generate_gpg_keys
-   ```
-
-1. Initialize the password-storage DB using the GPG `public` key ID or the associated email
-   ```bash
-   $ gpg2 --list-keys
-   $ init_pass_store #similar to pass init <email_id> got from previous command
-   ```
-1. Configure aws-vault through wrapper
-   ```bash
-   $ aws-env
-   ```
-
-## 4. Start the Server
-
-1. In Visual Studio Terminal , start the server
+1. Start the server
 
    ```bash
    $ go mod tidy
@@ -101,14 +31,16 @@ code .
    $ http localhost:3000/aws/iam/account 'profile:$AWS_PROFILE'
    ```
 
-## 5. aws-identity
+### 3. aws-identity from CLI
 
-Get Identity by account
+Get Identity by account - validate setup
    ```bash
    $ aws-whoami <aws_profile>
    ```
 
-## 6. AWS Consolidated Bill for Current month using aws-vault
+### 4. AWS Consolidated Bill 
+
+For previous month using aws-vault via aws cli
 
 1. Get Identity by account. Select aws-vault
    ```bash
@@ -118,35 +50,31 @@ Get Identity by account
 1. View Bill
 
    ```bash
-   $ column -t -s,  /tmp/reports/aws-hub/aws-cli/bill.csv
+   $ column -t -s,  /tmp/reports/aws-cost-hub/aws-cli/bill.csv
    ```
 
-## Reset Configurations
+## Test Driven Development
 
-To reset all configurations
+### Server Start - Key Flow
 
-```
-clean_configs
-ci-cd config-prerequisite
-generate_git_config
-gssh_config
-generate_gpg_keys
-gpg2 --list-keys
-init_pass_store
-aws-env
-ci-cd config-prerequisite
-```
+1. Refer [Server Start Flow](docs/flow.md)
 
-## TDD
+1. In Visual Studio Code devcontainer Terminal, Install Go Packages needed for TDD
 
-1. Install Go Packages needed for TDD
-```sh
-make install-packages
-```
-
-## Reference:
-
-1. Generating Unit Tests
+   ```sh
+   touch .dev
+   make install-packages
    ```
-   gotests -w -only ^UnderstandStringReplace$ /workspaces/aws-hub/providers/env.go
+
+1. Running All Tests 
+
+   ```sh
+   make tdd-unit 
+   aws-env make tdd-integration
+   ```
+
+1. Running Package Level Tests 
+
+   ```sh 
+   gotestsum --format testname -- -coverprofile=coverage/coverage.out github.com/rajasoun/aws-hub/app/...
    ```
