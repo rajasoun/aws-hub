@@ -44,6 +44,11 @@ func (hub *Hub) setUpCommands() error {
 	return nil
 }
 
+func (hub *Hub) setUpOutput(writer io.Writer) {
+	log.SetOutput(writer)
+	hub.cli.Writer = writer
+}
+
 func (hub *Hub) StructToMap(ds interface{}) map[string]interface{} {
 	s := structs.New(ds)
 	m := s.Map()
@@ -69,8 +74,9 @@ func NewApp() *Hub {
 
 func Execute(args []string, writer io.Writer) error {
 	app := NewApp()
-	log.SetOutput(writer)
-	app.cli.Writer = writer
+	//Dependency Injection - Enable TDD
+	app.setUpOutput(writer)
+	//Start App
 	err := app.cli.Run(args)
 	return err
 }
