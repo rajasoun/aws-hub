@@ -23,11 +23,11 @@ sequenceDiagram
         opt app.hub
             app.hub  ->> + app.flag: hub.setUpFlags()
             app.hub  ->>    app.cmd: hub.setUpCommands() 
-            app.cmd  ->> + app.cmd: cmd.StartCommandHandler
+            app.cmd  ->> + app.cmd: cmd.StartCommand
         end
         app.hub ->> app.hub: app.app.setUpOutput()
         app.hub ->> app.cmd: app.cli.Run(args)  
-        Note right of app.cmd: invokes StartCommandHandler
+        Note right of app.cmd: invokes StartCommand
         app.cmd ->> app.server: server.Start
         Note right of app.server: Server Started! 
     end
