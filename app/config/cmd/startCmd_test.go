@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"os"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -8,6 +9,9 @@ import (
 )
 
 func TestStartCmd(t *testing.T) {
+	if os.Getenv("SKIP_E2E") != "" {
+		t.Skip("Skipping INTEGRATION Tests")
+	}
 	assert := assert.New(t)
 	t.Parallel()
 

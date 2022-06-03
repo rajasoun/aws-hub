@@ -1,8 +1,10 @@
 package server
 
 import (
+	"log"
 	"net/http"
 	"os"
+	"strconv"
 
 	"github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
@@ -51,7 +53,8 @@ func (server *Server) GetAWSHandler() *aws.AWSHandler {
 }
 
 func (server *Server) Start(port int) error {
-	httpServer := server.NewHTTPServer(string(rune(port)))
+	portString := ":" + strconv.Itoa(port)
+	httpServer := server.NewHTTPServer(portString)
 	err := httpServer.StartHTTPServer()
 	return err
 }
@@ -61,6 +64,7 @@ type HTTPServer struct {
 }
 
 func (server *Server) NewHTTPServer(adr string) HTTPServer {
+	log.Println("adr ", adr)
 	return HTTPServer{
 		&http.Server{
 			Addr:    adr,
