@@ -10,7 +10,7 @@ import (
 )
 
 func setUp() *os.File {
-	logFile, err := os.OpenFile("e2e.md", os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
+	logFile, err := os.OpenFile("e2e.md", os.O_RDWR|os.O_CREATE, 0666)
 	if err != nil {
 		log.Fatalf("error opening file: %v", err)
 	}
