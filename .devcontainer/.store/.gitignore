@@ -1,5 +1,4 @@
-aws-vault 
+aws-vault
 docker-credential-helpers
 git
 .gpg-id
-
