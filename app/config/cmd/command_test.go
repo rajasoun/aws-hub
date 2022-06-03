@@ -12,7 +12,7 @@ import (
 	"github.com/urfave/cli/v2"
 )
 
-func Test_app_cmd_GetCommand(t *testing.T) {
+func TestGetCommand(t *testing.T) {
 	assert := assert.New(t)
 	t.Parallel()
 
@@ -38,7 +38,7 @@ func mockStartCommand(appCtx *cli.Context) error {
 	return nil
 }
 
-func Test_app_cmd_CreateCommand(t *testing.T) {
+func TestCreateCommand(t *testing.T) {
 	assert := assert.New(t)
 	t.Parallel()
 	tests := []struct {
