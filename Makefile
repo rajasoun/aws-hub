@@ -42,11 +42,11 @@ tdd-cover: ## Go Coverage
 tdd-unit: ## Prints formatted unit test output
 	export SKIP_E2E=true && gotestsum --format testname -- -coverprofile=coverage/coverage.out ./...
 	@bash -c "test/coverage_check.sh"
-	
+
 tdd-integration: ## Prints formatted integration test output
 	gotestsum --format testname -- -coverprofile=coverage/coverage.out ./...
 	@bash -c "test/coverage_check.sh"
-	
+
 install-packages: ## Install go packages
 	go install -v gotest.tools/gotestsum@latest
 	go install -v github.com/cweill/gotests/gotests@latest
