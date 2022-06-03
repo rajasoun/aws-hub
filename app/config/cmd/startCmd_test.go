@@ -7,7 +7,7 @@ import (
 	"github.com/urfave/cli/v2"
 )
 
-func Test_app_cmd_StartCmd(t *testing.T) {
+func TestStartCmd(t *testing.T) {
 	assert := assert.New(t)
 	t.Parallel()
 

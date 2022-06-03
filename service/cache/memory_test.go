@@ -15,7 +15,7 @@ func NewMemoryCacheClient() *Memory {
 	return m
 }
 
-func TestMemory_All(t *testing.T) {
+func TestMemoryCachePingGetSet(t *testing.T) {
 	assert := assert.New(t)
 	t.Parallel()
 
