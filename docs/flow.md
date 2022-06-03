@@ -14,21 +14,20 @@ aws-env go run main.go start
 
 ```mermaid
 sequenceDiagram
-    autonumber
     actor User
-    User->>main : aws-env go run main.go start 
-    main->>app.hub: Execute()
+    User ->> main : aws-env go run main.go start 
+    main ->> app.hub: Execute()
     opt app
-        app.hub->>app.hub: hub:= NewApp()
+        app.hub ->> app.hub: hub:= NewApp()
         opt app.hub
-            app.hub->>app.flag:hub.setUpFlags()
-            app.hub->>app.cmd: hub.setUpCommands() 
-            app.cmd->>app.cmd: cmd.StartCommandHandler
+            app.hub  ->> + app.flag: hub.setUpFlags()
+            app.hub  ->>    app.cmd: hub.setUpCommands() 
+            app.cmd  ->> + app.cmd: cmd.StartCommandHandler
         end
-        app.hub->>app.hub: app.app.setUpOutput()
-        app.hub->>app.cmd: app.cli.Run(args)  
+        app.hub ->> app.hub: app.app.setUpOutput()
+        app.hub ->> app.cmd: app.cli.Run(args)  
         Note right of app.cmd: invokes StartCommandHandler
-        app.cmd->>app.server: server.Start
-         Note right of app.server: Server Started! 
+        app.cmd ->> app.server: server.Start
+        Note right of app.server: Server Started! 
     end
 ```
