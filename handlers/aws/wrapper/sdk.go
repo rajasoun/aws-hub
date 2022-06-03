@@ -16,6 +16,14 @@ func (account *Account) Execute() error {
 	return err
 }
 
+func (account *Account) NewReceiver(client apiclient.IAMListAccountAliasesAPIClient) *SDK[*Account] {
+	receiver := Account{
+		client:   client,
+		response: hubIAM.Aliases{},
+	}
+	return New(&receiver)
+}
+
 type UserCount struct {
 	client   apiclient.IAMListUsersAPIClient
 	response hubIAM.UserList
