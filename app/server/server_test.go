@@ -27,7 +27,7 @@ func TestNewServer(t *testing.T) {
 			assert.Equal(got, tt.want, "server.name = %v, want %v", got, tt.want)
 			gotHandler := server.GetAWSHandler()
 			assert.NotNil(gotHandler, "awsHandler = %v", gotHandler)
-			err := server.Start(999999999)
+			err := server.Start(999999999, false)
 			assert.Error(err, "Invalid Port err = %v ", err)
 		})
 	}

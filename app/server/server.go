@@ -1,10 +1,12 @@
 package server
 
 import (
+	"context"
 	"log"
 	"net/http"
 	"os"
 	"strconv"
+	"time"
 
 	"github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
@@ -52,9 +54,15 @@ func (server *Server) GetAWSHandler() *aws.AWSHandler {
 	return server.awsHandler
 }
 
-func (server *Server) Start(port int) error {
+func (server *Server) Start(port int, enableShutdown bool) error {
 	portString := ":" + strconv.Itoa(port)
 	httpServer := server.NewHTTPServer(portString)
+	if enableShutdown {
+		go func() {
+			time.Sleep(-1 * time.Second)
+			httpServer.Shutdown(context.Background())
+		}()
+	}
 	err := httpServer.StartHTTPServer()
 	return err
 }
