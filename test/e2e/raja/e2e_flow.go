@@ -25,9 +25,10 @@ func (flow *Flow) Start(writer io.Writer) {
 
 func (*Flow) OpenOrCreate(osOpenFile func(name string, flag int, perm os.FileMode) (*os.File, error)) (*os.File, error) {
 	Options := os.O_RDWR | os.O_CREATE
-	FileName := "e2e.md"
-	logFile, err := osOpenFile(FileName, Options, 0666)
+	fileName := "e2e.md"
+	logFile, err := osOpenFile(fileName, Options, 0666)
 	if err != nil {
+		log.Printf("Error Opening File %s Err = %v", fileName, err)
 		return nil, err
 	}
 	return logFile, nil
