@@ -6,6 +6,7 @@
 ## Starting Server
 
 Open Terminal and execute.
+
 > aws-env is wrapper to aws-vault tool for securely stoding AWS Credentials Locally 
 
 ```
@@ -31,3 +32,11 @@ sequenceDiagram
         Note right of app.server: Server Started! 
     end
 ```
+
+Test Execution For the Flow 
+
+```
+go test -timeout 5s  -coverprofile=coverage/coverage.out  github.com/rajasoun/aws-hub/app/... -v
+```
+
+gotestsum --format testname -- -coverprofile=coverage/coverage.out github.com/rajasoun/aws-hub/app/...
