@@ -12,7 +12,7 @@ func Test_app_cmd_StartCmd(t *testing.T) {
 	t.Parallel()
 
 	t.Run("Check Start Server with Mock Start Function", func(t *testing.T) {
-		err := StartCommandHandler(&cli.Context{})
+		err := StartCommand(&cli.Context{})
 		assert.Error(err, "err = %v ", err)
 	})
 }

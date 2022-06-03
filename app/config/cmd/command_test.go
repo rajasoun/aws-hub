@@ -25,7 +25,7 @@ func Test_app_cmd_GetCommands(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			cmds := GetCommand(StartCommandHandler)
+			cmds := GetCommand(StartCommand)
 			gotCommandName := cmds.Name
 			assert.Containsf(tt.wantCommandName, gotCommandName,
 				"setUpCommands() = %v , want = %v", gotCommandName, tt.wantCommandName)
