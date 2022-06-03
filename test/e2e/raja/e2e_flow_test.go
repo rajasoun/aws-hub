@@ -1,11 +1,11 @@
 package raja
 
 import (
-	"errors"
 	"log"
 	"os"
 	"testing"
 
+	"github.com/rajasoun/aws-hub/test/e2e/raja/mock"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -35,11 +35,8 @@ func TestFlowOpenOrCreate(t *testing.T) {
 	t.Run("Check File Open Create For Error", func(t *testing.T) {
 		assert := assert.New(t)
 		flow := &Flow{}
-		osOpenFile := func(name string, flag int, perm os.FileMode) (*os.File, error) {
-			err := errors.New("Simulated Err")
-			return nil, err
-		}
-		_, err := flow.OpenOrCreate(osOpenFile)
+		mock := mock.Mock{}
+		_, err := flow.OpenOrCreate(mock.OpenFile())
 		assert.Error(err, "Flow.OpenOrCreate() Err = %v", err)
 	})
 }
