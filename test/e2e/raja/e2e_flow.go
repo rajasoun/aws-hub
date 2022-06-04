@@ -7,13 +7,20 @@ import (
 	"os"
 )
 
-var startDoc = "```mermaid \nsequenceDiagram\n	actor User"
-var endDoc = "```"
+var startDoc = "```mermaid\n\nsequenceDiagram\n\tactor User"
+var endDoc = "\n```"
 
-type Flow struct{}
+type Flow struct {
+	format    string
+	sender    string
+	receiver  string
+	direction string
+	message   string
+}
 
-func (flow *Flow) GetFlow(sender string, reciever string, message string) string {
-	flowDoc := fmt.Sprintf("%s ->> %s : %s ", sender, reciever, message)
+func (flow *Flow) GetFlow() string {
+	flowDoc := fmt.Sprintf("%s\t%s %s %s : %s ",
+		flow.format, flow.sender, flow.direction, flow.receiver, flow.message)
 	return flowDoc
 }
 
