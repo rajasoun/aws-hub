@@ -105,7 +105,7 @@ func TestFlowOpenOrCreate(t *testing.T) {
 		flowManager := NewFlowManager()
 		//got, _ := flowManager.CreateMarkdown(os.OpenFile)
 		got, _ := flowManager.CreateMarkdown()
-		want := flowManager.fileName
+		want := flowManager.markdown.fileName
 		assert.Equal(want, got.Name(), "Flow.OpenOrCreate() = %v, want %v", got.Name(), want)
 	})
 }
@@ -133,7 +133,7 @@ func TestFlowOpenOrCreateErr(t *testing.T) {
 			Return(nil, mockErr)
 		// Inject Mock FileOpener Function
 		//_, err := flowManager.CreateMarkdown(mockos.FileOpener)
-		flowManager.FileOpener = mockos.FileOpener
+		flowManager.markdown.FileOpener = mockos.FileOpener
 		_, err := flowManager.CreateMarkdown()
 		assert.Error(err, "Flow.OpenOrCreate() Err = %v", err)
 		assert.Equal(err, mockErr, " err = %v , mockErr = %v ", err, mockErr)

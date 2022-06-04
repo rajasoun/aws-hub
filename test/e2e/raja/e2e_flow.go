@@ -11,27 +11,36 @@ var (
 	DefaultFileName                = "e2e.md"
 	DefaultFileOptions int         = os.O_RDWR | os.O_CREATE
 	DefaultPermission  os.FileMode = 0666
+	DefaultFileOpener              = os.OpenFile
 )
 
-type FlowManager struct {
+type Markdown struct {
 	fileName       string
 	fileOptions    int
 	filePermission os.FileMode
-	startDoc       string
-	endDoc         string
 	FileOpener     func(string, int, os.FileMode) (*os.File, error)
+}
+
+type FlowManager struct {
+	startDoc string
+	endDoc   string
+	markdown Markdown
 }
 
 //type FileOpener func(string, int, os.FileMode) (*os.File, error)
 
 func NewFlowManager() *FlowManager {
-	flowManager := FlowManager{
+	markdown := Markdown{
 		fileName:       DefaultFileName,
 		fileOptions:    DefaultFileOptions,
 		filePermission: DefaultPermission,
-		startDoc:       "```mermaid\n\nsequenceDiagram\n\tactor User",
-		endDoc:         "\n```",
-		FileOpener:     os.OpenFile,
+		FileOpener:     DefaultFileOpener,
+	}
+
+	flowManager := FlowManager{
+		startDoc: "```mermaid\n\nsequenceDiagram\n\tactor User",
+		endDoc:   "\n```",
+		markdown: markdown,
 	}
 	return &flowManager
 }
@@ -39,9 +48,10 @@ func NewFlowManager() *FlowManager {
 //func (flowmanager *FlowManager) CreateMarkdown(fileOpener FileOpener) (*os.File, error) {
 func (fm *FlowManager) CreateMarkdown() (*os.File, error) {
 	//logFile, err := fileOpener(flowmanager.fileName, flowmanager.fileOptions, flowmanager.filePermission)
-	logFile, err := fm.FileOpener(fm.fileName, fm.fileOptions, fm.filePermission)
+	mk := fm.markdown
+	logFile, err := mk.FileOpener(mk.fileName, mk.fileOptions, mk.filePermission)
 	if err != nil {
-		log.Printf("Error Opening or Creating File %s Err = %v", fm.fileName, err)
+		log.Printf("Error Opening or Creating File %s Err = %v", mk.fileName, err)
 		return nil, err
 	}
 	return logFile, nil
