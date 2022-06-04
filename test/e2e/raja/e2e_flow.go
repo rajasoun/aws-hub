@@ -19,8 +19,9 @@ type FlowManager struct {
 	filePermission os.FileMode
 	startDoc       string
 	endDoc         string
-	FileOpener     func(string, int, os.FileMode) (*os.File, error)
 }
+
+type FileOpener func(string, int, os.FileMode) (*os.File, error)
 
 func NewFlowManager() *FlowManager {
 	flowManager := FlowManager{
@@ -29,14 +30,12 @@ func NewFlowManager() *FlowManager {
 		filePermission: DefaultPermission,
 		startDoc:       "```mermaid\n\nsequenceDiagram\n\tactor User",
 		endDoc:         "\n```",
-		FileOpener:     os.OpenFile,
 	}
 	return &flowManager
 }
 
-func (flowmanager *FlowManager) CreateMarkdown() (*os.File, error) {
-	logFile, err := flowmanager.FileOpener(
-		flowmanager.fileName, flowmanager.fileOptions, flowmanager.filePermission)
+func (flowmanager *FlowManager) CreateMarkdown(fileOpener FileOpener) (*os.File, error) {
+	logFile, err := fileOpener(flowmanager.fileName, flowmanager.fileOptions, flowmanager.filePermission)
 	if err != nil {
 		log.Printf("Error Opening or Creating File %s Err = %v", flowmanager.fileName, err)
 		return nil, err

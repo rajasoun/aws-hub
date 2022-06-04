@@ -16,7 +16,7 @@ import (
 func TestE2E(t *testing.T) {
 	t.Parallel()
 	flowManager := NewFlowManager()
-	flowLog, _ := flowManager.CreateMarkdown()
+	flowLog, _ := flowManager.CreateMarkdown(os.OpenFile)
 	defer flowLog.Close()
 
 	flowManager.Start(flowLog)
@@ -98,12 +98,11 @@ func TestSimulateExecute(t *testing.T) {
 }
 
 func TestFlowOpenOrCreate(t *testing.T) {
-	t.Run("Check Markdown Creation ", func(t *testing.T) {
+	t.Run("Check Markdown Creation os.OpenFile", func(t *testing.T) {
 		assert := assert.New(t)
 		t.Parallel()
 		flowManager := NewFlowManager()
-		flowManager.FileOpener = os.OpenFile
-		got, _ := flowManager.CreateMarkdown()
+		got, _ := flowManager.CreateMarkdown(os.OpenFile)
 		want := flowManager.fileName
 		assert.Equal(want, got.Name(), "Flow.OpenOrCreate() = %v, want %v", got.Name(), want)
 	})
@@ -123,19 +122,16 @@ func (c *MockOs) FileOpener(name string, flag int, perm os.FileMode) (*os.File, 
 
 func TestFlowOpenOrCreateErr(t *testing.T) {
 	t.Run("Check Markdown Creation for Err", func(t *testing.T) {
-		t.Skip()
 		assert := assert.New(t)
 		mockos := new(MockOs)
 		flowManager := NewFlowManager()
-		// Inject Mock FileOpener Function
-		flowManager.FileOpener = mockos.FileOpener
-
-		want := "simulated error"
-		_, err := flowManager.CreateMarkdown()
+		mockErr := errors.New("simulated error")
 		mockos.
-			On("OpenFile", mock.Anything, mock.Anything, mock.Anything).
-			Return(nil, errors.New(want))
+			On("FileOpener", mock.Anything, mock.Anything, mock.Anything).
+			Return(nil, mockErr)
+		// Inject Mock FileOpener Function
+		_, err := flowManager.CreateMarkdown(mockos.FileOpener)
 		assert.Error(err, "Flow.OpenOrCreate() Err = %v", err)
-		assert.Contains(err, want, " err = %v , want = %v ", err, want)
+		assert.Equal(err, mockErr, " err = %v , mockErr = %v ", err, mockErr)
 	})
 }
