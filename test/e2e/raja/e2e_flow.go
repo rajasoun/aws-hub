@@ -23,12 +23,12 @@ func (flow *Flow) Start(writer io.Writer) {
 	log.Println(startDoc)
 }
 
-type OpenFileFunc func(name string, flag int, perm os.FileMode) (*os.File, error)
+type OpenFile func(name string, flag int, perm os.FileMode) (*os.File, error)
 
-func (*Flow) OpenOrCreate(openFilefunc OpenFileFunc) (*os.File, error) {
+func (*Flow) OpenOrCreate(fileHandler OpenFile) (*os.File, error) {
 	Options := os.O_RDWR | os.O_CREATE
 	fileName := "e2e.md"
-	logFile, err := openFilefunc(fileName, Options, 0666)
+	logFile, err := fileHandler(fileName, Options, 0666)
 	if err != nil {
 		log.Printf("Error Opening File %s Err = %v", fileName, err)
 		return nil, err

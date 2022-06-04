@@ -35,11 +35,11 @@ func TestFlowOpenOrCreate(t *testing.T) {
 	})
 }
 
-type MockIt struct {
+type MockOs struct {
 	mock.Mock
 }
 
-func (c *MockIt) openFilefunc(name string, flag int, perm os.FileMode) (*os.File, error) {
+func (c *MockOs) OpenFile(name string, flag int, perm os.FileMode) (*os.File, error) {
 	args := c.Called(name, flag, perm)
 	if args.Get(0) == nil {
 		return nil, args.Error(1)
@@ -51,11 +51,11 @@ func TestFlowOpenOrCreateErr(t *testing.T) {
 	t.Run("Check File Open Create For Error with Framework Mock", func(t *testing.T) {
 		assert := assert.New(t)
 		flow := &Flow{}
-		mockIt := new(MockIt)
-		mockIt.
-			On("openFilefunc", mock.Anything, mock.Anything, mock.Anything).
+		mockos := new(MockOs)
+		mockos.
+			On("OpenFile", mock.Anything, mock.Anything, mock.Anything).
 			Return(nil, errors.New("simulated error"))
-		_, err := flow.OpenOrCreate(mockIt.openFilefunc)
+		_, err := flow.OpenOrCreate(mockos.OpenFile)
 		assert.Error(err, "Flow.OpenOrCreate() Err = %v", err)
 	})
 }
