@@ -15,10 +15,12 @@ import (
 
 func TestE2E(t *testing.T) {
 	t.Parallel()
+	flowManager := NewFlowManager()
+	flowLog, _ := flowManager.CreateMarkdown()
+	defer flowLog.Close()
+
+	flowManager.Start(flowLog)
 	flow := Flow{}
-	fileLog, _ := flow.OpenOrCreate(os.OpenFile)
-	flow.Start(fileLog)
-	defer fileLog.Close()
 
 	t.Run("User To main", func(t *testing.T) {
 		flow.format = "\t"
@@ -26,7 +28,7 @@ func TestE2E(t *testing.T) {
 		flow.direction = " ->> "
 		flow.receiver = "main"
 		flow.message = "aws-env go run main.go start"
-		flowDoc := flow.GetFlow()
+		flowDoc := flow.GetMermaidFlow()
 		log.Println(flowDoc)
 	})
 	t.Run("main to app.hub", func(t *testing.T) {
@@ -35,7 +37,7 @@ func TestE2E(t *testing.T) {
 		flow.direction = " ->> "
 		flow.receiver = "app.hub"
 		flow.message = "Execute()"
-		flowDoc := flow.GetFlow()
+		flowDoc := flow.GetMermaidFlow()
 		log.Println(flowDoc)
 	})
 	t.Run("main to app.hub", func(t *testing.T) {
@@ -44,7 +46,7 @@ func TestE2E(t *testing.T) {
 		flow.direction = " ->> "
 		flow.receiver = "urfave.cli"
 		flow.message = "app.cli.Run(args)"
-		flowDoc := flow.GetFlow()
+		flowDoc := flow.GetMermaidFlow()
 		log.Println(flowDoc)
 	})
 	t.Run("urfave.cli to start command", func(t *testing.T) {
@@ -53,7 +55,7 @@ func TestE2E(t *testing.T) {
 		flow.direction = " ->> "
 		flow.receiver = "app.config.cmd.startCmd"
 		flow.message = "StartCommand(appCtx *cli.Context)"
-		flowDoc := flow.GetFlow()
+		flowDoc := flow.GetMermaidFlow()
 		log.Println(flowDoc)
 	})
 	t.Run("start command to server start", func(t *testing.T) {
@@ -62,11 +64,12 @@ func TestE2E(t *testing.T) {
 		flow.direction = " ->> "
 		flow.receiver = "app.server"
 		flow.message = "Start(port, enableShutdown)"
-		flowDoc := flow.GetFlow()
+		flowDoc := flow.GetMermaidFlow()
 		log.Println(flowDoc)
 		log.Println("\t\tNote right of app.server: Server Started!")
 	})
-	flow.End()
+
+	flowManager.End()
 }
 
 func TestSimulateExecute(t *testing.T) {
@@ -95,12 +98,13 @@ func TestSimulateExecute(t *testing.T) {
 }
 
 func TestFlowOpenOrCreate(t *testing.T) {
-	t.Run("Check File Open Create", func(t *testing.T) {
+	t.Run("Check Markdown Creation ", func(t *testing.T) {
 		assert := assert.New(t)
 		t.Parallel()
-		flow := &Flow{}
-		got, _ := flow.OpenOrCreate(os.OpenFile)
-		want := "e2e.md"
+		flowManager := NewFlowManager()
+		flowManager.FileOpener = os.OpenFile
+		got, _ := flowManager.CreateMarkdown()
+		want := flowManager.fileName
 		assert.Equal(want, got.Name(), "Flow.OpenOrCreate() = %v, want %v", got.Name(), want)
 	})
 }
@@ -109,7 +113,7 @@ type MockOs struct {
 	mock.Mock
 }
 
-func (c *MockOs) OpenFile(name string, flag int, perm os.FileMode) (*os.File, error) {
+func (c *MockOs) FileOpener(name string, flag int, perm os.FileMode) (*os.File, error) {
 	args := c.Called(name, flag, perm)
 	if args.Get(0) == nil {
 		return nil, args.Error(1)
@@ -118,14 +122,20 @@ func (c *MockOs) OpenFile(name string, flag int, perm os.FileMode) (*os.File, er
 }
 
 func TestFlowOpenOrCreateErr(t *testing.T) {
-	t.Run("Check File Open Create For Error with Framework Mock", func(t *testing.T) {
+	t.Run("Check Markdown Creation for Err", func(t *testing.T) {
+		t.Skip()
 		assert := assert.New(t)
-		flow := &Flow{}
 		mockos := new(MockOs)
+		flowManager := NewFlowManager()
+		// Inject Mock FileOpener Function
+		flowManager.FileOpener = mockos.FileOpener
+
+		want := "simulated error"
+		_, err := flowManager.CreateMarkdown()
 		mockos.
 			On("OpenFile", mock.Anything, mock.Anything, mock.Anything).
-			Return(nil, errors.New("simulated error"))
-		_, err := flow.OpenOrCreate(mockos.OpenFile)
+			Return(nil, errors.New(want))
 		assert.Error(err, "Flow.OpenOrCreate() Err = %v", err)
+		assert.Contains(err, want, " err = %v , want = %v ", err, want)
 	})
 }
