@@ -19,9 +19,10 @@ type FlowManager struct {
 	filePermission os.FileMode
 	startDoc       string
 	endDoc         string
+	FileOpener     func(string, int, os.FileMode) (*os.File, error)
 }
 
-type FileOpener func(string, int, os.FileMode) (*os.File, error)
+//type FileOpener func(string, int, os.FileMode) (*os.File, error)
 
 func NewFlowManager() *FlowManager {
 	flowManager := FlowManager{
@@ -30,27 +31,30 @@ func NewFlowManager() *FlowManager {
 		filePermission: DefaultPermission,
 		startDoc:       "```mermaid\n\nsequenceDiagram\n\tactor User",
 		endDoc:         "\n```",
+		FileOpener:     os.OpenFile,
 	}
 	return &flowManager
 }
 
-func (flowmanager *FlowManager) CreateMarkdown(fileOpener FileOpener) (*os.File, error) {
-	logFile, err := fileOpener(flowmanager.fileName, flowmanager.fileOptions, flowmanager.filePermission)
+//func (flowmanager *FlowManager) CreateMarkdown(fileOpener FileOpener) (*os.File, error) {
+func (fm *FlowManager) CreateMarkdown() (*os.File, error) {
+	//logFile, err := fileOpener(flowmanager.fileName, flowmanager.fileOptions, flowmanager.filePermission)
+	logFile, err := fm.FileOpener(fm.fileName, fm.fileOptions, fm.filePermission)
 	if err != nil {
-		log.Printf("Error Opening or Creating File %s Err = %v", flowmanager.fileName, err)
+		log.Printf("Error Opening or Creating File %s Err = %v", fm.fileName, err)
 		return nil, err
 	}
 	return logFile, nil
 }
 
-func (flowManager *FlowManager) Start(writer io.Writer) {
+func (fm *FlowManager) Start(writer io.Writer) {
 	log.SetOutput(writer)
 	log.SetFlags(0)
-	log.Println(flowManager.startDoc)
+	log.Println(fm.startDoc)
 }
 
-func (flowManager *FlowManager) End() {
-	log.Println(flowManager.endDoc)
+func (fm *FlowManager) End() {
+	log.Println(fm.endDoc)
 }
 
 type Flow struct {

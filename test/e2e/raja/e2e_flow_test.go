@@ -16,7 +16,8 @@ import (
 func TestE2E(t *testing.T) {
 	t.Parallel()
 	flowManager := NewFlowManager()
-	flowLog, _ := flowManager.CreateMarkdown(os.OpenFile)
+	//flowLog, _ := flowManager.CreateMarkdown(os.OpenFile)
+	flowLog, _ := flowManager.CreateMarkdown()
 	defer flowLog.Close()
 
 	flowManager.Start(flowLog)
@@ -102,7 +103,8 @@ func TestFlowOpenOrCreate(t *testing.T) {
 		assert := assert.New(t)
 		t.Parallel()
 		flowManager := NewFlowManager()
-		got, _ := flowManager.CreateMarkdown(os.OpenFile)
+		//got, _ := flowManager.CreateMarkdown(os.OpenFile)
+		got, _ := flowManager.CreateMarkdown()
 		want := flowManager.fileName
 		assert.Equal(want, got.Name(), "Flow.OpenOrCreate() = %v, want %v", got.Name(), want)
 	})
@@ -130,7 +132,9 @@ func TestFlowOpenOrCreateErr(t *testing.T) {
 			On("FileOpener", mock.Anything, mock.Anything, mock.Anything).
 			Return(nil, mockErr)
 		// Inject Mock FileOpener Function
-		_, err := flowManager.CreateMarkdown(mockos.FileOpener)
+		//_, err := flowManager.CreateMarkdown(mockos.FileOpener)
+		flowManager.FileOpener = mockos.FileOpener
+		_, err := flowManager.CreateMarkdown()
 		assert.Error(err, "Flow.OpenOrCreate() Err = %v", err)
 		assert.Equal(err, mockErr, " err = %v , mockErr = %v ", err, mockErr)
 	})
