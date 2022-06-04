@@ -13,16 +13,18 @@ import (
 	"github.com/urfave/cli/v2"
 )
 
+// Mocking References
+// 1. https://medium.com/swlh/golangs-interfaces-explained-with-mocks-886f69eca6f0
+// 2. https://www.myhatchpad.com/insight/mocking-techniques-for-go/
 func TestE2E(t *testing.T) {
 	t.Parallel()
-	flowManager := NewFlowManager()
+	var flowByCoding FlowAutomation = NewFlowManager()
 	//flowLog, _ := flowManager.CreateMarkdown(os.OpenFile)
-	flowLog, _ := flowManager.CreateMarkdown()
+	flowLog, _ := flowByCoding.CreateMarkdown()
 	defer flowLog.Close()
 
-	flowManager.Start(flowLog)
+	flowByCoding.Start(flowLog)
 	flow := Flow{}
-
 	t.Run("User To main", func(t *testing.T) {
 		flow.format = "\t"
 		flow.sender = "User"
@@ -70,7 +72,7 @@ func TestE2E(t *testing.T) {
 		log.Println("\t\tNote right of app.server: Server Started!")
 	})
 
-	flowManager.End()
+	flowByCoding.End()
 }
 
 func TestSimulateExecute(t *testing.T) {

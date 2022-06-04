@@ -29,6 +29,12 @@ type FlowManager struct {
 
 //type FileOpener func(string, int, os.FileMode) (*os.File, error)
 
+type FlowAutomation interface {
+	CreateMarkdown() (*os.File, error)
+	Start(writer io.Writer)
+	End()
+}
+
 func NewFlowManager() *FlowManager {
 	markdown := Markdown{
 		fileName:       DefaultFileName,
