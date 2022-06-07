@@ -3,21 +3,48 @@ package ajith
 import (
 	"fmt"
 	"io"
+	"io/fs"
 	"log"
 	"os"
-
-	"golang.org/x/tools/go/analysis/passes/nilfunc"
 )
-func CreateMarkdown()(*os.File,error){
-	name := "e2e.md"
-	fileOpetion  :=os.O_RDWR | os.O_CREATE
-	filePermission := 0666
-	logFile ,err :=os.OpenFile(name,fileOpetion,os.FileMode(filePermission))
-	if err !=nil {
 
-		log.Println("error in oepaning and creation %s err= %v",name,err)
-		return nil ,err
+var startDoc string = "```mermaid\n\nsequenceDiagram\n\tactor User"
+var endDoc string = "\n```"
+
+func createMarkdown() (*os.File, error) {
+	DefaultFileName := "e2e.md"
+	DefaultFileOptions := os.O_RDWR | os.O_CREATE
+	DefaultPermission := 0666
+
+	logFile, err := os.OpenFile(DefaultFileName, DefaultFileOptions, fs.FileMode(DefaultPermission))
+	if err != nil {
+		log.Printf("Error Opening or Creating File %s Err = %v", DefaultFileName, err)
+		return nil, err
 	}
+
 	return logFile, nil
 
-}func flowmanager()
+}
+func Start(writer io.Writer) {
+	log.SetOutput(writer)
+	log.SetFlags(0)
+	log.Println(startDoc)
+}
+
+func End() {
+	log.Println(endDoc)
+}
+
+type Flow struct {
+	format    string
+	sender    string
+	receiver  string
+	direction string
+	message   string
+}
+
+func (flow *Flow) GetMermaidFlow() string {
+	flowDoc := fmt.Sprintf("%s\t%s %s %s : %s ",
+		flow.format, flow.sender, flow.direction, flow.receiver, flow.message)
+	return flowDoc
+}
