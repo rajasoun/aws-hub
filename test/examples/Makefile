@@ -1,4 +1,4 @@
-APP := $(shell basename $(CURDIR))
+APP := tdd-examples
 VERSION := $(shell git describe --tags --always --dirty)
 #GOPATH := $(CURDIR)/Godeps/_workspace:$(GOPATH)
 #PATH := $(GOPATH)/bin:$(PATH)
@@ -15,17 +15,6 @@ help: ## This help.
 .DEFAULT_GOAL := help
 
 # Go TASKS
-build:  build/bin/$(APP) test ## Build Go
-
-build/bin/$(APP): bin
-	go build -v -o $@ -ldflags "-X main.Version='${VERSION}'"
-
-bin: clean
-	mkdir -p build/bin
-
-clean: ## Clean Go
-	rm -rf build/bin
-
 lint: ## Go Lint
 	golangci-lint run --enable-all
 
@@ -37,7 +26,7 @@ tdd-watch: ## Test Watch
 
 tdd-cover: ## Go Coverage
 	go test ./... -v --cover -coverprofile build/coverage/coverage.out
-	go tool cover -html=coverage/coverage.out
+	go tool cover -html=build/coverage/coverage.out
 
 tdd-unit: ## Prints formatted unit test output
 	export SKIP_E2E=true && gotestsum --format testname -- -coverprofile=build/coverage/coverage.out ./...
