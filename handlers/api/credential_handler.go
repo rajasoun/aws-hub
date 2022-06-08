@@ -1,29 +1,27 @@
-package handlers
+package api
 
 import (
 	"log"
-	"net/http"
 
 	"github.com/aws/aws-sdk-go-v2/aws"
 
 	"github.com/rajasoun/aws-hub/provider/credential"
 )
 
-func (handler *AWSHandler) LoadCredentialForProfile(profile string, r *http.Request,
-	w http.ResponseWriter) aws.Config {
+type CredentialHandler struct{}
+
+func (credHandler *CredentialHandler) GetConfig(profile string, isMultipleProfile bool) (aws.Config, error) {
 	var cfg aws.Config
 	var err error
 	credentialLoader := credential.CredentialLoader{}
-	if handler.multiple {
+	if isMultipleProfile {
 		cfg, err = credentialLoader.LoadDefaultConfigForProfile(profile)
 		handleErr(err, "AWSConfig For multiple Profile ")
 	} else {
 		cfg, err = credentialLoader.LoadDefaultConfig()
 		handleErr(err, "Default AWSConfig")
 	}
-	restHandler := RestAPI{request: r, writer: w}
-	restHandler.RespondWithErrorJSON(err, "Couldn't read "+profile+" profile")
-	return cfg
+	return cfg, err
 }
 
 func handleErr(err error, msg string) {
