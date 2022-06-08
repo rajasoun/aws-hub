@@ -53,6 +53,10 @@ func (credLoader *CredentialLoader) LoadDefaultConfigForProfile(profile string) 
 	return cfg, err
 }
 
+// Loads Credentials from files ~/.aws/credential
+// Output:
+//     If successful, Returns sections within the ~/.aws/credential file
+//     Otherwise, empty sections and an error.
 func (credLoader *CredentialLoader) GetSections() (ini.Sections, error) {
 	sections, err := ini.OpenFile(config.DefaultSharedCredentialsFilename())
 	return sections, err
