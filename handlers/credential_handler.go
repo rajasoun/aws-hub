@@ -9,7 +9,7 @@ import (
 	"github.com/rajasoun/aws-hub/provider/credential"
 )
 
-func (handler *AWSHandler) LoadConfigForProfile(profile string, r *http.Request,
+func (handler *AWSHandler) LoadCredentialForProfile(profile string, r *http.Request,
 	w http.ResponseWriter) aws.Config {
 	var cfg aws.Config
 	var err error
