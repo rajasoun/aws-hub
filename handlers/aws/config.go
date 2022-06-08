@@ -1,12 +1,13 @@
 package aws
 
 import (
-	"context"
 	"log"
 	"net/http"
 
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/config"
+
+	"github.com/rajasoun/aws-hub/provider/credential"
 	ini "github.com/rajasoun/go-parsers/aws_credentials"
 )
 
@@ -21,15 +22,12 @@ func handleErr(err error, msg string) {
 func loadLocalAwsConfig(multiple bool, profile string) (aws.Config, error) {
 	var cfg aws.Config
 	var err error
+	credLoader := credential.CredentialLoader{}
 	if multiple {
-		cfg, err = config.LoadDefaultConfig(context.TODO(),
-			config.WithRegion("us-east-1"),
-			config.WithSharedConfigFiles(config.DefaultSharedConfigFiles),
-			config.WithSharedConfigProfile(profile),
-		)
+		cfg, err = credLoader.LoadDefaultConfigForProfile(profile)
 		handleErr(err, "AWSConfig For multiple Profile ")
 	} else {
-		cfg, err = config.LoadDefaultConfig(context.TODO(), config.WithRegion("us-east-1"))
+		cfg, err = credLoader.LoadDefaultConfig() //config.LoadDefaultConfig(context.TODO(), config.WithRegion("us-east-1"))
 		handleErr(err, "Default AWSConfig")
 	}
 	return cfg, err
