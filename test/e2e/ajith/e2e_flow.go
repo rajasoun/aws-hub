@@ -10,6 +10,7 @@ import (
 
 var startDoc string = "```mermaid\n\nsequenceDiagram\n\tactor User"
 var endDoc string = "\n```"
+var opt string = "opt"
 
 func createMarkdown() (*os.File, error) {
 	DefaultFileName := "e2e.md"
@@ -34,6 +35,9 @@ func Start(writer io.Writer) {
 func End() {
 	log.Println(endDoc)
 }
+func optflow(opt string) string {
+	return opt
+}
 
 type Flow struct {
 	format    string
@@ -46,5 +50,9 @@ type Flow struct {
 func (flow *Flow) GetMermaidFlow() string {
 	flowDoc := fmt.Sprintf("%s\t%s %s %s : %s ",
 		flow.format, flow.sender, flow.direction, flow.receiver, flow.message)
+
+	//if strings.Contains("app.hub", flow.sender) || (strings.Contains("app.hub", flow.receiver)) {
+	//log.Println("\topt")
+	//}
 	return flowDoc
 }

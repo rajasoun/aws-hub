@@ -22,8 +22,9 @@ func TestE2E(t *testing.T) {
 		docs := steps.GetMermaidFlow()
 		log.Println(docs)
 	})
+	log.Println(optflow("\topt"))
 	t.Run("main to app.hub", func(t *testing.T) {
-		steps.format = "\t"
+		steps.format = "\t\t"
 		steps.sender = "main"
 		steps.direction = " ->> "
 		steps.receiver = "app.hub"
@@ -32,8 +33,9 @@ func TestE2E(t *testing.T) {
 		log.Println(docs)
 
 	})
+
 	t.Run("app.hub.execute() to app.hub.newApp()", func(t *testing.T) {
-		steps.format = "\t"
+		steps.format = "\t\t"
 		steps.sender = "app.hub"
 		steps.direction = " ->> "
 		steps.receiver = "app.hub"
@@ -41,8 +43,9 @@ func TestE2E(t *testing.T) {
 		docs := steps.GetMermaidFlow()
 		log.Println(docs)
 	})
+
 	t.Run("app.hub.newApp() to app.hub.setupinfo()", func(t *testing.T) {
-		steps.format = "\t"
+		steps.format = "\t\t"
 		steps.sender = "app.hub"
 		steps.direction = " ->>"
 		steps.receiver = "app.hub"
@@ -51,7 +54,7 @@ func TestE2E(t *testing.T) {
 		log.Println(docs)
 	})
 	t.Run("app.hub.newApp() to app.hub.setupFlag()", func(t *testing.T) {
-		steps.format = "\t"
+		steps.format = "\t\t"
 		steps.sender = "app.hub"
 		steps.direction = " ->> "
 		steps.receiver = "app.hub"
@@ -60,7 +63,7 @@ func TestE2E(t *testing.T) {
 		log.Println(docs)
 	})
 	t.Run("app.hub.setupFlags() to hub.cli.Flags.GetFlags()", func(t *testing.T) {
-		steps.format = "\t"
+		steps.format = "\t\t"
 		steps.sender = "app.hub"
 		steps.direction = " ->> "
 		steps.receiver = "hub.cli.Flags"
@@ -70,7 +73,7 @@ func TestE2E(t *testing.T) {
 
 	})
 	t.Run("app.hub.newApp() to App.hub.setUPAuthors()", func(t *testing.T) {
-		steps.format = "\t"
+		steps.format = "\t\t"
 		steps.sender = "app.hub"
 		steps.direction = " ->> "
 		steps.receiver = "app.hub"
@@ -79,7 +82,7 @@ func TestE2E(t *testing.T) {
 		log.Println(docs)
 	})
 	t.Run("app.hub.newApp() to App.hub.setUPcommands()", func(t *testing.T) {
-		steps.format = "\t"
+		steps.format = "\t\t"
 		steps.sender = "app.hub"
 		steps.direction = " ->> "
 		steps.receiver = "app.hub"
@@ -87,6 +90,7 @@ func TestE2E(t *testing.T) {
 		docs := steps.GetMermaidFlow()
 		log.Println(docs)
 	})
+	log.Println(optflow("\tend"))
 	t.Run("app.hub.setupcommnads() to app.config.cmd.command.go", func(t *testing.T) {
 		steps.format = "\t"
 		steps.sender = "app.hub"
@@ -112,6 +116,15 @@ func TestE2E(t *testing.T) {
 		steps.direction = " ->> "
 		steps.receiver = "app.config.cmd"
 		steps.message = "CreateCommand()"
+		docs := steps.GetMermaidFlow()
+		log.Println(docs)
+	})
+	t.Run("app.hub.setOutput() to app.hub.setOutput()  ", func(t *testing.T) {
+		steps.format = "\t"
+		steps.sender = "app.hub"
+		steps.direction = " ->> "
+		steps.receiver = "app.hub"
+		steps.message = "app.setOutput()"
 		docs := steps.GetMermaidFlow()
 		log.Println(docs)
 	})
