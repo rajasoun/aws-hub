@@ -15,8 +15,8 @@ func (handler *AWSHandler) GetSections(w http.ResponseWriter) []string {
 	cl := credential.CredentialLoader{}
 	sections, err := cl.GetSections()
 	if err != nil {
-		restHandler := RestAPI{writer: w}
-		restHandler.RespondWithErrorJSON(err, "Couldn't parse credentials file")
+		awsWrapper := AWSWrapper{writer: w}
+		awsWrapper.RespondWithErrorJSON(err, "Couldn't parse credentials file")
 	}
 	return sections.List()
 }
@@ -33,6 +33,6 @@ func (handler *AWSHandler) ListProfilesHandler(w http.ResponseWriter, r *http.Re
 		Multiple: handler.multiple,
 		List:     sectionList,
 	}
-	restHandler := RestAPI{request: r, writer: w}
-	restHandler.RespondWithJSON(http.StatusOK, profile)
+	awsWrapper := AWSWrapper{request: r, writer: w}
+	awsWrapper.RespondWithJSON(http.StatusOK, profile)
 }

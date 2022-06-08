@@ -9,46 +9,46 @@ import (
 	"github.com/rajasoun/aws-hub/service/cache"
 )
 
-type RestAPI struct {
+type AWSWrapper struct {
 	request  *http.Request
 	writer   http.ResponseWriter
 	cache    cache.Cache
 	multiple bool
 }
 
-func (restHandler *RestAPI) RespondWithJSON(code int, payload interface{}) {
+func (awsWrapper *AWSWrapper) RespondWithJSON(code int, payload interface{}) {
 	response, _ := json.Marshal(payload)
-	responseWritter := restHandler.writer
+	responseWritter := awsWrapper.writer
 	responseWritter.Header().Set("Content-Type", "application/json")
 	responseWritter.WriteHeader(code)
 	responseWritter.Write(response)
 }
 
-func (restHandler *RestAPI) RespondWithErrorJSON(err error, errMsg string) {
+func (awsWrapper *AWSWrapper) RespondWithErrorJSON(err error, errMsg string) {
 	var errReasons string = "Possible Reasons: Connectivity Failed or Credential Missing or Policy Denied"
 	errMessage := errMsg + " : " + errReasons
 	if err != nil {
 		code := http.StatusInternalServerError
-		restHandler.RespondWithJSON(code, map[string]string{"error": errMessage})
+		awsWrapper.RespondWithJSON(code, map[string]string{"error": errMessage})
 	}
 }
 
-func (restHandler *RestAPI) InvokeAPI(apiName string, keyCode string, errMsg string) {
-	profile := restHandler.request.Header.Get("profile")
+func (awsWrapper *AWSWrapper) InvokeAPI(apiName string, keyCode string, errMsg string) {
+	profile := awsWrapper.request.Header.Get("profile")
 	key := fmt.Sprintf(keyCode, profile)
-	response, foundInCache := restHandler.cache.Get(key)
+	response, foundInCache := awsWrapper.cache.Get(key)
 	if foundInCache {
-		restHandler.RespondWithJSON(http.StatusOK, response)
+		awsWrapper.RespondWithJSON(http.StatusOK, response)
 		return
 	} else {
-		cfg, _ := api.GetConfig(profile, restHandler.multiple)
+		cfg, _ := api.GetConfig(profile, awsWrapper.multiple)
 		api := api.NewAwsAPI(apiName)
 		response, err := api.Execute(cfg)
 		if err != nil {
-			restHandler.RespondWithErrorJSON(err, errMsg)
+			awsWrapper.RespondWithErrorJSON(err, errMsg)
 		} else {
-			restHandler.cache.Set(key, response)
-			restHandler.RespondWithJSON(http.StatusOK, response)
+			awsWrapper.cache.Set(key, response)
+			awsWrapper.RespondWithJSON(http.StatusOK, response)
 		}
 	}
 }

@@ -21,8 +21,8 @@ func (handler *AWSHandler) LoadCredentialForProfile(profile string, r *http.Requ
 		cfg, err = credentialLoader.LoadDefaultConfig()
 		handleErr(err, "Default AWSConfig")
 	}
-	restHandler := RestAPI{request: r, writer: w}
-	restHandler.RespondWithErrorJSON(err, "Couldn't read "+profile+" profile")
+	awsWrapper := AWSWrapper{request: r, writer: w}
+	awsWrapper.RespondWithErrorJSON(err, "Couldn't read "+profile+" profile")
 	return cfg
 }
 
