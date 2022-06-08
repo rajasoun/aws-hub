@@ -5,11 +5,25 @@ import (
 	"net/http"
 
 	"github.com/aws/aws-sdk-go-v2/aws"
-	"github.com/aws/aws-sdk-go-v2/config"
 
 	"github.com/rajasoun/aws-hub/provider/credential"
-	ini "github.com/rajasoun/go-parsers/aws_credentials"
 )
+
+func (handler *AWSHandler) LoadConfigForProfile(profile string, r *http.Request,
+	w http.ResponseWriter) aws.Config {
+	var cfg aws.Config
+	var err error
+	credLoader := credential.CredentialLoader{}
+	if handler.multiple {
+		cfg, err = credLoader.LoadDefaultConfigForProfile(profile)
+		handleErr(err, "AWSConfig For multiple Profile ")
+	} else {
+		cfg, err = credLoader.LoadDefaultConfig() //config.LoadDefaultConfig(context.TODO(), config.WithRegion("us-east-1"))
+		handleErr(err, "Default AWSConfig")
+	}
+	respondOnError(err, w, "Couldn't read "+profile+" profile")
+	return cfg
+}
 
 func handleErr(err error, msg string) {
 	if err != nil {
@@ -17,33 +31,4 @@ func handleErr(err error, msg string) {
 	} else {
 		log.Println(msg + "loaded successfuly")
 	}
-}
-
-func loadLocalAwsConfig(multiple bool, profile string) (aws.Config, error) {
-	var cfg aws.Config
-	var err error
-	credLoader := credential.CredentialLoader{}
-	if multiple {
-		cfg, err = credLoader.LoadDefaultConfigForProfile(profile)
-		handleErr(err, "AWSConfig For multiple Profile ")
-	} else {
-		cfg, err = credLoader.LoadDefaultConfig() //config.LoadDefaultConfig(context.TODO(), config.WithRegion("us-east-1"))
-		handleErr(err, "Default AWSConfig")
-	}
-	return cfg, err
-}
-
-func readLocalCredentials(w http.ResponseWriter) ini.Sections {
-	sections, err := ini.OpenFile(config.DefaultSharedCredentialsFilename())
-	if err != nil {
-		respondWithError(w, http.StatusInternalServerError, "Couldn't parse credentials file")
-	}
-	return sections
-}
-
-func (handler *AWSHandler) loadProfileConfigFor(profile string, r *http.Request,
-	w http.ResponseWriter) aws.Config {
-	cfg, err := loadLocalAwsConfig(handler.multiple, profile)
-	respondOnError(err, w, "Couldn't read "+profile+" profile")
-	return cfg
 }

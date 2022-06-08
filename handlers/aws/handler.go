@@ -43,7 +43,7 @@ func (handler *AWSHandler) HasMultipleEnvs() bool {
 func (handler *AWSHandler) API(r *http.Request, w http.ResponseWriter,
 	apiName string, keyCode string, errMsg string) {
 	profile := r.Header.Get("profile")
-	cfg := handler.loadProfileConfigFor(profile, r, w)
+	cfg := handler.LoadConfigForProfile(profile, r, w)
 	key := fmt.Sprintf(keyCode, profile)
 	response, foundInCache := handler.cache.Get(key)
 	if foundInCache {
