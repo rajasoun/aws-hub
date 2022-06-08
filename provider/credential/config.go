@@ -6,6 +6,8 @@ import (
 
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/config"
+
+	ini "github.com/rajasoun/go-parsers/aws_credentials"
 )
 
 var defaultRegion string = "us-east-1"
@@ -49,4 +51,13 @@ func (credLoader *CredentialLoader) LoadDefaultConfigForProfile(profile string) 
 		log.Printf("failed to load configuration for profile - %v, err = %v", profile, err)
 	}
 	return cfg, err
+}
+
+// Loads Credentials from files ~/.aws/credential
+// Output:
+//     If successful, Returns sections within the ~/.aws/credential file
+//     Otherwise, empty sections and an error.
+func (credLoader *CredentialLoader) GetSections() (ini.Sections, error) {
+	sections, err := ini.OpenFile(config.DefaultSharedCredentialsFilename())
+	return sections, err
 }

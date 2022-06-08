@@ -10,7 +10,7 @@ import (
 
 	"github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
-	"github.com/rajasoun/aws-hub/handlers/aws"
+	aws "github.com/rajasoun/aws-hub/handlers"
 	"github.com/rajasoun/aws-hub/service/cache"
 	"github.com/rs/cors"
 )
@@ -43,6 +43,7 @@ func NewServer(cache cache.Cache, multiple bool) (*Server, *mux.Router) {
 	server := Server{}
 	server.name = "Mux Server 0.1"
 	server.awsHandler = setUpCache(cache, multiple)
+	//Connects Routes to Handlers
 	router := server.awsHandler.SetUpRoutes()
 	server.routes = router
 	server.cors = setUpCors()
