@@ -35,13 +35,14 @@ func (mockFunc *MockAccountAliases) ListAccountAliases(ctx context.Context,
 	return result.Get(0).(*iam.ListAccountAliasesOutput), result.Error(1)
 }
 
+var testAlias string = "aws-test-account-alias"
+
 func TestListAccountAliasesViaMockFramework(t *testing.T) {
 	assert := assert.New(t)
 	t.Parallel()
 	t.Run("Check ListAccountAliases", func(t *testing.T) {
 		//client := new(iammock.MockClient)
 		client := new(MockAccountAliases)
-		var testAlias string = "aws-test-account-alias"
 		aliases := []string{testAlias}
 		expectedOutput := &iam.ListAccountAliasesOutput{
 			AccountAliases: aliases,
@@ -82,7 +83,6 @@ func (mock MockAccountAliases) NewClient() IAMListAccountAliasesAPIClient {
 	fn := func(ctx context.Context,
 		params *iam.ListAccountAliasesInput,
 		optFns ...func(*iam.Options)) (*iam.ListAccountAliasesOutput, error) {
-		var testAlias string = "aws-test-account-alias"
 		aliases := []string{testAlias}
 		result := &iam.ListAccountAliasesOutput{
 			AccountAliases: aliases,
@@ -93,7 +93,6 @@ func (mock MockAccountAliases) NewClient() IAMListAccountAliasesAPIClient {
 	return client
 }
 func TestGetAliasesviaHandMadeMock(t *testing.T) {
-	var testAlias string = "aws-test-account-alias"
 	assert := assert.New(t)
 	t.Parallel()
 
