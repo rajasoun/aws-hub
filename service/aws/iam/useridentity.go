@@ -5,7 +5,6 @@ import (
 	"time"
 
 	"github.com/aws/aws-sdk-go-v2/service/iam"
-	"github.com/rajasoun/aws-hub/service/aws/iam/apiclient"
 )
 
 type User struct {
@@ -16,13 +15,22 @@ type User struct {
 	UserId           string    `json:"userId"`
 }
 
+// Interface for Amazon IAM GetUser API
+// This will enable TDD using mocking
+type IAMGetUserAPIClient interface {
+	iam.GetUserAPIClient // Only for Refernce to Actual Client
+	GetUser(ctx context.Context,
+		params *iam.GetUserInput,
+		optFns ...func(*iam.Options)) (*iam.GetUserOutput, error)
+}
+
 // GetUserIdentity retrieves the user details from an AWS account.
 // Inputs:
 //     client is iam.NewFromConfig(cfg) & cfg is the context of the method call
 // Output:
 //     If successful, a Users object containing the account details and nil.
 //     Otherwise, nil and an error from the call.
-func GetUserIdentity(client apiclient.IAMGetUserAPIClient) (User, error) {
+func GetUserIdentity(client IAMGetUserAPIClient) (User, error) {
 	var ctx context.Context = context.TODO()
 	input := &iam.GetUserInput{}
 	result, err := client.GetUser(ctx, input)
