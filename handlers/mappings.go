@@ -1,4 +1,4 @@
-package aws
+package handlers
 
 import (
 	"github.com/aws/aws-sdk-go-v2/service/iam"

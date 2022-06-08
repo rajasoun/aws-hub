@@ -1,4 +1,4 @@
-package aws
+package handlers
 
 import (
 	"encoding/json"
