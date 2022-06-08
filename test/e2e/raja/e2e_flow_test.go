@@ -22,65 +22,58 @@ func TestE2E(t *testing.T) {
 	//flowLog, _ := flowManager.CreateMarkdown(os.OpenFile)
 	flowLog, _ := flowByCoding.CreateMarkdown()
 	defer flowLog.Close()
-
+	flows := []struct {
+		name string
+		flow Flow
+	}{
+		{
+			name: "User To main",
+			flow: Flow{
+				format:    "\t",
+				sender:    "User",
+				direction: " ->> ",
+				receiver:  "main",
+				message:   "aws-env go run main.go start",
+			},
+		},
+		{
+			name: "main to app.hub",
+			flow: Flow{
+				format:    "\t",
+				sender:    "main",
+				direction: " ->> ",
+				receiver:  "app.hub",
+				message:   "Execute()",
+			},
+		},
+		{
+			name: "urfave.cli to start command",
+			flow: Flow{
+				format:    "\t",
+				sender:    "urfave.cli",
+				direction: " ->> ",
+				receiver:  "app.config.cmd.startCmd",
+				message:   "StartCommand(appCtx *cli.Context)",
+			},
+		},
+		{
+			name: "start command to server start",
+			flow: Flow{
+				format:    "\t",
+				sender:    "app.config.cmd.startCmd",
+				direction: " ->> ",
+				receiver:  "app.server",
+				message:   "Start(port, enableShutdown)",
+			},
+		},
+	}
 	flowByCoding.Start(flowLog)
-	t.Run("User To main", func(t *testing.T) {
-		flow := Flow{
-			format:    "\t",
-			sender:    "User",
-			receiver:  " ->> ",
-			direction: "main",
-			message:   "aws-env go run main.go start",
-		}
-		flowDoc := flow.GetMermaidFlow()
-		log.Println(flowDoc)
-	})
-	t.Run("main to app.hub", func(t *testing.T) {
-		flow := Flow{
-			format:    "\t",
-			sender:    "main",
-			receiver:  " ->> ",
-			direction: "app.hub",
-			message:   "Execute()",
-		}
-		flowDoc := flow.GetMermaidFlow()
-		log.Println(flowDoc)
-	})
-	t.Run("main to app.hub", func(t *testing.T) {
-		flow := Flow{
-			format:    "\t",
-			sender:    "app.hub",
-			receiver:  " ->> ",
-			direction: "urfave.cli",
-			message:   "app.cli.Run(args)",
-		}
-		flowDoc := flow.GetMermaidFlow()
-		log.Println(flowDoc)
-	})
-	t.Run("urfave.cli to start command", func(t *testing.T) {
-		flow := Flow{
-			format:    "\t",
-			sender:    "urfave.cli",
-			receiver:  " ->> ",
-			direction: "app.config.cmd.startCmd",
-			message:   "StartCommand(appCtx *cli.Context)",
-		}
-		flowDoc := flow.GetMermaidFlow()
-		log.Println(flowDoc)
-	})
-	t.Run("start command to server start", func(t *testing.T) {
-		flow := Flow{
-			format:    "\t",
-			sender:    "app.config.cmd.startCmd",
-			receiver:  " ->> ",
-			direction: "app.server",
-			message:   "Start(port, enableShutdown)",
-		}
-		flowDoc := flow.GetMermaidFlow()
-		log.Println(flowDoc)
-		log.Println("\t\tNote right of app.server: Server Started!")
-	})
-
+	for _, tt := range flows {
+		t.Run(tt.name, func(t *testing.T) {
+			log.Println(tt.flow.GetMermaidFlow())
+		})
+	}
+	log.Println("\t\tNote right of app.server: Server Started!")
 	flowByCoding.End()
 }
 
