@@ -8,9 +8,9 @@ import (
 	"github.com/rajasoun/aws-hub/provider/credential"
 )
 
-type CredentialHandler struct{}
+type CredentialLoader struct{}
 
-func (credHandler *CredentialHandler) GetConfig(profile string, isMultipleProfile bool) (aws.Config, error) {
+func (credHandler *CredentialLoader) GetConfig(profile string, isMultipleProfile bool) (aws.Config, error) {
 	var cfg aws.Config
 	var err error
 	credentialLoader := credential.CredentialLoader{}

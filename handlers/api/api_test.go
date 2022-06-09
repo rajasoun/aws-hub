@@ -7,56 +7,63 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestAWSAPI(t *testing.T) {
-	type args struct {
-		api               string
-		profile           string
-		isMultipleProfile bool
-	}
+func TestNewAwsAPI(t *testing.T) {
 	tests := []struct {
-		name string
-		args args
+		name    string
+		apiName string
 	}{
 		{
-			name: "Check GetUserCountAPI with Empty Profile",
-			args: args{
-				api:               IAMGetUserCountAPI,
-				profile:           "",
-				isMultipleProfile: false,
-			},
+			name:    "Check NewAwsAPI for GetUserCountAPI ",
+			apiName: IAMGetUserCountAPI,
 		},
 		{
-			name: "Check GetUserIdentityAPI with Empty Profile",
-			args: args{
-				api:               IAMGetUserIdentityAPI,
-				profile:           "",
-				isMultipleProfile: false,
-			},
+			name:    "Check NewAwsAPI for GetUserIdentityAPI",
+			apiName: IAMGetUserIdentityAPI,
 		},
 		{
-			name: "Check GetAliasesAPI with Empty Profile",
-			args: args{
-				api:               IAMGetAliasesAPI,
-				profile:           "",
-				isMultipleProfile: false,
-			},
+			name:    "Check NewAwsAPI for GetAliasesAPI",
+			apiName: IAMGetAliasesAPI,
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			assert := assert.New(t)
-			_, err := GetConfig(tt.args.profile, tt.args.isMultipleProfile)
-			assert.NoError(err, "GetConfig() Err = %v ", err)
-			api := NewAwsAPI(tt.args.api)
+			api := NewAwsAPI(tt.apiName)
 			got := reflect.TypeOf(api).Name()
-			assert.Equal(got, tt.args.api, "NewAwsAPI() = %v, want = %v ", got, tt.args.api)
-			// client := iam.NewFromConfig(aws.Config{})
-			// api := NewAwsAPI(tt.args.api)
-			// got, err := api.Execute(client)
-			// assert.Error(err, "Execute() Err = %v ", err)
-			// if tt.wantEmpty {
-			// 	assert.Empty(got, "Execute() = %v", got)
-			// }
+			assert.Equal(got, tt.apiName, "NewAwsAPI() = %v, want = %v ", got, tt.apiName)
+		})
+	}
+}
+
+func TestGetConfig(t *testing.T) {
+	tests := []struct {
+		name              string
+		profile           string
+		isMultipleProfile bool
+		wantErr           bool
+	}{
+		{
+			name:              "Check GetConfig for Empty Profile & isMultipleProfile is false",
+			profile:           "",
+			isMultipleProfile: false,
+			wantErr:           false,
+		},
+		{
+			name:              "Check GetConfig for invalid Profile & isMultipleProfile is false",
+			profile:           "invalid-profile",
+			isMultipleProfile: true,
+			wantErr:           false,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			assert := assert.New(t)
+			cfg, err := GetConfig(tt.profile, tt.isMultipleProfile)
+			if tt.wantErr {
+				assert.Error(err, "GetConfig() = %v ", err)
+			}
+			assert.NoError(err, "GetConfig() = %v ", err)
+			assert.NotEmpty(cfg.Region, "GetConfig() = %v ", cfg.Region)
 		})
 	}
 }

@@ -27,7 +27,7 @@ func NewAwsAPI(api string) AwsAPI {
 }
 
 func GetConfig(profile string, isMultipleProfile bool) (aws.Config, error) {
-	credentialHandler := CredentialHandler{}
-	cfg, err := credentialHandler.GetConfig(profile, isMultipleProfile)
+	credentialLoader := CredentialLoader{}
+	cfg, err := credentialLoader.GetConfig(profile, isMultipleProfile)
 	return cfg, err
 }
