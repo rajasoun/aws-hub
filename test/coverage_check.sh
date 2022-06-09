@@ -7,7 +7,7 @@
 #     END {printf("Total coverage: %.2f%% of statements\n", (cov/stat)*100);}'
 # echo -e "\n"
 
-TESTCOVERAGE_THRESHOLD=75
+TESTCOVERAGE_THRESHOLD=80
 echo -e "\nQuality Gate: Test Coverage Check"
 echo "Threshold             : $TESTCOVERAGE_THRESHOLD %"
 totalCoverage=$(go tool cover -func=build/coverage/coverage.out | grep total | grep -Eo '[0-9]+\.[0-9]+')
