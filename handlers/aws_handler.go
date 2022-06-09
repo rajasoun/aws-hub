@@ -42,7 +42,7 @@ func (awsWrapper *AWSWrapper) InvokeAPI(awsApi api.AwsAPI, keyCode string, errMs
 		awsWrapper.RespondWithJSON(http.StatusOK, response)
 		return
 	} else {
-		cfg, _ := api.GetConfig(profile, awsWrapper.multiple)
+		cfg, _ := api.GetConfigFromFileSystem(profile, awsWrapper.multiple)
 		client := iam.NewFromConfig(cfg)
 		response, err := awsApi.Execute(client)
 		if err != nil {
