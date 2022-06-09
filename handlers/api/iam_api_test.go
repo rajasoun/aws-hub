@@ -5,30 +5,7 @@ import (
 
 	"github.com/aws/aws-sdk-go-v2/service/iam"
 	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/mock"
 )
-
-// Mock AWS API
-type MockAwsAPI struct {
-	mock.Mock
-}
-
-type MockOutput struct {
-	Message string
-}
-
-/**
-* Mock using testify Framework
- */
-
-// Mock Execute Function
-func (c *MockAwsAPI) Execute(client *iam.Client) (interface{}, error) {
-	args := c.Called(client)
-	if args.Get(0) == nil {
-		return nil, args.Error(1)
-	}
-	return args.Get(0).(*MockOutput), args.Error(1)
-}
 
 func TestGetAliasesAPI_Execute(t *testing.T) {
 	assert := assert.New(t)
