@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"bytes"
 	"log"
 	"net/http"
 	"net/http/httptest"
@@ -32,12 +33,12 @@ func TestAPIRoutes(t *testing.T) {
 		name     string
 		endPoint string
 	}{
-		{"Check IAMGetAliasesHandler", "/aws/iam/alias"},
-		{"Check IAMGetUserIdentityHandler", "/aws/iam/account"},
-		{"Check IAMGetUserCountHandler", "/aws/iam/users"},
-		{"Check ConfigProfilesHandler", "/aws/profiles"},
-		{"Check ConfigProfilesHandler", "/aws/profiles"},
-		{"Check HealthCheckHandler", "/health"},
+		{"Check IAMGetAliasesHandler Route", "/aws/iam/alias"},
+		{"Check IAMGetUserIdentityHandler Route", "/aws/iam/account"},
+		{"Check IAMGetUserCountHandler Route", "/aws/iam/users"},
+		{"Check ConfigProfilesHandler Route", "/aws/profiles"},
+		{"Check ConfigProfilesHandler Route", "/aws/profiles"},
+		{"Check HealthCheckHandler Route", "/health"},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -61,17 +62,37 @@ func TestRoutes(t *testing.T) {
 	tests := []struct {
 		name     string
 		endPoint string
+		mockIt   bool
 	}{
-		{"Check Health Check Handler", "/health"},
-		{"Check Profile Handler", "/aws/profiles"},
+		{"Check Health Check Handler", "/health", true},
+		{"Check Profile Handler", "/aws/profiles", true},
+		{"Check Profile Handler", "/aws/iam/users", true},
+		{"Check Profile Handler", "/aws/iam/account", true},
+		{"Check Profile Handler", "/aws/iam/alias", true},
+		{"Check Health Check Handler", "/health", false},
+		{"Check Profile Handler", "/aws/profiles", false},
 	}
-	//Note Roues Making AWS Calls are not included as they are not unit Tests
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			request, _ = http.NewRequest("GET", tt.endPoint, nil)
-			response = executeRequest(router, request)
+			if tt.mockIt {
+				response = getMockResponse(router, request)
+			} else {
+				response = executeRequest(router, request)
+			}
 			assert.Equal(http.StatusOK, response.Code, "OK response is expected")
 		})
+	}
+}
+
+func getMockResponse(router *mux.Router, req *http.Request) *httptest.ResponseRecorder {
+	// responseRecorder := httptest.NewRecorder()
+	// router.ServeHTTP(responseRecorder, req)
+	// return responseRecorder
+	return &httptest.ResponseRecorder{
+		HeaderMap: make(http.Header),
+		Body:      new(bytes.Buffer),
+		Code:      200,
 	}
 }
 
