@@ -7,7 +7,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestGetAliasesAPI_Execute(t *testing.T) {
+func TestExecute(t *testing.T) {
 	assert := assert.New(t)
 	t.Parallel()
 	type args struct {
