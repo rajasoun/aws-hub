@@ -45,9 +45,11 @@ func TestLoadDefaultConfigForProfile(t *testing.T) {
 
 func TestCredentialLoaderGetSections(t *testing.T) {
 	assert := assert.New(t)
-	t.Run("", func(t *testing.T) {
+	t.Run("Check GetSections if Credential File Exists", func(t *testing.T) {
 		credLoader := &CredentialLoader{}
-		_, err := credLoader.GetSections()
-		assert.NoError(err, "CredentialLoader.GetSections() error = %v ", err)
+		got, _ := credLoader.GetSections()
+		want := 0
+		assert.GreaterOrEqual(len(got.List()), want,
+			"CredentialLoader.GetSections() = %v , want = %v", len(got.List()), want)
 	})
 }

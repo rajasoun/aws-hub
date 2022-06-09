@@ -2,7 +2,9 @@ package credential
 
 import (
 	"context"
+	"errors"
 	"log"
+	"os"
 
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/config"
@@ -58,6 +60,19 @@ func (credLoader *CredentialLoader) LoadDefaultConfigForProfile(profile string) 
 //     If successful, Returns sections within the ~/.aws/credential file
 //     Otherwise, empty sections and an error.
 func (credLoader *CredentialLoader) GetSections() (ini.Sections, error) {
-	sections, err := ini.OpenFile(config.DefaultSharedCredentialsFilename())
-	return sections, err
+	credentialFile := "$HOME/.aws/credentials"
+	if fileExists(credentialFile) {
+		return ini.OpenFile(config.DefaultSharedCredentialsFilename())
+	} else {
+		return ini.Sections{}, errors.New("credential file is not available")
+	}
+
+}
+
+func fileExists(filename string) bool {
+	info, err := os.Stat(filename)
+	if os.IsNotExist(err) {
+		return false
+	}
+	return !info.IsDir()
 }
