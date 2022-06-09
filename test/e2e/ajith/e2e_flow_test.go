@@ -84,8 +84,28 @@ func TestE2E(t *testing.T) {
 				format:    "\t",
 				sender:    "app.hub",
 				direction: " ->> ",
-				receiver:  "app.config.comd.command.go",
-				message:   "GetCommand",
+				receiver:  "app.config.comd",
+				message:   "GetCommand()",
+			},
+		},
+		{
+			name: "GetCommand to Create Command ",
+			flow: Flow{
+				format:    "\t",
+				sender:    "app.config.cmd",
+				direction: " ->> ",
+				receiver:  "app.config.cmd",
+				message:   "CreateCommand()",
+			},
+		},
+		{
+			name: "CreateCommand to urfave/cli/v2",
+			flow: Flow{
+				format:    "\t",
+				sender:    "app.config.cmd",
+				direction: "->>",
+				receiver:  "urfave.cli",
+				message:   "func(appCtx *cli.Context)",
 			},
 		},
 	}
