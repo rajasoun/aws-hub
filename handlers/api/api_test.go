@@ -1,16 +1,13 @@
 package api
 
 import (
-	"os"
+	"reflect"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
 )
 
-func TestNewAwsAPI(t *testing.T) {
-	if os.Getenv("SKIP_E2E") != "" {
-		t.Skip("Skipping INTEGRATION Tests")
-	}
+func TestAWSAPI(t *testing.T) {
 	type args struct {
 		api               string
 		profile           string
@@ -23,7 +20,7 @@ func TestNewAwsAPI(t *testing.T) {
 		{
 			name: "Check GetUserCountAPI with Empty Profile",
 			args: args{
-				api:               "GetUserCount",
+				api:               IAMGetUserCountAPI,
 				profile:           "",
 				isMultipleProfile: false,
 			},
@@ -31,7 +28,7 @@ func TestNewAwsAPI(t *testing.T) {
 		{
 			name: "Check GetUserIdentityAPI with Empty Profile",
 			args: args{
-				api:               "GetUserIdentity",
+				api:               IAMGetUserIdentityAPI,
 				profile:           "",
 				isMultipleProfile: false,
 			},
@@ -39,7 +36,7 @@ func TestNewAwsAPI(t *testing.T) {
 		{
 			name: "Check GetAliasesAPI with Empty Profile",
 			args: args{
-				api:               "GetAliases",
+				api:               IAMGetAliasesAPI,
 				profile:           "",
 				isMultipleProfile: false,
 			},
@@ -48,12 +45,18 @@ func TestNewAwsAPI(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			assert := assert.New(t)
-			api := NewAwsAPI(tt.args.api)
-			cfg, err := GetConfig(tt.args.profile, tt.args.isMultipleProfile)
+			_, err := GetConfig(tt.args.profile, tt.args.isMultipleProfile)
 			assert.NoError(err, "GetConfig() Err = %v ", err)
-			got, err := api.Execute(cfg)
-			assert.NoError(err, "Execute() Err = %v ", err)
-			assert.NotEmpty(got, "Execute() = %v, want %v", got)
+			api := NewAwsAPI(tt.args.api)
+			got := reflect.TypeOf(api).Name()
+			assert.Equal(got, tt.args.api, "NewAwsAPI() = %v, want = %v ", got, tt.args.api)
+			// client := iam.NewFromConfig(aws.Config{})
+			// api := NewAwsAPI(tt.args.api)
+			// got, err := api.Execute(client)
+			// assert.Error(err, "Execute() Err = %v ", err)
+			// if tt.wantEmpty {
+			// 	assert.Empty(got, "Execute() = %v", got)
+			// }
 		})
 	}
 }

@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/aws/aws-sdk-go-v2/service/iam"
 	"github.com/rajasoun/aws-hub/handlers/api"
 	"github.com/rajasoun/aws-hub/service/cache"
 )
@@ -42,7 +43,8 @@ func (awsWrapper *AWSWrapper) InvokeAPI(awsApi api.AwsAPI, keyCode string, errMs
 		return
 	} else {
 		cfg, _ := api.GetConfig(profile, awsWrapper.multiple)
-		response, err := awsApi.Execute(cfg)
+		client := iam.NewFromConfig(cfg)
+		response, err := awsApi.Execute(client)
 		if err != nil {
 			awsWrapper.RespondWithErrorJSON(err, errMsg)
 		} else {

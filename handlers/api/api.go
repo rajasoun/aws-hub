@@ -2,14 +2,15 @@ package api
 
 import (
 	"github.com/aws/aws-sdk-go-v2/aws"
+	"github.com/aws/aws-sdk-go-v2/service/iam"
 )
 
-const IAMGetUserCountAPI = "GetUserCount"
-const IAMGetUserIdentityAPI = "GetUserIdentity"
-const IAMGetAliasesAPI = "GetAliases"
+const IAMGetUserCountAPI = "GetUserCountAPI"
+const IAMGetUserIdentityAPI = "GetUserIdentityAPI"
+const IAMGetAliasesAPI = "GetAliasesAPI"
 
 type AwsAPI interface {
-	Execute(config aws.Config) (interface{}, error)
+	Execute(client *iam.Client) (interface{}, error)
 }
 
 func NewAwsAPI(api string) AwsAPI {
