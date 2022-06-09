@@ -42,3 +42,12 @@ func TestLoadDefaultConfigForProfile(t *testing.T) {
 		assert.Error(err, "LoadDefaultProfile() error = %v", err)
 	})
 }
+
+func TestCredentialLoaderGetSections(t *testing.T) {
+	assert := assert.New(t)
+	t.Run("", func(t *testing.T) {
+		credLoader := &CredentialLoader{}
+		_, err := credLoader.GetSections()
+		assert.NoError(err, "CredentialLoader.GetSections() error = %v ", err)
+	})
+}
