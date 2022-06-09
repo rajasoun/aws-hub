@@ -33,7 +33,7 @@ func (awsWrapper *AWSWrapper) RespondWithErrorJSON(err error, errMsg string) {
 	}
 }
 
-func (awsWrapper *AWSWrapper) InvokeAPI(apiName string, keyCode string, errMsg string) {
+func (awsWrapper *AWSWrapper) InvokeAPI(awsApi api.AwsAPI, keyCode string, errMsg string) {
 	profile := awsWrapper.request.Header.Get("profile")
 	key := fmt.Sprintf(keyCode, profile)
 	response, foundInCache := awsWrapper.cache.Get(key)
@@ -42,8 +42,7 @@ func (awsWrapper *AWSWrapper) InvokeAPI(apiName string, keyCode string, errMsg s
 		return
 	} else {
 		cfg, _ := api.GetConfig(profile, awsWrapper.multiple)
-		api := api.NewAwsAPI(apiName)
-		response, err := api.Execute(cfg)
+		response, err := awsApi.Execute(cfg)
 		if err != nil {
 			awsWrapper.RespondWithErrorJSON(err, errMsg)
 		} else {

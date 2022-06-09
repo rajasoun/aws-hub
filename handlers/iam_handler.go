@@ -2,13 +2,16 @@ package handlers
 
 import (
 	"net/http"
+
+	"github.com/rajasoun/aws-hub/handlers/api"
 )
 
 var errReasons string = "Possible Reasons: Connectivity Failed or Credential Missing or Policy Denied"
+var cacheKeyTemplate = "aws.%s.iam."
 
 func (handler *AWSHandler) IAMGetUserCountHandler(w http.ResponseWriter, r *http.Request) {
-	cacheKey := "aws.%s.iam.users"
-	apiToBeInvoked := "GetUserCount"
+	cacheKey := cacheKeyTemplate + "users"
+	apiToBeInvoked := api.IAMGetUserCountAPI
 	onErrMsg := "iam:GetUserCount - Failed." + errReasons
 	awsWrapper := AWSWrapper{
 		request:  r,
@@ -16,12 +19,13 @@ func (handler *AWSHandler) IAMGetUserCountHandler(w http.ResponseWriter, r *http
 		cache:    handler.cache,
 		multiple: handler.multiple,
 	}
-	awsWrapper.InvokeAPI(apiToBeInvoked, cacheKey, onErrMsg)
+	api := api.NewAwsAPI(apiToBeInvoked)
+	awsWrapper.InvokeAPI(api, cacheKey, onErrMsg)
 }
 
 func (handler *AWSHandler) IAMGetUserIdentityHandler(w http.ResponseWriter, r *http.Request) {
-	cacheKey := "aws.%s.iam.user"
-	apiToBeInvoked := "GetUserIdentity"
+	cacheKey := cacheKeyTemplate + "useraccount"
+	apiToBeInvoked := api.IAMGetUserIdentityAPI
 	onErrMsg := "iam:GetUserIdentity - Failed." + errReasons
 	awsWrapper := AWSWrapper{
 		request:  r,
@@ -29,12 +33,13 @@ func (handler *AWSHandler) IAMGetUserIdentityHandler(w http.ResponseWriter, r *h
 		cache:    handler.cache,
 		multiple: handler.multiple,
 	}
-	awsWrapper.InvokeAPI(apiToBeInvoked, cacheKey, onErrMsg)
+	api := api.NewAwsAPI(apiToBeInvoked)
+	awsWrapper.InvokeAPI(api, cacheKey, onErrMsg)
 }
 
 func (handler *AWSHandler) IAMGetAliasesHandler(w http.ResponseWriter, r *http.Request) {
-	cacheKey := "aws.%s.iam.aliases"
-	apiToBeInvoked := "GetAliases"
+	cacheKey := cacheKeyTemplate + "aliases"
+	apiToBeInvoked := api.IAMGetAliasesAPI
 	onErrMsg := "iam:GetAliases - Failed." + errReasons
 	awsWrapper := AWSWrapper{
 		request:  r,
@@ -42,5 +47,6 @@ func (handler *AWSHandler) IAMGetAliasesHandler(w http.ResponseWriter, r *http.R
 		cache:    handler.cache,
 		multiple: handler.multiple,
 	}
-	awsWrapper.InvokeAPI(apiToBeInvoked, cacheKey, onErrMsg)
+	api := api.NewAwsAPI(apiToBeInvoked)
+	awsWrapper.InvokeAPI(api, cacheKey, onErrMsg)
 }

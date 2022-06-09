@@ -4,6 +4,10 @@ import (
 	"github.com/aws/aws-sdk-go-v2/aws"
 )
 
+const IAMGetUserCountAPI = "GetUserCount"
+const IAMGetUserIdentityAPI = "GetUserIdentity"
+const IAMGetAliasesAPI = "GetAliases"
+
 type AwsAPI interface {
 	Execute(config aws.Config) (interface{}, error)
 }
@@ -11,11 +15,11 @@ type AwsAPI interface {
 func NewAwsAPI(api string) AwsAPI {
 	var awsAPI AwsAPI
 	switch api {
-	case "GetUserCount":
+	case IAMGetUserCountAPI:
 		awsAPI = GetUserCountAPI{}
-	case "GetUserIdentity":
+	case IAMGetUserIdentityAPI:
 		awsAPI = GetUserIdentityAPI{}
-	case "GetAliases":
+	case IAMGetAliasesAPI:
 		awsAPI = GetAliasesAPI{}
 	}
 	return awsAPI
