@@ -26,7 +26,6 @@ func Writefile() {
 
 	file := ioutil.WriteFile("flow.md", data, 0)
 
-		log.Printf("%v",file)
-
+	log.Printf("%v", file)
 
 }
