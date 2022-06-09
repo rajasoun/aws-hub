@@ -1,6 +1,9 @@
 package api
 
 import (
+	"bytes"
+	"errors"
+	"log"
 	"reflect"
 	"testing"
 
@@ -8,6 +11,8 @@ import (
 )
 
 func TestNewAwsAPI(t *testing.T) {
+	assert := assert.New(t)
+	t.Parallel()
 	tests := []struct {
 		name    string
 		apiName string
@@ -27,7 +32,6 @@ func TestNewAwsAPI(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			assert := assert.New(t)
 			api := NewAwsAPI(tt.apiName)
 			got := reflect.TypeOf(api).Name()
 			assert.Equal(got, tt.apiName, "NewAwsAPI() = %v, want = %v ", got, tt.apiName)
@@ -36,6 +40,8 @@ func TestNewAwsAPI(t *testing.T) {
 }
 
 func TestGetConfig(t *testing.T) {
+	assert := assert.New(t)
+	t.Parallel()
 	tests := []struct {
 		name              string
 		profile           string
@@ -57,13 +63,43 @@ func TestGetConfig(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			assert := assert.New(t)
 			cfg, err := GetConfigFromFileSystem(tt.profile, tt.isMultipleProfile)
 			if tt.wantErr {
 				assert.Error(err, "GetConfig() = %v ", err)
 			}
 			assert.NoError(err, "GetConfig() = %v ", err)
 			assert.NotEmpty(cfg.Region, "GetConfig() = %v ", cfg.Region)
+		})
+	}
+}
+
+func TestHandleErr(t *testing.T) {
+	assert := assert.New(t)
+	t.Parallel()
+	tests := []struct {
+		name string
+		err  error
+		want string
+	}{
+		{
+			name: "Check Log With  No Err",
+			err:  nil,
+			want: "successfuly",
+		},
+		{
+			name: "Check Log With  Err",
+			err:  errors.New("simulated error"),
+			want: "Failed",
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			var outputBuffer bytes.Buffer
+			log.SetOutput(&outputBuffer)
+			log.SetFlags(0)
+			handleErr(tt.err, "Test")
+			got := outputBuffer.String()
+			assert.Contains(got, tt.want, "handleErr() = %v, want = %v", got, tt.want)
 		})
 	}
 }
