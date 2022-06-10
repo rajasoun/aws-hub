@@ -124,16 +124,18 @@ func TestE2E(t *testing.T) {
 				message:   "SetOutput()",
 			},
 		},
-		{
-			name: "app.command to app",
-			flow: Flow{
-				format:    "\t",
-				sender:    "app.hub",
-				direction: "->>",
-				receiver:  "app.config.arg",
-				message:   "Urfavc.cli.run(args)",
+		/*	{
+				name: "app.command to app",
+				flow: Flow{
+					format:    "\t",
+					sender:    "app.hub",
+					direction: "->>",
+					receiver:  "app.config.arg",
+					message:   "Urfavc.cli.run(args)",
+				},
+
 			},
-		},
+		*/
 		{
 			name: "starting command using cli.run(args)",
 			flow: Flow{
@@ -170,5 +172,16 @@ func TestCommandline(t *testing.T) {
 		assert.NoError(err, "err = %v", err)
 		assert.Contains(got, want, "Server Start = %v, want =%v", got, want)
 
+	})
+}
+func TestFlowOpenOrCreate(t *testing.T) {
+	t.Run("Check Markdown Creation os.OpenFile", func(t *testing.T) {
+		assert := assert.New(t)
+		t.Parallel()
+
+		//got, _ := flowManager.CreateMarkdown(os.OpenFile)
+		got, _ := createMarkdown()
+		want := "e2e.md"
+		assert.Equal(want, got.Name(), "Flow.OpenOrCreate() = %v, want %v", got.Name(), want)
 	})
 }
