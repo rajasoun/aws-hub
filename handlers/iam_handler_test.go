@@ -2,10 +2,9 @@ package handlers
 
 import (
 	"net/http"
-	"net/http/httptest"
 	"testing"
 
-	"github.com/gorilla/mux"
+	"github.com/rajasoun/aws-hub/test"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -45,19 +44,9 @@ func TestIAMHandler(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			responseRecorder := executeHandler(tt.handlerFunc, tt.muxVars)
+			responseRecorder := test.ExecuteHandler(tt.handlerFunc, tt.muxVars)
 			got := responseRecorder.Code
 			assert.Equal(tt.want, got, "got = %v, want = %v", got, tt.want)
 		})
 	}
-}
-
-func executeHandler(handlerName func(w http.ResponseWriter, r *http.Request),
-	muxRequestVars map[string]string) *httptest.ResponseRecorder {
-	request, _ := http.NewRequest("GET", "/test", nil)
-	request = mux.SetURLVars(request, muxRequestVars)
-	responseRecorder := httptest.NewRecorder()
-	handler := http.HandlerFunc(handlerName)
-	handler.ServeHTTP(responseRecorder, request)
-	return responseRecorder
 }
