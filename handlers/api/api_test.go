@@ -44,18 +44,21 @@ func TestGetConfig(t *testing.T) {
 	t.Parallel()
 	tests := []struct {
 		name              string
+		functionName      string
 		profile           string
 		isMultipleProfile bool
 		wantErr           bool
 	}{
 		{
 			name:              "Check GetConfig for Empty Profile & isMultipleProfile is false",
+			functionName:      "GetConfig()",
 			profile:           "",
 			isMultipleProfile: false,
 			wantErr:           false,
 		},
 		{
 			name:              "Check GetConfig for invalid Profile & isMultipleProfile is false",
+			functionName:      "GetConfig()",
 			profile:           "invalid-profile",
 			isMultipleProfile: true,
 			wantErr:           false,
@@ -65,10 +68,10 @@ func TestGetConfig(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			cfg, err := GetConfigFromFileSystem(tt.profile, tt.isMultipleProfile)
 			if tt.wantErr {
-				assert.Error(err, "GetConfig() = %v ", err)
+				assert.Error(err, "%v = %v ", tt.functionName, err)
 			}
-			assert.NoError(err, "GetConfig() = %v ", err)
-			assert.NotEmpty(cfg.Region, "GetConfig() = %v ", cfg.Region)
+			assert.NoError(err, "%v = %v ", tt.functionName, err)
+			assert.NotEmpty(cfg.Region, "%v = %v ", tt.functionName, cfg.Region)
 		})
 	}
 }
