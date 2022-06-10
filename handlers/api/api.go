@@ -11,6 +11,7 @@ import (
 const IAMGetUserCountAPI = "GetUserCountAPI"
 const IAMGetUserIdentityAPI = "GetUserIdentityAPI"
 const IAMGetAliasesAPI = "GetAliasesAPI"
+const IAMPing = "DoPing"
 
 type AwsAPI interface {
 	Execute(client *iam.Client) (interface{}, error)
@@ -25,6 +26,8 @@ func NewAwsAPI(api string) AwsAPI {
 		awsAPI = GetUserIdentityAPI{}
 	case IAMGetAliasesAPI:
 		awsAPI = GetAliasesAPI{}
+	case IAMPing:
+		awsAPI = DoPing{}
 	}
 	return awsAPI
 }

@@ -1,8 +1,10 @@
 package handlers
 
 import (
+	"log"
 	"net/http"
 
+	"github.com/gorilla/mux"
 	"github.com/rajasoun/aws-hub/handlers/api"
 )
 
@@ -18,7 +20,7 @@ func (handler *AWSHandler) IAMGetUserCountHandler(w http.ResponseWriter, r *http
 		cache:    handler.cache,
 		multiple: handler.multiple,
 	}
-	api := api.NewAwsAPI(apiToBeInvoked)
+	api := GetAPI(r, apiToBeInvoked)
 	awsWrapper.InvokeAPI(api, cacheKey, onErrMsg)
 }
 
@@ -32,7 +34,7 @@ func (handler *AWSHandler) IAMGetUserIdentityHandler(w http.ResponseWriter, r *h
 		cache:    handler.cache,
 		multiple: handler.multiple,
 	}
-	api := api.NewAwsAPI(apiToBeInvoked)
+	api := GetAPI(r, apiToBeInvoked)
 	awsWrapper.InvokeAPI(api, cacheKey, onErrMsg)
 }
 
@@ -46,6 +48,16 @@ func (handler *AWSHandler) IAMGetAliasesHandler(w http.ResponseWriter, r *http.R
 		cache:    handler.cache,
 		multiple: handler.multiple,
 	}
-	api := api.NewAwsAPI(apiToBeInvoked)
+	api := GetAPI(r, apiToBeInvoked)
 	awsWrapper.InvokeAPI(api, cacheKey, onErrMsg)
+}
+
+func GetAPI(r *http.Request, apiToBeInvoked string) api.AwsAPI {
+	params := mux.Vars(r)
+	apiName := params["ApiName"]
+	if apiName == api.IAMPing {
+		log.Println(" IAM Ping API ")
+		return api.NewAwsAPI(api.IAMPing)
+	}
+	return api.NewAwsAPI(apiToBeInvoked)
 }

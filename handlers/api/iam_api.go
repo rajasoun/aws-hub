@@ -25,3 +25,14 @@ func (api GetAliasesAPI) Execute(client *iam.Client) (interface{}, error) {
 	response, err := service.GetAliases(client)
 	return response, err
 }
+
+type DoPing struct{}
+
+type Ping struct {
+	Status string `json:"status"`
+}
+
+func (api DoPing) Execute(client *iam.Client) (interface{}, error) {
+	response := Ping{Status: "Ok"}
+	return response, nil
+}
