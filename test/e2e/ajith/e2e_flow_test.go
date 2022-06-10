@@ -52,90 +52,89 @@ func TestE2E(t *testing.T) {
 				message:   "NewApp()",
 			},
 		},
-		/*	{
-				name: "NewApp to setupInfo()",
-				flow: Flow{
-					format:    "\t\t",
-					sender:    "app.hub",
-					direction: " ->> ",
-					receiver:  "app.hub",
-					message:   "setupInfo()",
-				},
+		{
+			name: "NewApp to setupInfo()",
+			flow: Flow{
+				format:    "\t\t",
+				sender:    "app.hub",
+				direction: " ->> ",
+				receiver:  "app.hub",
+				message:   "setupInfo()",
 			},
-			{
-				name: "NewApp to setupAuthor",
-				flow: Flow{
-					format:    "\t\t",
-					sender:    "app.hub",
-					direction: " ->> ",
-					receiver:  "app.hub",
-					message:   "SetupAuthor",
-				},
+		},
+		{
+			name: "NewApp to setupAuthor",
+			flow: Flow{
+				format:    "\t\t",
+				sender:    "app.hub",
+				direction: " ->> ",
+				receiver:  "app.hub",
+				message:   "SetupAuthor",
 			},
-			{
-				name: "NewApp() to Setup Command",
-				flow: Flow{
-					format:    "\t\t",
-					sender:    "app.hub",
-					direction: " ->> ",
-					receiver:  "aap.hub",
-					message:   "setupCommand()",
-					endopt:    "\n\t\tend",
-				},
+		},
+		{
+			name: "NewApp() to Setup Command",
+			flow: Flow{
+				format:    "\t\t",
+				sender:    "app.hub",
+				direction: " ->> ",
+				receiver:  "aap.hub",
+				message:   "setupCommand()",
+				endopt:    "\n\t\tend",
 			},
-			{
-				name: "startCommand to GetCommand",
-				flow: Flow{
-					format:    "\t",
-					sender:    "app.hub",
-					direction: " ->> ",
-					receiver:  "app.config.comd",
-					message:   "GetCommand()",
-				},
+		},
+		{
+			name: "startCommand to GetCommand",
+			flow: Flow{
+				format:    "\t",
+				sender:    "app.hub",
+				direction: " ->> ",
+				receiver:  "app.config.comd",
+				message:   "GetCommand()",
 			},
-			{
-				name: "GetCommand to Create Command ",
-				flow: Flow{
-					format:    "\t",
-					sender:    "app.config.cmd",
-					direction: " ->> ",
-					receiver:  "app.config.cmd",
-					message:   "CreateCommand()",
-				},
+		},
+		{
+			name: "GetCommand to Create Command ",
+			flow: Flow{
+				format:    "\t",
+				sender:    "app.config.cmd",
+				direction: " ->> ",
+				receiver:  "app.config.cmd",
+				message:   "CreateCommand()",
 			},
-			{
-				name: "CreateCommand to urfave/cli/v2",
-				flow: Flow{
-					addopt:    "\topt\n",
-					format:    "\t",
-					sender:    "app.config.cmd",
-					direction: "->>",
-					receiver:  "urfave.cli",
-					message:   "func(appCtx *cli.Context)",
-				},
+		},
+		{
+			name: "CreateCommand to urfave/cli/v2",
+			flow: Flow{
+				addopt:    "\topt\n",
+				format:    "\t",
+				sender:    "app.config.cmd",
+				direction: "->>",
+				receiver:  "urfave.cli",
+				message:   "func(appCtx *cli.Context)",
 			},
-			{
-				name: "app.hub  to  app.hub SetupOutput",
-				flow: Flow{
-					format:    "\t",
-					sender:    "app.hub",
-					direction: "->>",
-					receiver:  "app.hub",
-					message:   "SetOutput()",
-				},
+		},
+		{
+			name: "app.hub  to  app.hub SetupOutput",
+			flow: Flow{
+				format:    "\t",
+				sender:    "app.hub",
+				direction: "->>",
+				receiver:  "app.hub",
+				message:   "SetOutput()",
 			},
-				{
-					name: "app.command to app",
-					flow: Flow{
-						format:    "\t",
-						sender:    "app.hub",
-						direction: "->>",
-						receiver:  "app.config.arg",
-						message:   "Urfavc.cli.run(args)",
-					},
+		},
+		{
+			name: "app.command to app",
+			flow: Flow{
+				format:    "\t",
+				sender:    "app.hub",
+				direction: "->>",
+				receiver:  "app.config.arg",
+				message:   "Urfavc.cli.run(args)",
+			},
+		},
 
-				},
-		*/
 		{
 			name: "starting command using cli.run(args)",
 			flow: Flow{
@@ -179,7 +178,6 @@ func TestFlowOpenOrCreate(t *testing.T) {
 		assert := assert.New(t)
 		t.Parallel()
 
-		//got, _ := flowManager.CreateMarkdown(os.OpenFile)
 		got, _ := createMarkdown()
 		want := "e2e.md"
 		assert.Equal(want, got.Name(), "Flow.OpenOrCreate() = %v, want %v", got.Name(), want)
