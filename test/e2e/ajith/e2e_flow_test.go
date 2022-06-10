@@ -39,7 +39,7 @@ func TestE2E(t *testing.T) {
 		{
 			name: "Execute to newApp",
 			flow: Flow{
-				addopt:    "\topt\n",
+				addopt:    "\t\topt\n",
 				format:    "\t\t",
 				sender:    "app.hub",
 				direction: " ->> ",
@@ -75,7 +75,7 @@ func TestE2E(t *testing.T) {
 				direction: " ->> ",
 				receiver:  "aap.hub",
 				message:   "setupCommand()",
-				endopt:    "\n\tend",
+				endopt:    "\n\t\tend",
 			},
 		},
 		{
@@ -101,11 +101,43 @@ func TestE2E(t *testing.T) {
 		{
 			name: "CreateCommand to urfave/cli/v2",
 			flow: Flow{
+				addopt:    "\topt\n",
 				format:    "\t",
 				sender:    "app.config.cmd",
 				direction: "->>",
 				receiver:  "urfave.cli",
 				message:   "func(appCtx *cli.Context)",
+			},
+		},
+		{
+			name: "app.hub  to  app.hub SetupOutput",
+			flow: Flow{
+				format:    "\t",
+				sender:    "app.hub",
+				direction: "->>",
+				receiver:  "app.hub",
+				message:   "SetOutput()",
+			},
+		},
+		{
+			name: "app.command to app",
+			flow: Flow{
+				format:    "\t",
+				sender:    "app.hub",
+				direction: "->>",
+				receiver:  "app.config.arg",
+				message:   "Urfavc.cli.run(args)",
+			},
+		},
+		{
+			name: "starting command using cli.run(args)",
+			flow: Flow{
+				format:    "\t",
+				sender:    "app.cmd",
+				direction: "->>",
+				receiver:  "app.server",
+				message:   "server.Start",
+				endopt:    "\n\tend",
 			},
 		},
 	}
