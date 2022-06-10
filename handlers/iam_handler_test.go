@@ -6,6 +6,7 @@ import (
 	"os"
 	"testing"
 
+	"github.com/gorilla/mux"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -15,35 +16,45 @@ func TestIAMHandler(t *testing.T) {
 	}
 	assert := assert.New(t)
 	t.Parallel()
-	var request *http.Request
-	var response *httptest.ResponseRecorder
 
 	handler := NewDefaultAWSHandler(false)
-	router := handler.SetUpRoutes()
 
 	tests := []struct {
-		name     string
-		endPoint string
-		wantKey  string
+		name        string
+		handlerFunc func(w http.ResponseWriter, r *http.Request)
+		want        int
 	}{
 		{
-			name:     "UserCount API /aws/iam/users",
-			endPoint: "/aws/iam/users",
+			name:        "Check handler.IAMGetUserCountHandler",
+			handlerFunc: handler.IAMGetUserCountHandler,
+			want:        http.StatusOK,
 		},
 		{
-			name:     "User Identity API /aws/iam/account",
-			endPoint: "/aws/iam/account",
+			name:        "Check  handler.IAMGetUserIdentityHandler",
+			handlerFunc: handler.IAMGetUserIdentityHandler,
+			want:        http.StatusOK,
 		},
 		{
-			name:     "Account Alias API /aws/iam/alias",
-			endPoint: "/aws/iam/alias",
+			name:        "Check  handler.IAMGetAliasesHandler",
+			handlerFunc: handler.IAMGetAliasesHandler,
+			want:        http.StatusOK,
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			request, _ = http.NewRequest("GET", tt.endPoint, nil)
-			response = executeRequest(router, request)
-			assert.Equal(http.StatusOK, response.Code, "OK response is expected")
+			responseRecorder := executeHandler(tt.handlerFunc, map[string]string{})
+			got := responseRecorder.Code
+			assert.Equal(tt.want, got, "got = %v, want = %v", got, tt.want)
 		})
 	}
+}
+
+func executeHandler(handlerName func(w http.ResponseWriter, r *http.Request),
+	muxRequestVars map[string]string) *httptest.ResponseRecorder {
+	request, _ := http.NewRequest("GET", "/test", nil)
+	request = mux.SetURLVars(request, muxRequestVars)
+	responseRecorder := httptest.NewRecorder()
+	handler := http.HandlerFunc(handlerName)
+	handler.ServeHTTP(responseRecorder, request)
+	return responseRecorder
 }
