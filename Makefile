@@ -15,16 +15,19 @@ help: ## This help.
 .DEFAULT_GOAL := help
 
 # Go TASKS
-build:  bin/$(APP) test ## Build Go
+build:  build/bin/$(APP) test ## Build Go
 
-bin/$(APP): bin
+build/bin/$(APP): bin
 	go build -v -o $@ -ldflags "-X main.Version='${VERSION}'"
 
+check-for-updates:	## View minor/patch upgrades 
+	go list -u -f '{{if (and (not (or .Main .Indirect)) .Update)}}{{.Path}}: {{.Version}} -> {{.Update.Version}}{{end}}' -m all 2> /dev/null
+
 bin: clean
-	mkdir -p bin
+	mkdir -p build/bin
 
 clean: ## Clean Go
-	rm -rf bin
+	rm -rf build/bin
 
 lint: ## Go Lint
 	golangci-lint run --enable-all
@@ -36,15 +39,15 @@ tdd-watch: ## Test Watch
 	gotestsum --watch --format testname
 
 tdd-cover: ## Go Coverage
-	go test ./... -v --cover -coverprofile coverage/coverage.out
+	go test ./... -v --cover -coverprofile build/coverage/coverage.out
 	go tool cover -html=coverage/coverage.out
 
 tdd-unit: ## Prints formatted unit test output
-	export SKIP_E2E=true && gotestsum --format testname -- -coverprofile=coverage/coverage.out ./...
+	export SKIP_E2E=true && gotestsum --format testname -- -coverprofile=build/coverage/coverage.out ./...
 	@bash -c "test/coverage_check.sh"
 
 tdd-integration: ## Prints formatted integration test output
-	gotestsum --format testname -- -coverprofile=coverage/coverage.out ./...
+	gotestsum --format testname -- -coverprofile=build/coverage/coverage.out ./...
 	@bash -c "test/coverage_check.sh"
 
 install-packages: ## Install go packages

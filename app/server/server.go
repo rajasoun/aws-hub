@@ -1,12 +1,16 @@
 package server
 
 import (
+	"context"
+	"log"
 	"net/http"
 	"os"
+	"strconv"
+	"time"
 
 	"github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
-	"github.com/rajasoun/aws-hub/handlers/aws"
+	aws "github.com/rajasoun/aws-hub/handlers"
 	"github.com/rajasoun/aws-hub/service/cache"
 	"github.com/rs/cors"
 )
@@ -39,6 +43,7 @@ func NewServer(cache cache.Cache, multiple bool) (*Server, *mux.Router) {
 	server := Server{}
 	server.name = "Mux Server 0.1"
 	server.awsHandler = setUpCache(cache, multiple)
+	//Connects Routes to Handlers
 	router := server.awsHandler.SetUpRoutes()
 	server.routes = router
 	server.cors = setUpCors()
@@ -50,8 +55,15 @@ func (server *Server) GetAWSHandler() *aws.AWSHandler {
 	return server.awsHandler
 }
 
-func (server *Server) Start(port int) error {
-	httpServer := server.NewHTTPServer(string(rune(port)))
+func (server *Server) Start(port int, enableShutdown bool) error {
+	portString := ":" + strconv.Itoa(port)
+	httpServer := server.NewHTTPServer(portString)
+	if enableShutdown {
+		go func() {
+			time.Sleep(-1 * time.Second)
+			httpServer.Shutdown(context.Background())
+		}()
+	}
 	err := httpServer.StartHTTPServer()
 	return err
 }
@@ -61,6 +73,7 @@ type HTTPServer struct {
 }
 
 func (server *Server) NewHTTPServer(adr string) HTTPServer {
+	log.Println("adr ", adr)
 	return HTTPServer{
 		&http.Server{
 			Addr:    adr,
