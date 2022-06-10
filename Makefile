@@ -20,6 +20,9 @@ build:  build/bin/$(APP) test ## Build Go
 build/bin/$(APP): bin
 	go build -v -o $@ -ldflags "-X main.Version='${VERSION}'"
 
+check-for-updates:	## View minor/patch upgrades 
+	go list -u -f '{{if (and (not (or .Main .Indirect)) .Update)}}{{.Path}}: {{.Version}} -> {{.Update.Version}}{{end}}' -m all 2> /dev/null
+
 bin: clean
 	mkdir -p build/bin
 
