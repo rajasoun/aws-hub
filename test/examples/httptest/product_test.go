@@ -21,7 +21,7 @@ func TestGetProducts(t *testing.T) {
 	t.Parallel()
 	setUpStoreDB()
 	t.Run("Check Get Products", func(t *testing.T) {
-		responseRecorder := executeHandler(GetProducts, map[string]string{})
+		responseRecorder := executeHandler(GetProductsHandler, map[string]string{})
 		got := responseRecorder.Code
 		want := http.StatusOK
 		assert.Equal(got, want, "handler returned wrong status code: got %v want %v", got, want)
@@ -50,7 +50,7 @@ func TestGetProduct(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run("Check Get Products", func(t *testing.T) {
-			responseRecorder := executeHandler(GetProduct, tt.muxVars)
+			responseRecorder := executeHandler(GetProductHandler, tt.muxVars)
 			got := responseRecorder.Code
 			assert.Equal(tt.want, got, "handler returned wrong status code: got %v want %v", got, tt.want)
 		})

@@ -18,7 +18,7 @@ type Product struct {
 }
 
 // GetProducts returns all products in the store
-func GetProducts(w http.ResponseWriter, r *http.Request) {
+func GetProductsHandler(w http.ResponseWriter, r *http.Request) {
 	var products []Product
 	for _, v := range storeDB {
 		if v.InventoryCount > 0 {
@@ -30,7 +30,7 @@ func GetProducts(w http.ResponseWriter, r *http.Request) {
 }
 
 // GetProduct returns the product with the specified title
-func GetProduct(w http.ResponseWriter, r *http.Request) {
+func GetProductHandler(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
 	name := params["title"]
 	for _, v := range storeDB {
