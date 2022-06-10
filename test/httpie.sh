@@ -4,8 +4,8 @@ FAILED=()
 
 function check_status(){
     echo -e "Checking $server/$url "
-    url=$1
-    if http --check-status --ignore-stdin --timeout=3 HEAD $url &> /dev/null; then
+    url=$1 
+    if http --check-status --ignore-stdin --timeout=3 HEAD $url 'profile:secops-experiments' &> /dev/null; then
         echo 'OK!'
     else
         FAILED+=("$url")
