@@ -1,8 +1,13 @@
 package ajith
 
 import (
+	"bytes"
 	"log"
 	"testing"
+
+	"github.com/rajasoun/aws-hub/app/config/cmd"
+	"github.com/stretchr/testify/assert"
+	"github.com/urfave/cli/v2"
 )
 
 func TestE2E(t *testing.T) {
@@ -148,4 +153,22 @@ func TestE2E(t *testing.T) {
 		})
 	}
 	End()
+}
+
+func TestCommandline(t *testing.T) {
+	t.Run("flow simulation", func(t *testing.T) {
+		assert := assert.New(t)
+		var outputBuffer bytes.Buffer
+		log.SetOutput(&outputBuffer)
+		log.SetFlags(0)
+		CliContext := cli.Context{}
+		cmdhandler := cmd.CmdHandler{}
+		cmdhandler.EnableShutdDown = true
+		err := cmdhandler.StartCommand(&CliContext)
+		got := outputBuffer.String()
+		want := ":3000"
+		assert.NoError(err, "err = %v", err)
+		assert.Contains(got, want, "Server Start = %v, want =%v", got, want)
+
+	})
 }
