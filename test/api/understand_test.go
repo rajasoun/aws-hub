@@ -10,8 +10,7 @@ import (
 	"github.com/steinfletcher/apitest"
 )
 
-func Test_Flow(t *testing.T) {
-	//ToDo: Secure way of Passing Credentials
+func TestGenerateSequenceDiagram(t *testing.T) {
 	if os.Getenv("SKIP_E2E") != "" {
 		t.Skip("Skipping INTEGRATION Tests")
 	}
@@ -39,5 +38,24 @@ func Test_Flow(t *testing.T) {
 			Status(http.StatusOK).
 			End()
 	})
-
+	t.Run("User Identity API /aws/iam/users", func(t *testing.T) {
+		apitest.New("User Count API /aws/iam/users").
+			Report(apitest.SequenceDiagram()).
+			Meta(map[string]interface{}{"host": "IAMUserCountHandler"}).
+			Handler(router).
+			Get("/aws/iam/users").
+			Expect(t).
+			Status(http.StatusOK).
+			End()
+	})
+	t.Run("Account Alias API /aws/iam/alias", func(t *testing.T) {
+		apitest.New("User Count API /aws/iam/alias").
+			Report(apitest.SequenceDiagram()).
+			Meta(map[string]interface{}{"host": "IAMAccountAliasHandler"}).
+			Handler(router).
+			Get("/aws/iam/alias").
+			Expect(t).
+			Status(http.StatusOK).
+			End()
+	})
 }

@@ -38,18 +38,18 @@ func TestDoSimulation(t *testing.T) {
 	t.Run("Check DoSimulation For Ping Handler", func(t *testing.T) {
 		responseRecorder := mock.DoSimulation(PingHandler, nil)
 		got := responseRecorder.Code
-		assert.Equal(http.StatusOK, got, "got = %v, want = %v", got, http.StatusOK)
+		assert.Equal(http.StatusOK, got, "PingHandler() = %v, want = %v", got, http.StatusOK)
 	})
 	t.Run("Check DoSimulation For Success Handler", func(t *testing.T) {
 		responseRecorder := mock.DoSimulation(MockSuccessHandler, nil)
 		got := responseRecorder.Code
 		want := http.StatusOK
-		assert.Equal(want, got, "got = %v, want = %v", got, want)
+		assert.Equal(want, got, "MockSuccessHandler() = %v, want = %v", got, want)
 	})
 	t.Run("Check DoSimulation For Failure Handler", func(t *testing.T) {
 		responseRecorder := mock.DoSimulation(MockFailureHandler, nil)
 		got := responseRecorder.Code
 		want := http.StatusInternalServerError
-		assert.Equal(want, got, "got = %v, want = %v", got, want)
+		assert.Equal(want, got, "MockFailureHandler() = %v, want = %v", got, want)
 	})
 }

@@ -13,7 +13,6 @@ import (
 )
 
 func TestAPI(t *testing.T) {
-	//ToDo: Secure way of Passing Credentials
 	if os.Getenv("SKIP_E2E") != "" {
 		t.Skip("Skipping INTEGRATION Tests")
 	}
