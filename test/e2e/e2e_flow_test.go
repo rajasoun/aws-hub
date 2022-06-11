@@ -89,7 +89,7 @@ func TestSimulateExecute(t *testing.T) {
 		log.SetFlags(0)
 
 		set := flag.NewFlagSet("test", 0)
-		port, _ := test.GetFreePort()
+		port, _ := test.GetFreePort("localhost:0")
 		portString := strconv.Itoa(port)
 		_ = set.Parse([]string{"start", "--port", portString})
 

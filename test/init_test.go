@@ -17,11 +17,15 @@ func TestIsTestRun(t *testing.T) {
 		assert.Equal(want, got, "IsTestRun() = %v, want %v", got, want)
 
 	})
-	t.Run("Check GetFreePort", func(t *testing.T) {
-		_, err := GetFreePort()
+	t.Run("Check GetFreePort with Valid Address", func(t *testing.T) {
+		_, err := GetFreePort("localhost:0")
 		assert.NoError(err, "Err = %v", err)
 	})
-	t.Run("Check GetFreePort", func(t *testing.T) {
+	t.Run("Check GetFreePort with InValid Address", func(t *testing.T) {
+		_, err := GetFreePort("Invalid:Invalid")
+		assert.Error(err, "Err = %v", err)
+	})
+	t.Run("Check ExecuteHandler", func(t *testing.T) {
 		responseRecorder := ExecuteHandler(PingHandler, map[string]string{})
 		got := responseRecorder.Code
 		assert.Equal(http.StatusOK, got, "got = %v, want = %v", got, http.StatusOK)

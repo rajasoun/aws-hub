@@ -21,8 +21,8 @@ func TestAPI(t *testing.T) {
 
 	_, router := server.NewServer(&cache.Memory{}, false)
 	server := httptest.NewServer(handlers.LoggingHandler(os.Stdout, router))
-	defer server.Close()
 	expect := httpexpect.New(t, server.URL)
+	defer server.Close()
 
 	tests := []struct {
 		name     string

@@ -18,7 +18,7 @@ func TestStartCmd(t *testing.T) {
 	t.Run("Check Start Command With Custom Port Zero", func(t *testing.T) {
 		mockApp := &cli.App{Writer: ioutil.Discard}
 		set := flag.NewFlagSet("test", 0)
-		port, _ := test.GetFreePort()
+		port, _ := test.GetFreePort("localhost:0")
 		portString := strconv.Itoa(port)
 		_ = set.Parse([]string{"start", "--port", portString})
 		context := cli.NewContext(mockApp, set, nil)

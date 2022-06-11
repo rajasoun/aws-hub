@@ -37,8 +37,9 @@ func ExecuteHandler(handlerName func(w http.ResponseWriter, r *http.Request),
 }
 
 // GetFreePort asks the kernel for a free open port that is ready to use.
-func GetFreePort() (int, error) {
-	addr, err := net.ResolveTCPAddr("tcp", "localhost:0")
+func GetFreePort(address string) (int, error) {
+	//"localhost:0"
+	addr, err := net.ResolveTCPAddr("tcp", address)
 	if err != nil {
 		return 0, err
 	}
