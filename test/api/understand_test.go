@@ -19,25 +19,22 @@ func TestGenerateSequenceDiagram(t *testing.T) {
 
 	_, router := server.NewServer(&cache.Memory{}, false)
 
-	t.Run("HealthCheck API /health", func(t *testing.T) {
-		GenerateSequenceDiagram(t, router, "/health")
-	})
+	tests := []struct {
+		name     string
+		endPoint string
+	}{
+		{"HealthCheck API", "/health"},
+		{"AWS Profiles API", "/aws/profiles"},
+		{"User Identity API", "/aws/iam/account"},
+		{"Account Alias API", "/aws/iam/alias"},
+		{"User Count API", "/aws/iam/users"},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			GenerateSequenceDiagram(t, router, tt.endPoint)
+		})
+	}
 
-	t.Run("AWS Profiles API /aws/profile", func(t *testing.T) {
-		GenerateSequenceDiagram(t, router, "/aws/profiles")
-	})
-
-	t.Run("User Identity API /aws/iam/account", func(t *testing.T) {
-		GenerateSequenceDiagram(t, router, "/aws/iam/account")
-	})
-
-	t.Run("User Identity API /aws/iam/users", func(t *testing.T) {
-		GenerateSequenceDiagram(t, router, "/aws/iam/users")
-	})
-
-	t.Run("Account Alias API /aws/iam/alias", func(t *testing.T) {
-		GenerateSequenceDiagram(t, router, "/aws/iam/alias")
-	})
 }
 
 func GenerateSequenceDiagram(t *testing.T, router *mux.Router, endPoint string) {
