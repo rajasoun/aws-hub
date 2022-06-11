@@ -1,11 +1,12 @@
 package handlers
 
 import (
-	"io"
+	"errors"
 	"net/http"
 	"testing"
 
 	"github.com/aws/aws-sdk-go-v2/service/iam"
+	"github.com/rajasoun/aws-hub/service/cache"
 	"github.com/rajasoun/aws-hub/test"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
@@ -66,35 +67,37 @@ func (mockFunc *MockAwsAPI) Execute(client *iam.Client) (interface{}, error) {
 }
 
 func TestInvokeAPI(t *testing.T) {
-	assert := assert.New(t)
 	t.Parallel()
 	awsHandler := NewDefaultAWSHandler(false)
-	mockServer := test.MockServer{}
-
 	t.Run("Check InvokeAPI for Success", func(t *testing.T) {
-		request, _ := http.NewRequest("GET", "/test", nil)
-		responseWriter := mockServer.DoSimulation(test.MockSuccessHandler, nil)
-		awsWrapper := AWSWrapper{
-			request:  request,
-			writer:   responseWriter,
-			cache:    awsHandler.cache,
-			multiple: awsHandler.multiple,
-		}
-		// Inject Mock Function to be Called along with Resturn values as Parameter
+		awsWrapper := MockAWSWrapper(test.MockSuccessHandler, awsHandler.cache, awsHandler.multiple)
+		expectedOutput := &MockOutput{Message: "Test with Success"}
 		client := new(MockAwsAPI)
-		expectedOutput := &MockOutput{Message: "Test"}
 		client.On("Execute", mock.Anything).Return(expectedOutput, nil)
 		awsWrapper.InvokeAPI(client, "dummy", "dummy")
-		//For Checking Cache
+		// Check Cache
 		awsWrapper.InvokeAPI(client, "dummy", "dummy")
 	})
-
-	t.Run("Check InvokeAPI for Err", func(t *testing.T) {
-		responseWriter := mockServer.DoSimulation(test.MockFailureHandler, nil)
-		gotStatusCode := responseWriter.Result().StatusCode
-		assert.Equal(gotStatusCode, http.StatusInternalServerError)
-		body, _ := io.ReadAll(responseWriter.Result().Body)
-		gotBody := string(body)
-		assert.Contains(gotBody, "error")
+	t.Run("Check InvokeAPI for Failure", func(t *testing.T) {
+		awsWrapper := MockAWSWrapper(test.MockFailureHandler, awsHandler.cache,
+			awsHandler.multiple)
+		expectedOutput := &MockOutput{Message: "Test with Failure"}
+		client := new(MockAwsAPI)
+		client.On("Execute", mock.Anything).Return(expectedOutput, errors.New("simulated error"))
+		awsWrapper.InvokeAPI(client, "dummy", "Simulated Error")
 	})
+}
+
+func MockAWSWrapper(handler func(w http.ResponseWriter, r *http.Request),
+	cache cache.Cache, multiple bool) *AWSWrapper {
+	mockServer := test.MockServer{}
+	request, _ := http.NewRequest("GET", "/test", nil)
+	responseWriter := mockServer.DoSimulation(handler, nil)
+	awsWrapper := AWSWrapper{
+		request:  request,
+		writer:   responseWriter,
+		cache:    cache,
+		multiple: multiple,
+	}
+	return &awsWrapper
 }
