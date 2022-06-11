@@ -10,6 +10,8 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
+const mockErr = "Mock Error"
+
 func NewRedisClient(server *miniredis.Miniredis) *Redis {
 	r := &Redis{
 		Addr:       server.Host() + ":" + server.Port(),
@@ -59,7 +61,7 @@ func TestRedisPing(t *testing.T) {
 			case tt.wantErr == true: //Edge Case
 				var outputBuffer bytes.Buffer
 				log.SetOutput(&outputBuffer)
-				server.SetError("Mock Error")
+				server.SetError(mockErr)
 				err := client.Ping()
 				assert.Error(err, "Err err = %v ", err)
 				gotLog := outputBuffer.String()
@@ -97,7 +99,7 @@ func TestRedisGetSet(t *testing.T) {
 			key:      "Key",
 			value:    map[string]interface{}{"foo": make(chan int)},
 			wantType: "RedisCache",
-			want:     "Mock Error",
+			want:     mockErr,
 			wantErr:  true,
 		},
 	}
@@ -120,7 +122,7 @@ func TestRedisGetSet(t *testing.T) {
 				assert.False(foundKey, "Cache Set & Get Should Fail with Injected Err = %v", tt.key)
 				assert.Empty(got, "Get () = %v", got)
 				//With Redis Error
-				server.SetError("Mock Error")
+				server.SetError(mockErr)
 				errMock := client.Set(tt.key, "dummy")
 				assert.Error(errMock, "Simulated Err Failed err = %v ", errMock)
 			}
