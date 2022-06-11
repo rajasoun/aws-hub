@@ -32,6 +32,9 @@ clean: ## Clean Go
 lint: ## Go Lint
 	golangci-lint run --enable-all
 
+gosec: ## Lint Go Code for security issues
+	gosec -fmt=json -out=build/security/results.json -stdout --verbose=text  ./...
+
 tdd:  ## Test Go
 	go test ./... -v
 
@@ -55,3 +58,4 @@ tdd-understand: ## Generate Sequence Diagram
 install-packages: ## Install go packages
 	go install -v gotest.tools/gotestsum@latest
 	go install -v github.com/cweill/gotests/gotests@latest
+	go install github.com/securego/gosec/v2/cmd/gosec@latest
