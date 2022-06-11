@@ -3,6 +3,7 @@ package credential
 import (
 	"testing"
 
+	"github.com/aws/aws-sdk-go-v2/config"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -52,4 +53,38 @@ func TestCredentialLoaderGetSections(t *testing.T) {
 		assert.GreaterOrEqual(len(got.List()), want,
 			"CredentialLoader.GetSections() = %v , want = %v", len(got.List()), want)
 	})
+}
+
+func TestFileExists(t *testing.T) {
+	assert := assert.New(t)
+	t.Parallel()
+	type args struct {
+		filename string
+	}
+	tests := []struct {
+		name string
+		args args
+		want bool
+	}{
+		{
+			name: "Check File with Relative Path",
+			args: args{
+				filename: config.DefaultSharedCredentialsFilename(),
+			},
+			want: true,
+		},
+		{
+			name: "Check File with Relative Path",
+			args: args{
+				filename: ".aws/credentials",
+			},
+			want: false,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got := fileExists(tt.args.filename)
+			assert.Equal(tt.want, got, "fileExists() = %v, want = %v", got, tt.want)
+		})
+	}
 }

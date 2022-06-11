@@ -60,9 +60,9 @@ func (credLoader *CredentialLoader) LoadDefaultConfigForProfile(profile string) 
 //     If successful, Returns sections within the ~/.aws/credential file
 //     Otherwise, empty sections and an error.
 func (credLoader *CredentialLoader) GetSections() (ini.Sections, error) {
-	credentialFile := "$HOME/.aws/credentials"
+	credentialFile := config.DefaultSharedCredentialsFilename()
 	if fileExists(credentialFile) {
-		return ini.OpenFile(config.DefaultSharedCredentialsFilename())
+		return ini.OpenFile(credentialFile)
 	} else {
 		return ini.Sections{}, errors.New("credential file is not available")
 	}
