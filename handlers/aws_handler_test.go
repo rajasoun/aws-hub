@@ -6,7 +6,6 @@ import (
 	"testing"
 
 	"github.com/aws/aws-sdk-go-v2/service/iam"
-	"github.com/rajasoun/aws-hub/service/cache"
 	"github.com/rajasoun/aws-hub/test"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
@@ -68,9 +67,8 @@ func (mockFunc *MockAwsAPI) Execute(client *iam.Client) (interface{}, error) {
 
 func TestInvokeAPI(t *testing.T) {
 	t.Parallel()
-	awsHandler := NewDefaultAWSHandler(false)
 	t.Run("Check InvokeAPI for Success", func(t *testing.T) {
-		awsWrapper := MockAWSWrapper(test.MockSuccessHandler, awsHandler.cache, awsHandler.multiple)
+		awsWrapper := MockAWSWrapper(test.MockSuccessHandler)
 		expectedOutput := &MockOutput{Message: "Test with Success"}
 		client := new(MockAwsAPI)
 		client.On("Execute", mock.Anything).Return(expectedOutput, nil)
@@ -79,8 +77,7 @@ func TestInvokeAPI(t *testing.T) {
 		awsWrapper.InvokeAPI(client, "dummy", "dummy")
 	})
 	t.Run("Check InvokeAPI for Failure", func(t *testing.T) {
-		awsWrapper := MockAWSWrapper(test.MockFailureHandler, awsHandler.cache,
-			awsHandler.multiple)
+		awsWrapper := MockAWSWrapper(test.MockFailureHandler)
 		expectedOutput := &MockOutput{Message: "Test with Failure"}
 		client := new(MockAwsAPI)
 		client.On("Execute", mock.Anything).Return(expectedOutput, errors.New("simulated error"))
@@ -88,16 +85,16 @@ func TestInvokeAPI(t *testing.T) {
 	})
 }
 
-func MockAWSWrapper(handler func(w http.ResponseWriter, r *http.Request),
-	cache cache.Cache, multiple bool) *AWSWrapper {
+func MockAWSWrapper(handler func(w http.ResponseWriter, r *http.Request)) *AWSWrapper {
+	awsHandler := NewDefaultAWSHandler(false)
 	mockServer := test.MockServer{}
 	request, _ := http.NewRequest("GET", "/test", nil)
 	responseWriter := mockServer.DoSimulation(handler, nil)
 	awsWrapper := AWSWrapper{
 		request:  request,
 		writer:   responseWriter,
-		cache:    cache,
-		multiple: multiple,
+		cache:    awsHandler.cache,
+		multiple: awsHandler.multiple,
 	}
 	return &awsWrapper
 }
