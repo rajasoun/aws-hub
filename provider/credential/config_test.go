@@ -19,11 +19,6 @@ func TestLoadDefaultProfile(t *testing.T) {
 		assert.NoError(err, "LoadDefaultProfile() error = %v", err)
 		assert.Equal(got, want, "LoadDefaultProfile() = %v, want %v", got, want)
 	})
-	t.Run("Check Load Default Profile For Err", func(t *testing.T) {
-		t.Skip("Failing Test")
-		_, err := credLoader.LoadDefaultConfig()
-		assert.Error(err, "LoadDefaultProfile() error = %v", err)
-	})
 }
 
 func TestLoadDefaultConfigForProfile(t *testing.T) {
@@ -35,13 +30,8 @@ func TestLoadDefaultConfigForProfile(t *testing.T) {
 		cfg, err := credLoader.LoadDefaultConfigForProfile(profile)
 		got := cfg.Region
 		want := "us-east-1"
-		assert.NoError(err, "LoadDefaultProfile() error = %v", err)
+		assert.NoError(err, "LoadDefaultConfigForProfile() error = %v", err)
 		assert.Equal(got, want, "LoadDefaultProfile() = %v, want %v", got, want)
-	})
-	t.Run("Check Load Default Profile For Err", func(t *testing.T) {
-		t.Skip("Failing Test")
-		_, err := credLoader.LoadDefaultConfigForProfile(profile)
-		assert.Error(err, "LoadDefaultProfile() error = %v", err)
 	})
 }
 

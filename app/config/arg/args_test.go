@@ -7,7 +7,7 @@ import (
 	"github.com/urfave/cli/v2"
 )
 
-func Test_hub_config_arg_NewCliContext(t *testing.T) {
+func TestNewCliContext(t *testing.T) {
 	assert := assert.New(t)
 	cliContext := NewCliContext(&cli.Context{})
 	t.Parallel()
