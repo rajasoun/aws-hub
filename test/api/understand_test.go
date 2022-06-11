@@ -5,6 +5,7 @@ import (
 	"os"
 	"testing"
 
+	"github.com/gorilla/mux"
 	"github.com/rajasoun/aws-hub/app/server"
 	"github.com/rajasoun/aws-hub/service/cache"
 	"github.com/steinfletcher/apitest"
@@ -19,43 +20,32 @@ func TestGenerateSequenceDiagram(t *testing.T) {
 	_, router := server.NewServer(&cache.Memory{}, false)
 
 	t.Run("HealthCheck API /health", func(t *testing.T) {
-		apitest.New("Health Check API  /health").
-			Report(apitest.SequenceDiagram()).
-			Meta(map[string]interface{}{"host": "HealthCheckHandler"}).
-			Handler(router).
-			Get("/health").
-			Expect(t).
-			Status(http.StatusOK).
-			End()
+		GenerateSequenceDiagram(t, router, "/health")
 	})
+
+	t.Run("AWS Profiles API /aws/profile", func(t *testing.T) {
+		GenerateSequenceDiagram(t, router, "/aws/profiles")
+	})
+
 	t.Run("User Identity API /aws/iam/account", func(t *testing.T) {
-		apitest.New("User Identity API /aws/iam/account").
-			Report(apitest.SequenceDiagram()).
-			Meta(map[string]interface{}{"host": "IAMUserHandler"}).
-			Handler(router).
-			Get("/aws/iam/account").
-			Expect(t).
-			Status(http.StatusOK).
-			End()
+		GenerateSequenceDiagram(t, router, "/aws/iam/account")
 	})
+
 	t.Run("User Identity API /aws/iam/users", func(t *testing.T) {
-		apitest.New("User Count API /aws/iam/users").
-			Report(apitest.SequenceDiagram()).
-			Meta(map[string]interface{}{"host": "IAMUserCountHandler"}).
-			Handler(router).
-			Get("/aws/iam/users").
-			Expect(t).
-			Status(http.StatusOK).
-			End()
+		GenerateSequenceDiagram(t, router, "/aws/iam/users")
 	})
+
 	t.Run("Account Alias API /aws/iam/alias", func(t *testing.T) {
-		apitest.New("User Count API /aws/iam/alias").
-			Report(apitest.SequenceDiagram()).
-			Meta(map[string]interface{}{"host": "IAMAccountAliasHandler"}).
-			Handler(router).
-			Get("/aws/iam/alias").
-			Expect(t).
-			Status(http.StatusOK).
-			End()
+		GenerateSequenceDiagram(t, router, "/aws/iam/alias")
 	})
+}
+
+func GenerateSequenceDiagram(t *testing.T, router *mux.Router, endPoint string) {
+	apitest.New("Check End Point -> " + endPoint).
+		Report(apitest.SequenceDiagram()).
+		Handler(router).
+		Get(endPoint).
+		Expect(t).
+		Status(http.StatusOK).
+		End()
 }
