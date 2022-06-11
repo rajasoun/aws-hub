@@ -9,6 +9,8 @@ import (
 	"github.com/rajasoun/aws-hub/app/server"
 	"github.com/rajasoun/aws-hub/service/cache"
 	"github.com/steinfletcher/apitest"
+
+	routes "github.com/rajasoun/aws-hub/handlers"
 )
 
 func TestGenerateSequenceDiagram(t *testing.T) {
@@ -23,11 +25,11 @@ func TestGenerateSequenceDiagram(t *testing.T) {
 		name     string
 		endPoint string
 	}{
-		{"HealthCheck API", "/health"},
-		{"AWS Profiles API", "/aws/profiles"},
-		{"User Identity API", "/aws/iam/account"},
-		{"Account Alias API", "/aws/iam/alias"},
-		{"User Count API", "/aws/iam/users"},
+		{"HealthCheck API", routes.HealthEndPoint},
+		{"AWS Profiles API", routes.LocalProfilesEndPoint},
+		{"User Identity API", routes.UserIdentityEndPoint},
+		{"Account Alias API", routes.AccountAliasEndPoint},
+		{"User Count API", routes.UsersCountEndPoint},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
