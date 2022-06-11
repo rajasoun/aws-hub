@@ -24,21 +24,20 @@ func TestGetProducts(t *testing.T) {
 		responseRecorder := mock.DoSimulation(GetProductsHandler, map[string]string{})
 		got := responseRecorder.Code
 		want := http.StatusOK
-		assert.Equal(got, want, "handler returned wrong status code: got %v want %v", got, want)
+		assert.Equal(got, want, "GetProductsHandler() = %v want %v", got, want)
 	})
 	t.Run("Check Get Products For Empty Store", func(t *testing.T) {
 		storeDB = nil
 		responseRecorder := mock.DoSimulation(GetProductsHandler, map[string]string{})
 		got := responseRecorder.Code
 		want := http.StatusBadRequest
-		assert.Equal(got, want, "handler returned wrong status code: got %v want %v", got, want)
+		assert.Equal(got, want, "Empty storeDB GetProductsHandler() = %v want %v", got, want)
 	})
 }
 
 func TestGetProduct(t *testing.T) {
 	assert := assert.New(t)
 	t.Parallel()
-	setUpStoreDB()
 	mock := test.MockServer{}
 	tests := []struct {
 		name    string
@@ -57,10 +56,11 @@ func TestGetProduct(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
+		setUpStoreDB()
 		t.Run("Check Get Products", func(t *testing.T) {
 			responseRecorder := mock.DoSimulation(GetProductHandler, tt.muxVars)
 			got := responseRecorder.Code
-			assert.Equal(tt.want, got, "handler returned wrong status code: got %v want %v", got, tt.want)
+			assert.Equal(tt.want, got, "GetProductHandler() = %v want %v", got, tt.want)
 		})
 	}
 }
