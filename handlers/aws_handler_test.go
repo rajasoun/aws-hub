@@ -3,10 +3,10 @@ package handlers
 import (
 	"io"
 	"net/http"
-	"net/http/httptest"
 	"testing"
 
 	"github.com/aws/aws-sdk-go-v2/service/iam"
+	"github.com/rajasoun/aws-hub/test"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
 )
@@ -69,12 +69,17 @@ func TestInvokeAPI(t *testing.T) {
 	assert := assert.New(t)
 	t.Parallel()
 	awsHandler := NewDefaultAWSHandler(false)
+	mockServer := test.MockServer{}
 
 	t.Run("Check InvokeAPI for Success", func(t *testing.T) {
-		responseWriter, awsWrapper := simulateAPICall(awsHandler, false)
-		gotStatusCode := responseWriter.Result().StatusCode
-		assert.Equal(gotStatusCode, http.StatusOK)
-
+		request, _ := http.NewRequest("GET", "/test", nil)
+		responseWriter := mockServer.DoSimulation(test.MockSuccessHandler, nil)
+		awsWrapper := AWSWrapper{
+			request:  request,
+			writer:   responseWriter,
+			cache:    awsHandler.cache,
+			multiple: awsHandler.multiple,
+		}
 		// Inject Mock Function to be Called along with Resturn values as Parameter
 		client := new(MockAwsAPI)
 		expectedOutput := &MockOutput{Message: "Test"}
@@ -85,37 +90,11 @@ func TestInvokeAPI(t *testing.T) {
 	})
 
 	t.Run("Check InvokeAPI for Err", func(t *testing.T) {
-		responseWriter, _ := simulateAPICall(awsHandler, true)
+		responseWriter := mockServer.DoSimulation(test.MockFailureHandler, nil)
 		gotStatusCode := responseWriter.Result().StatusCode
 		assert.Equal(gotStatusCode, http.StatusInternalServerError)
 		body, _ := io.ReadAll(responseWriter.Result().Body)
 		gotBody := string(body)
 		assert.Contains(gotBody, "error")
 	})
-}
-
-func simulateAPICall(awsHandler *AWSHandler, injectFailure bool) (*httptest.ResponseRecorder, AWSWrapper) {
-	var hardcodedResponse string
-	handler := func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Set("Content-Type", "text/json")
-		if injectFailure {
-			hardcodedResponse = `{"Message":"simulated error"}`
-			w.WriteHeader(http.StatusInternalServerError)
-		} else {
-			hardcodedResponse = `{"Message":"test simulation"}`
-			w.WriteHeader(http.StatusOK)
-		}
-		io.WriteString(w, hardcodedResponse)
-	}
-	request := httptest.NewRequest("GET", "http://localhost:3000/something", nil)
-	responseWriter := httptest.NewRecorder()
-	handler(responseWriter, request)
-
-	awsWrapper := AWSWrapper{
-		request:  request,
-		writer:   responseWriter,
-		cache:    awsHandler.cache,
-		multiple: awsHandler.multiple,
-	}
-	return responseWriter, awsWrapper
 }

@@ -3,6 +3,7 @@ package test
 import (
 	"flag"
 	"fmt"
+	"io"
 	"net"
 	"net/http"
 	"net/http/httptest"
@@ -53,4 +54,18 @@ func (mock *MockServer) DoSimulation(handlerName func(w http.ResponseWriter, r *
 	handler := http.HandlerFunc(handlerName)
 	handler.ServeHTTP(responseRecorder, request)
 	return responseRecorder
+}
+
+func MockSuccessHandler(responseWriter http.ResponseWriter, request *http.Request) {
+	responseWriter.Header().Set("Content-Type", "text/json")
+	responseWriter.WriteHeader(http.StatusOK)
+	payLoad := `{"Message":"test simulation"}`
+	io.WriteString(responseWriter, payLoad)
+}
+
+func MockFailureHandler(responseWriter http.ResponseWriter, request *http.Request) {
+	responseWriter.Header().Set("Content-Type", "text/json")
+	responseWriter.WriteHeader(http.StatusInternalServerError)
+	payLoad := `{"Message":"simulated error"}`
+	io.WriteString(responseWriter, payLoad)
 }
