@@ -1,6 +1,7 @@
 package credential
 
 import (
+	"os"
 	"testing"
 
 	"github.com/aws/aws-sdk-go-v2/config"
@@ -83,6 +84,7 @@ func TestCredentialLoaderGetSections(t *testing.T) {
 func TestFileExists(t *testing.T) {
 	assert := assert.New(t)
 	t.Parallel()
+	baseDir, _ := os.Getwd()
 	type args struct {
 		filename string
 	}
@@ -94,22 +96,22 @@ func TestFileExists(t *testing.T) {
 		{
 			name: "Check File with Relative Path",
 			args: args{
-				filename: config.DefaultSharedCredentialsFilename(),
+				filename: ".aws/credentials",
 			},
-			want: true,
+			want: false,
 		},
 		{
 			name: "Check File with Relative Path",
 			args: args{
-				filename: ".aws/credentials",
+				filename: baseDir + "/config.go",
 			},
-			want: false,
+			want: true,
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			got := fileExists(tt.args.filename)
-			assert.Equal(tt.want, got, "fileExists() = %v, want = %v", got, tt.want)
+			assert.Equal(tt.want, got, "fileExists() = %v, want = %v for file %v", got, tt.want, tt.args.filename)
 		})
 	}
 }
