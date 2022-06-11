@@ -1,7 +1,7 @@
 package cmd
 
 import (
-	"reflect"
+	"io/ioutil"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -11,21 +11,16 @@ import (
 func TestGetErrCommand(t *testing.T) {
 	t.Parallel()
 	assert := assert.New(t)
-	tests := []struct {
-		name string
-		want func(appCtx *cli.Context, command string)
-	}{
-		{
-			name: "Check ErrCommand",
-			want: func(appCtx *cli.Context, command string) {
-			},
-		},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			got := reflect.TypeOf(ErrCommand())
-			want := reflect.TypeOf(tt.want)
-			assert.Equal(want, got, "reflect.TypeOf(GetErrCommand() = %v , want = %v", got, want)
-		})
-	}
+	t.Run("Check ErrCommand With Invalid Input", func(t *testing.T) {
+		mockApp := &cli.App{Writer: ioutil.Discard}
+		cmdhandler := CmdHandler{}
+		cmdhandler.EnableShutdDown = false
+		startCommand := GetCommand(cmdhandler.StartCommand)
+		commands := []*cli.Command{&startCommand}
+		mockApp.Commands = commands
+		mockApp.CommandNotFound = ErrCommand()
+
+		err := mockApp.Run([]string{"invalidCommand"})
+		assert.NoError(err, "err = %v ", err)
+	})
 }
