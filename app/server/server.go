@@ -16,11 +16,12 @@ import (
 )
 
 type Server struct {
-	name        string
-	httpHandler http.Handler
-	awsHandler  *aws.AWSHandler
-	routes      *mux.Router
-	cors        *cors.Cors
+	name             string
+	httpHandler      http.Handler
+	awsHandler       *aws.AWSHandler
+	routes           *mux.Router
+	cors             *cors.Cors
+	shutdownDuration time.Duration
 }
 
 //var awsHandler *aws.AWSHandler
@@ -60,7 +61,8 @@ func (server *Server) Start(port int, enableShutdown bool) error {
 	httpServer := server.NewHTTPServer(portString)
 	if enableShutdown {
 		go func() {
-			time.Sleep(-1 * time.Second)
+			duration := server.shutdownDuration
+			time.Sleep(duration * time.Second)
 			httpServer.Shutdown(context.Background())
 		}()
 	}

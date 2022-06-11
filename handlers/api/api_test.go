@@ -29,6 +29,10 @@ func TestNewAwsAPI(t *testing.T) {
 			name:    "Check NewAwsAPI for GetAliasesAPI",
 			apiName: IAMGetAliasesAPI,
 		},
+		{
+			name:    "Check NewAwsAPI for Ping",
+			apiName: IAMPing,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {

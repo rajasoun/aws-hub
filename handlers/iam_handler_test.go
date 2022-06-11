@@ -6,15 +6,13 @@ import (
 
 	"github.com/rajasoun/aws-hub/test"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/mock"
 )
 
-func TestIAMHandler(t *testing.T) {
-	// if os.Getenv("SKIP_E2E") != "" {
-	// 	t.Skip("Skipping INTEGRATION Tests")
-	// }
+func TestIAMHandlerWithPing(t *testing.T) {
 	assert := assert.New(t)
 	t.Parallel()
-
+	mockServer := test.MockServer{}
 	handler := NewDefaultAWSHandler(false)
 
 	tests := []struct {
@@ -41,12 +39,26 @@ func TestIAMHandler(t *testing.T) {
 			handlerFunc: handler.IAMGetAliasesHandler,
 			want:        http.StatusOK,
 		},
+		{
+			name:        "Check  handler.IAMGetAliasesHandler",
+			muxVars:     map[string]string{"None": "None"},
+			handlerFunc: handler.IAMGetAliasesHandler,
+			want:        http.StatusOK,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			responseRecorder := test.ExecuteHandler(tt.handlerFunc, tt.muxVars)
+			responseRecorder := mockServer.DoSimulation(tt.handlerFunc, tt.muxVars)
 			got := responseRecorder.Code
 			assert.Equal(tt.want, got, "got = %v, want = %v", got, tt.want)
+
+			awsWrapper := MockAWSWrapper(test.MockSuccessHandler)
+			expectedOutput := &MockOutput{Message: "Test with Success"}
+			client := new(MockAwsAPI)
+			client.On("Execute", mock.Anything).Return(expectedOutput, nil)
+			awsWrapper.InvokeAPI(client, "dummy", "dummy")
+			// Check Cache
+			awsWrapper.InvokeAPI(client, "dummy", "dummy")
 		})
 	}
 }

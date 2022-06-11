@@ -1,4 +1,4 @@
-package test
+package api_test
 
 import (
 	"net/http"
@@ -13,7 +13,6 @@ import (
 )
 
 func TestAPI(t *testing.T) {
-	//ToDo: Secure way of Passing Credentials
 	if os.Getenv("SKIP_E2E") != "" {
 		t.Skip("Skipping INTEGRATION Tests")
 	}
@@ -21,8 +20,8 @@ func TestAPI(t *testing.T) {
 
 	_, router := server.NewServer(&cache.Memory{}, false)
 	server := httptest.NewServer(handlers.LoggingHandler(os.Stdout, router))
-	defer server.Close()
 	expect := httpexpect.New(t, server.URL)
+	defer server.Close()
 
 	tests := []struct {
 		name     string

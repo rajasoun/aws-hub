@@ -29,6 +29,9 @@ func TestNewServer(t *testing.T) {
 			assert.NotNil(gotHandler, "awsHandler = %v", gotHandler)
 			err := server.Start(999999999, false)
 			assert.Error(err, "Invalid Port err = %v ", err)
+			server.shutdownDuration = 0
+			serverErr := server.Start(0, true)
+			assert.NoError(serverErr, "server start on port 0 = %v ", err)
 		})
 	}
 }
@@ -38,7 +41,7 @@ func TestHTTPServerStart(t *testing.T) {
 	server, _ := NewServer(cliContext.GetCache(), cliContext.GetAwsProfileType())
 	srv := server.NewHTTPServer(":45566")
 	go func() {
-		time.Sleep(1 * time.Second)
+		time.Sleep(0 * time.Second)
 		srv.Shutdown(context.Background())
 	}()
 	err := srv.StartHTTPServer()

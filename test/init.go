@@ -3,6 +3,8 @@ package test
 import (
 	"flag"
 	"fmt"
+	"io"
+	"net"
 	"net/http"
 	"net/http/httptest"
 	"testing"
@@ -25,7 +27,31 @@ func IsTestRun() bool {
 	return verbose || isTest
 }
 
-func ExecuteHandler(handlerName func(w http.ResponseWriter, r *http.Request),
+// GetFreePort asks the kernel for a free open port that is ready to use.
+func GetFreePort(address string) (int, error) {
+	//"localhost:0"
+	addr, err := net.ResolveTCPAddr("tcp", address)
+	if err != nil {
+		return 0, err
+	}
+
+	l, err := createTCPListener(addr)
+	if err != nil {
+		return 0, err
+	}
+	defer l.Close()
+	return l.Addr().(*net.TCPAddr).Port, nil
+}
+
+func createTCPListener(addr *net.TCPAddr) (*net.TCPListener, error) {
+	l, err := net.ListenTCP("tcp", addr)
+	return l, err
+}
+
+type MockServer struct {
+}
+
+func (mock *MockServer) DoSimulation(handlerName func(w http.ResponseWriter, r *http.Request),
 	muxRequestVars map[string]string) *httptest.ResponseRecorder {
 	request, _ := http.NewRequest("GET", "/test", nil)
 	request = mux.SetURLVars(request, muxRequestVars)
@@ -33,4 +59,18 @@ func ExecuteHandler(handlerName func(w http.ResponseWriter, r *http.Request),
 	handler := http.HandlerFunc(handlerName)
 	handler.ServeHTTP(responseRecorder, request)
 	return responseRecorder
+}
+
+func MockSuccessHandler(responseWriter http.ResponseWriter, request *http.Request) {
+	responseWriter.Header().Set("Content-Type", "text/json")
+	responseWriter.WriteHeader(http.StatusOK)
+	payLoad := `{"Message":"test simulation"}`
+	io.WriteString(responseWriter, payLoad)
+}
+
+func MockFailureHandler(responseWriter http.ResponseWriter, request *http.Request) {
+	responseWriter.Header().Set("Content-Type", "text/json")
+	responseWriter.WriteHeader(http.StatusInternalServerError)
+	payLoad := `{"Message":"simulated error"}`
+	io.WriteString(responseWriter, payLoad)
 }

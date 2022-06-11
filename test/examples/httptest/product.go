@@ -2,7 +2,7 @@ package spike
 
 import (
 	"encoding/json"
-	"log"
+	"fmt"
 	"net/http"
 
 	"github.com/gorilla/mux"
@@ -18,30 +18,45 @@ type Product struct {
 }
 
 // GetProducts returns all products in the store
-func GetProductsHandler(w http.ResponseWriter, r *http.Request) {
+func GetProductsHandler(responseWriter http.ResponseWriter, request *http.Request) {
 	var products []Product
 	for _, v := range storeDB {
 		if v.InventoryCount > 0 {
 			products = append(products, v)
 		}
 	}
-	json.NewEncoder(w).Encode(products)
-
+	if len(products) > 0 {
+		RespondWithJSON(responseWriter, products, http.StatusOK)
+	} else { // Handle Empty Result
+		errMsg := "Store is Empty"
+		RespondWithErrorJSON(responseWriter, errMsg)
+	}
 }
 
 // GetProduct returns the product with the specified title
-func GetProductHandler(w http.ResponseWriter, r *http.Request) {
-	params := mux.Vars(r)
+func GetProductHandler(responseWriter http.ResponseWriter, request *http.Request) {
+	params := mux.Vars(request)
 	name := params["title"]
-	for _, v := range storeDB {
-		if v.Name == name {
-			log.Printf("SAME -> v.Title = %v, title = %v", v.Name, name)
-			json.NewEncoder(w).Encode(v)
+	for _, product := range storeDB {
+		if product.Name == name {
+			RespondWithJSON(responseWriter, product, http.StatusOK)
 			return
 		}
 	}
 	//if no product is found
-	log.Printf("Not Found Product for Name = %v", name)
-	w.WriteHeader(http.StatusBadRequest)
-	json.NewEncoder(w).Encode("Not Found")
+	errMsg := fmt.Sprintf("Not Found Product for Name = %v", name)
+	RespondWithErrorJSON(responseWriter, errMsg)
+}
+
+func RespondWithJSON(responseWriter http.ResponseWriter, payload interface{}, code int) {
+	jsonPayLoad, _ := json.Marshal(payload)
+	responseWriter.Header().Set("Content-Type", "application/json")
+	responseWriter.WriteHeader(code)
+	responseWriter.Write(jsonPayLoad)
+}
+
+func RespondWithErrorJSON(responseWriter http.ResponseWriter, errMsg string) {
+	code := http.StatusBadRequest
+	payload := map[string]string{"error": errMsg}
+	RespondWithJSON(responseWriter, payload, code)
 }
