@@ -9,6 +9,7 @@ import (
 	"github.com/gavv/httpexpect"
 	"github.com/gorilla/handlers"
 	"github.com/rajasoun/aws-hub/app/server"
+	routes "github.com/rajasoun/aws-hub/handlers"
 	"github.com/rajasoun/aws-hub/service/cache"
 )
 
@@ -30,27 +31,27 @@ func TestAPI(t *testing.T) {
 	}{
 		{
 			name:     "HealthCheck API /health",
-			endPoint: "/health",
+			endPoint: routes.HealthEndPoint,
 			wantKey:  "http-server-alive",
 		},
 		{
 			name:     "Profiles API /aws/profiles",
-			endPoint: "/aws/profiles",
+			endPoint: routes.LocalProfilesEndPoint,
 			wantKey:  "multiple",
 		},
 		{
 			name:     "UserCount API /aws/iam/users",
-			endPoint: "/aws/iam/users",
+			endPoint: routes.UsersCountEndPoint,
 			wantKey:  "usercount",
 		},
 		{
 			name:     "User Identity API /aws/iam/account",
-			endPoint: "/aws/iam/account",
+			endPoint: routes.UserIdentityEndPoint,
 			wantKey:  "username",
 		},
 		{
 			name:     "Account Alias API /aws/iam/alias",
-			endPoint: "/aws/iam/alias",
+			endPoint: routes.AccountAliasEndPoint,
 			wantKey:  "list",
 		},
 	}
