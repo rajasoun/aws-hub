@@ -13,6 +13,7 @@ import (
 func TestAWSHandlerGetSections(t *testing.T) {
 	assert := assert.New(t)
 	t.Parallel()
+	mock := test.MockServer{}
 	tests := []struct {
 		name           string
 		credentialFile string
@@ -32,7 +33,7 @@ func TestAWSHandlerGetSections(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			handler := NewDefaultAWSHandler(tt.isMultiple)
-			responseWriter := test.ExecuteHandler(PingHandler, nil)
+			responseWriter := mock.DoSimulation(PingHandler, nil)
 			credentialFile := tt.credentialFile
 			sections := handler.GetSections(responseWriter, credentialFile)
 			assert.GreaterOrEqual(len(sections), 0, "GetSections() = %v, want >= %v", len(sections), 0)

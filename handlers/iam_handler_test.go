@@ -14,7 +14,7 @@ func TestIAMHandler(t *testing.T) {
 	// }
 	assert := assert.New(t)
 	t.Parallel()
-
+	mock := test.MockServer{}
 	handler := NewDefaultAWSHandler(false)
 
 	tests := []struct {
@@ -44,7 +44,7 @@ func TestIAMHandler(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			responseRecorder := test.ExecuteHandler(tt.handlerFunc, tt.muxVars)
+			responseRecorder := mock.DoSimulation(tt.handlerFunc, tt.muxVars)
 			got := responseRecorder.Code
 			assert.Equal(tt.want, got, "got = %v, want = %v", got, tt.want)
 		})

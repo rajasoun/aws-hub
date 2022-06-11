@@ -26,7 +26,8 @@ func TestIsTestRun(t *testing.T) {
 		assert.Error(err, "Err = %v", err)
 	})
 	t.Run("Check ExecuteHandler", func(t *testing.T) {
-		responseRecorder := ExecuteHandler(PingHandler, map[string]string{})
+		mock := MockServer{}
+		responseRecorder := mock.DoSimulation(PingHandler, nil)
 		got := responseRecorder.Code
 		assert.Equal(http.StatusOK, got, "got = %v, want = %v", got, http.StatusOK)
 	})

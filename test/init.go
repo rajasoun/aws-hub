@@ -26,16 +26,6 @@ func IsTestRun() bool {
 	return verbose || isTest
 }
 
-func ExecuteHandler(handlerName func(w http.ResponseWriter, r *http.Request),
-	muxRequestVars map[string]string) *httptest.ResponseRecorder {
-	request, _ := http.NewRequest("GET", "/test", nil)
-	request = mux.SetURLVars(request, muxRequestVars)
-	responseRecorder := httptest.NewRecorder()
-	handler := http.HandlerFunc(handlerName)
-	handler.ServeHTTP(responseRecorder, request)
-	return responseRecorder
-}
-
 // GetFreePort asks the kernel for a free open port that is ready to use.
 func GetFreePort(address string) (int, error) {
 	//"localhost:0"
@@ -50,4 +40,17 @@ func GetFreePort(address string) (int, error) {
 	}
 	defer l.Close()
 	return l.Addr().(*net.TCPAddr).Port, nil
+}
+
+type MockServer struct {
+}
+
+func (mock *MockServer) DoSimulation(handlerName func(w http.ResponseWriter, r *http.Request),
+	muxRequestVars map[string]string) *httptest.ResponseRecorder {
+	request, _ := http.NewRequest("GET", "/test", nil)
+	request = mux.SetURLVars(request, muxRequestVars)
+	responseRecorder := httptest.NewRecorder()
+	handler := http.HandlerFunc(handlerName)
+	handler.ServeHTTP(responseRecorder, request)
+	return responseRecorder
 }
