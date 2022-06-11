@@ -33,11 +33,11 @@ func TestAPIRoutes(t *testing.T) {
 		name     string
 		endPoint string
 	}{
-		{"Check IAMGetAliasesHandler Route", "/aws/iam/alias"},
-		{"Check IAMGetUserIdentityHandler Route", "/aws/iam/account"},
-		{"Check IAMGetUserCountHandler Route", "/aws/iam/users"},
-		{"Check ConfigProfilesHandler Route", "/aws/profiles"},
-		{"Check HealthCheckHandler Route", "/health"},
+		{"Check IAMGetAliasesHandler Route", AccountAliasEndPoint},
+		{"Check IAMGetUserIdentityHandler Route", UserIdentityEndPoint},
+		{"Check IAMGetUserCountHandler Route", UsersCountEndPoint},
+		{"Check ConfigProfilesHandler Route", LocalProfilesEndPoint},
+		{"Check HealthCheckHandler Route", HealthEndPoint},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -64,13 +64,13 @@ func TestRoutes(t *testing.T) {
 		mockIt   bool
 		wantErr  bool
 	}{
-		{"Check Health Check Handler via Mock", "/health", true, false},
-		{"Check Profile Handler Via Mock", "/aws/profiles", true, false},
-		{"Check User Count Handler Via Mock", "/aws/iam/users", true, false},
-		{"Check User Identity Handler Via Mock", "/aws/iam/account", true, false},
-		{"Check Account Alias Handler Via Mock", "/aws/iam/alias", true, false},
-		{"Check Health Check Handler Via Actual Call", "/health", false, false},
-		{"Check Profile Handler Via Actual Call", "/aws/profiles", false, false},
+		{"Check Health Check Handler via Mock", HealthEndPoint, true, false},
+		{"Check Profile Handler Via Mock", LocalProfilesEndPoint, true, false},
+		{"Check User Count Handler Via Mock", UsersCountEndPoint, true, false},
+		{"Check User Identity Handler Via Mock", UserIdentityEndPoint, true, false},
+		{"Check Account Alias Handler Via Mock", AccountAliasEndPoint, true, false},
+		{"Check Health Check Handler Via Actual Call", HealthEndPoint, false, false},
+		{"Check Profile Handler Via Actual Call", LocalProfilesEndPoint, false, false},
 		{"Check InValid Route Via Actual Call", "/aws/dummy", false, true},
 	}
 	for _, tt := range tests {
