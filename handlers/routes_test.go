@@ -37,7 +37,6 @@ func TestAPIRoutes(t *testing.T) {
 		{"Check IAMGetUserIdentityHandler Route", "/aws/iam/account"},
 		{"Check IAMGetUserCountHandler Route", "/aws/iam/users"},
 		{"Check ConfigProfilesHandler Route", "/aws/profiles"},
-		{"Check ConfigProfilesHandler Route", "/aws/profiles"},
 		{"Check HealthCheckHandler Route", "/health"},
 	}
 	for _, tt := range tests {
@@ -67,9 +66,9 @@ func TestRoutes(t *testing.T) {
 	}{
 		{"Check Health Check Handler via Mock", "/health", true, false},
 		{"Check Profile Handler Via Mock", "/aws/profiles", true, false},
-		{"Check Profile Handler Via Mock", "/aws/iam/users", true, false},
-		{"Check Profile Handler Via Mock", "/aws/iam/account", true, false},
-		{"Check Profile Handler Via Mock", "/aws/iam/alias", true, false},
+		{"Check User Count Handler Via Mock", "/aws/iam/users", true, false},
+		{"Check User Identity Handler Via Mock", "/aws/iam/account", true, false},
+		{"Check Account Alias Handler Via Mock", "/aws/iam/alias", true, false},
 		{"Check Health Check Handler Via Actual Call", "/health", false, false},
 		{"Check Profile Handler Via Actual Call", "/aws/profiles", false, false},
 		{"Check InValid Route Via Actual Call", "/aws/dummy", false, true},
@@ -92,9 +91,6 @@ func TestRoutes(t *testing.T) {
 }
 
 func getMockResponse(router *mux.Router, req *http.Request) *httptest.ResponseRecorder {
-	// responseRecorder := httptest.NewRecorder()
-	// router.ServeHTTP(responseRecorder, req)
-	// return responseRecorder
 	return &httptest.ResponseRecorder{
 		HeaderMap: make(http.Header),
 		Body:      new(bytes.Buffer),
