@@ -3,11 +3,15 @@ package raja
 import (
 	"bytes"
 	"errors"
+	"flag"
+	"io/ioutil"
 	"log"
 	"os"
+	"strconv"
 	"testing"
 
 	"github.com/rajasoun/aws-hub/app/config/cmd"
+	"github.com/rajasoun/aws-hub/test"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
 	"github.com/urfave/cli/v2"
@@ -83,22 +87,23 @@ func TestSimulateExecute(t *testing.T) {
 		var outputBuffer bytes.Buffer
 		log.SetOutput(&outputBuffer)
 		log.SetFlags(0)
-		//Simulate app.cli.Run(args) for command start
-		defaultCliContext := cli.Context{}
+
+		set := flag.NewFlagSet("test", 0)
+		port, _ := test.GetFreePort("localhost:0")
+		portString := strconv.Itoa(port)
+		_ = set.Parse([]string{"start", "--port", portString})
+
+		mockApp := &cli.App{Writer: ioutil.Discard}
+		context := cli.NewContext(mockApp, set, nil)
 		cmdhandler := cmd.CmdHandler{}
 		cmdhandler.EnableShutdDown = true
-		err := cmdhandler.StartCommand(&defaultCliContext)
-		got := outputBuffer.String()
-		want := ":3000"
+		startCommand := cmd.GetCommand(cmdhandler.StartCommand)
+		err := startCommand.Run(context)
 		assert.NoError(err, "err = %v ", err)
+
+		got := outputBuffer.String()
+		want := portString
 		assert.Contains(got, want, "Server Start = %v, want = %v", got, want)
-		// var outputBuffer bytes.Buffer
-		// log.SetOutput(&outputBuffer)
-		// log.SetFlags(0)
-		// args := os.Args[0:1]
-		// args = append(args, "start")
-		// err := app.Execute(args, &outputBuffer)
-		// assert.NoError(err, "err = %v ", err)
 	})
 }
 

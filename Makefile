@@ -47,8 +47,10 @@ tdd-unit: ## Prints formatted unit test output
 	@bash -c "test/coverage_check.sh"
 
 tdd-integration: ## Prints formatted integration test output
-	gotestsum --format testname -- -coverprofile=build/coverage/coverage.out ./...
-	@bash -c "test/coverage_check.sh"
+	gotestsum --format testname -- test/api/api_test.go
+
+tdd-understand: ## Generate Sequence Diagram
+	gotestsum --format testname -- test/api/understand_test.go
 
 install-packages: ## Install go packages
 	go install -v gotest.tools/gotestsum@latest

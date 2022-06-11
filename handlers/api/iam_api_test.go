@@ -47,11 +47,23 @@ func TestExecute(t *testing.T) {
 			want:    nil,
 			wantErr: true,
 		},
+		{
+			name: "Check Ping",
+			api:  NewAwsAPI(IAMPing),
+			args: args{
+				client: &iam.Client{},
+			},
+			want:    nil,
+			wantErr: false,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			_, err := tt.api.Execute(tt.args.client)
-			assert.Error(err, "GetAliasesAPI.Execute() error = %v, wantErr %v", err, tt.wantErr)
+			if tt.wantErr {
+				assert.Error(err, "Execute() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
 		})
 	}
 }
