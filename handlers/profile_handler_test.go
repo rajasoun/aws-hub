@@ -16,24 +16,30 @@ func TestAWSHandlerGetSections(t *testing.T) {
 	tests := []struct {
 		name           string
 		credentialFile string
+		isMultiple     bool
 	}{
 		{
 			name:           "Check Get Sections for Multiple Profile",
 			credentialFile: config.DefaultSharedCredentialsFilename(),
+			isMultiple:     true,
 		},
 		{
 			name:           "Check Get Sections for Multiple Profile with Invalid File",
 			credentialFile: "InvalidFile",
+			isMultiple:     false,
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			handler := NewDefaultAWSHandler(true)
+			handler := NewDefaultAWSHandler(tt.isMultiple)
 			responseWriter := test.ExecuteHandler(PingHandler, nil)
 			credentialFile := tt.credentialFile
 			sections := handler.GetSections(responseWriter, credentialFile)
 			assert.GreaterOrEqual(len(sections), 0, "GetSections() = %v, want >= %v", len(sections), 0)
 			got := responseWriter.Code
+			assert.Equal(http.StatusOK, got, "Status = %v , want = %v", got, http.StatusOK)
+			handler.ListProfilesHandler(responseWriter, nil)
+			got = responseWriter.Code
 			assert.Equal(http.StatusOK, got, "Status = %v , want = %v", got, http.StatusOK)
 		})
 	}

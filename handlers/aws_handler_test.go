@@ -80,6 +80,8 @@ func TestInvokeAPI(t *testing.T) {
 		expectedOutput := &MockOutput{Message: "Test"}
 		client.On("Execute", mock.Anything).Return(expectedOutput, nil)
 		awsWrapper.InvokeAPI(client, "dummy", "dummy")
+		//For Checking Cache
+		awsWrapper.InvokeAPI(client, "dummy", "dummy")
 	})
 
 	t.Run("Check InvokeAPI for Err", func(t *testing.T) {
