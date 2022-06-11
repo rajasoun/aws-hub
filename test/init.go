@@ -35,12 +35,17 @@ func GetFreePort(address string) (int, error) {
 		return 0, err
 	}
 
-	l, err := net.ListenTCP("tcp", addr)
+	l, err := createTCPListener(addr)
 	if err != nil {
 		return 0, err
 	}
 	defer l.Close()
 	return l.Addr().(*net.TCPAddr).Port, nil
+}
+
+func createTCPListener(addr *net.TCPAddr) (*net.TCPListener, error) {
+	l, err := net.ListenTCP("tcp", addr)
+	return l, err
 }
 
 type MockServer struct {
