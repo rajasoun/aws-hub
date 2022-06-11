@@ -12,7 +12,7 @@ import (
 	"github.com/stretchr/testify/mock"
 )
 
-var testUserName string = "test@example.com"
+const testUserName = "test@example.com"
 
 // Mock Receiver
 type MockUserIdentity struct {
@@ -43,7 +43,7 @@ func TestGetUserIdentityViaMockFramework(t *testing.T) {
 			Arn:              aws.String("arn:aws:iam::000123456789:user/test@example.com"),
 			CreateDate:       &time.Time{},
 			UserId:           aws.String("ABCDEFGHIJKLMNOPQRST"),
-			UserName:         aws.String("test@example.com"),
+			UserName:         aws.String(testUserName),
 			PasswordLastUsed: &time.Time{},
 		}
 		expectedOutput := &iam.GetUserOutput{User: user}
@@ -89,7 +89,7 @@ func (mock MockUserIdentity) NewClient() IAMGetUserAPIClient {
 			Arn:              aws.String("arn:aws:iam::000123456789:user/test@example.com"),
 			CreateDate:       &time.Time{},
 			UserId:           aws.String("ABCDEFGHIJKLMNOPQRST"),
-			UserName:         aws.String("test@example.com"),
+			UserName:         aws.String(testUserName),
 			PasswordLastUsed: &time.Time{},
 		}
 		result := &iam.GetUserOutput{User: user}
