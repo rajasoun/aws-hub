@@ -26,13 +26,13 @@ jobs:
       run: go build -v ./...
 
     - name: Test
-      run: export SKIP_E2E=true && go test -v  ./...
+      run: export SKIP_E2E=true && go test -v  -coverprofile=build/coverage/coverage.out ./...
 
     - name: Code Coverage 
       uses: codecov/codecov-action@v2
       with:
         token: ${{ secrets.CODECOV_TOKEN }} # not required for public repos
-        files: ./coverage1.xml,./coverage2.xml # optional
+        files: build/coverage/coverage.out
         flags: unittests # optional
         name: codecov-umbrella # optional
         fail_ci_if_error: true # optional (default = false)
