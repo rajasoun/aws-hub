@@ -18,11 +18,18 @@ func setUpStoreDB() {
 func TestGetProducts(t *testing.T) {
 	assert := assert.New(t)
 	t.Parallel()
-	setUpStoreDB()
 	t.Run("Check Get Products", func(t *testing.T) {
+		setUpStoreDB()
 		responseRecorder := test.ExecuteHandler(GetProductsHandler, map[string]string{})
 		got := responseRecorder.Code
 		want := http.StatusOK
+		assert.Equal(got, want, "handler returned wrong status code: got %v want %v", got, want)
+	})
+	t.Run("Check Get Products For Empty Store", func(t *testing.T) {
+		storeDB = nil
+		responseRecorder := test.ExecuteHandler(GetProductsHandler, map[string]string{})
+		got := responseRecorder.Code
+		want := http.StatusBadRequest
 		assert.Equal(got, want, "handler returned wrong status code: got %v want %v", got, want)
 	})
 }
