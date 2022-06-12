@@ -12,7 +12,7 @@ type User struct {
 	ARN              string    `json:"arn"`
 	CreateDate       time.Time `json:"createDate"`
 	PasswordLastUsed time.Time `json:"passwordLastUsed"`
-	UserId           string    `json:"userId"`
+	UserID           string    `json:"userId"`
 }
 
 // Interface for Amazon IAM GetUser API
@@ -48,7 +48,7 @@ func GetUserIdentity(client IAMGetUserAPIClient) (User, error) {
 		Username:         *result.User.UserName,
 		ARN:              *result.User.Arn,
 		CreateDate:       *result.User.CreateDate,
-		UserId:           *result.User.UserId,
+		UserID:           *result.User.UserId,
 		PasswordLastUsed: lastUsed,
 	}
 	return userAccount, nil
