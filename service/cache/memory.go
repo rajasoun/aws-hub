@@ -17,7 +17,9 @@ func (m *Memory) Type() string {
 }
 
 func (m *Memory) Connect() {
-	m.cache = memoryCache.New(time.Duration(m.Expiration)*time.Minute, time.Duration(m.Expiration)*time.Minute)
+	defaultDuration := m.Expiration * time.Minute
+	cleanupInterval := m.Expiration * time.Minute
+	m.cache = memoryCache.New(defaultDuration, cleanupInterval)
 	log.Println("Using in-memory cache")
 }
 
@@ -26,6 +28,7 @@ func (m *Memory) Get(key string) (interface{}, bool) {
 }
 
 func (m *Memory) Set(key string, value interface{}) error {
-	m.cache.Set(key, value, time.Duration(m.Expiration)*time.Minute)
+	duration := m.Expiration * time.Minute
+	m.cache.Set(key, value, duration)
 	return nil
 }

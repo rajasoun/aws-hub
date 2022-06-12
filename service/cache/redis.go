@@ -50,7 +50,7 @@ func (r *Redis) Get(key string) (interface{}, bool) {
 func (r *Redis) Set(key string, value interface{}) error {
 	data, err := json.Marshal(value)
 	if err != nil {
-		log.Println("Error in Marshalling JSON ", err)
+		log.Println("Error in Marshaling JSON ", err)
 		return err
 	}
 	err = r.client.Set(key, data, r.Expiration*time.Minute).Err()
