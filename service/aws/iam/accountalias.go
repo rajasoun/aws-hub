@@ -27,9 +27,9 @@ type IAMListAccountAliasesAPIClient interface {
 //     If successful, a ListAccountAliasesOutput object containing the result of the service call and nil.
 //     Otherwise, nil and an error from the call to ListAccountAliases.
 func GetAliases(client IAMListAccountAliasesAPIClient) (Aliases, error) {
-	var ctx context.Context = context.TODO()
+	emptyContext := context.TODO()
 	input := &iam.ListAccountAliasesInput{}
-	result, err := client.ListAccountAliases(ctx, input)
+	result, err := client.ListAccountAliases(emptyContext, input)
 	if err != nil {
 		log.Println("Got an error retrieving account aliases")
 		return Aliases{List: []string{}}, err

@@ -31,9 +31,9 @@ type IAMGetUserAPIClient interface {
 //     If successful, a Users object containing the account details and nil.
 //     Otherwise, nil and an error from the call.
 func GetUserIdentity(client IAMGetUserAPIClient) (User, error) {
-	var ctx context.Context = context.TODO()
+	emptyContext := context.TODO()
 	input := &iam.GetUserInput{}
-	result, err := client.GetUser(ctx, input)
+	result, err := client.GetUser(emptyContext, input)
 
 	if err != nil {
 		return User{}, err
