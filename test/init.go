@@ -29,7 +29,7 @@ func IsTestRun() bool {
 
 // GetFreePort asks the kernel for a free open port that is ready to use.
 func GetFreePort(address string) (int, error) {
-	//"localhost:0"
+	// "localhost:0"
 	addr, err := net.ResolveTCPAddr("tcp", address)
 	if err != nil {
 		return 0, err
@@ -53,7 +53,7 @@ type MockServer struct {
 
 func (mock *MockServer) DoSimulation(handlerName func(w http.ResponseWriter, r *http.Request),
 	muxRequestVars map[string]string) *httptest.ResponseRecorder {
-	request, _ := http.NewRequest("GET", "/test", nil)
+	request, _ := http.NewRequest("GET", "/test", http.NoBody)
 	request = mux.SetURLVars(request, muxRequestVars)
 	responseRecorder := httptest.NewRecorder()
 	handler := http.HandlerFunc(handlerName)
