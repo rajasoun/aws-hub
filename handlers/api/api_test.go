@@ -89,7 +89,7 @@ func TestHandleErr(t *testing.T) {
 		{
 			name: "Check Log With  No Err",
 			err:  nil,
-			want: "successfuly",
+			want: "successfully",
 		},
 		{
 			name: "Check Log With  Err",
