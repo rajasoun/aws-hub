@@ -24,8 +24,6 @@ type Server struct {
 	shutdownDuration time.Duration
 }
 
-//var awsHandler *aws.AWSHandler
-
 func setUpCache(cache cache.Cache, multiple bool) *aws.AWSHandler {
 	cache.Connect()
 	return aws.NewAWSHandler(cache, multiple)
@@ -44,7 +42,7 @@ func NewServer(cache cache.Cache, multiple bool) (*Server, *mux.Router) {
 	server := Server{}
 	server.name = "Mux Server 0.1"
 	server.awsHandler = setUpCache(cache, multiple)
-	//Connects Routes to Handlers
+	// Connects Routes to Handlers
 	router := server.awsHandler.SetUpRoutes()
 	server.routes = router
 	server.cors = setUpCors()

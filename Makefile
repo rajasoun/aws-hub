@@ -30,7 +30,7 @@ clean: ## Clean Go
 	rm -rf build/bin
 
 lint: ## Go Lint
-	golangci-lint run --enable-all
+	golangci-lint run 
 
 gosec: ## Lint Go Code for security issues
 	gosec -fmt=json -out=build/security/results.json -stdout --verbose=text  ./...

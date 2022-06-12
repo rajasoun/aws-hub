@@ -36,14 +36,13 @@ func (hub *Hub) setUpFlags() {
 	hub.cli.Flags = flag.GetFlags()
 }
 
-func (hub *Hub) setUpCommands() error {
+func (hub *Hub) setUpCommands() {
 	cmdhandler := cmd.CmdHandler{}
 	cmdhandler.EnableShutdDown = false
 	startCommand := cmd.GetCommand(cmdhandler.StartCommand)
 	commands := []*cli.Command{&startCommand}
 	hub.cli.Commands = commands
 	hub.cli.CommandNotFound = cmd.ErrCommand()
-	return nil
 }
 
 func (hub *Hub) setUpOutput(writer io.Writer) {
@@ -76,9 +75,9 @@ func NewApp() *Hub {
 
 func Execute(args []string, writer io.Writer) error {
 	app := NewApp()
-	//Dependency Injection - Enable TDD
+	// Dependency Injection - Enable TDD
 	app.setUpOutput(writer)
-	//Start App
+	// Start App
 	err := app.cli.Run(args)
 	return err
 }
