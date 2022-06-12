@@ -2,6 +2,7 @@ package server
 
 import (
 	"context"
+	"log"
 	"testing"
 	"time"
 
@@ -51,4 +52,20 @@ func TestHTTPServerStart(t *testing.T) {
 	if err != nil {
 		t.Error("unexpected error:", err)
 	}
+}
+
+func TestHandleShutdown(t *testing.T) {
+	//assert := assert.New(t)
+	t.Parallel()
+	t.Run("Check Handle Server Shutdown", func(t *testing.T) {
+		cliContext := arg.NewCliContext(&cli.Context{})
+		server, _ := NewServer(cliContext.GetCache(), cliContext.GetAwsProfileType())
+		httpServer := server.NewHTTPServer(":0")
+		server.RegisterShutdown(httpServer)
+		err := httpServer.StartHTTPServer()
+		if err != nil {
+			log.Printf("err starting http server = %v", err)
+		}
+		defer httpServer.Close()
+	})
 }

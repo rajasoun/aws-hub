@@ -58,20 +58,17 @@ func (server *Server) Start(port int, enableShutdown bool) error {
 	portString := ":" + strconv.Itoa(port)
 	httpServer := server.NewHTTPServer(portString)
 	if enableShutdown {
-		server.HandleShutdown(httpServer)
+		server.RegisterShutdown(httpServer)
 	}
 	err := httpServer.StartHTTPServer()
 	return err
 }
 
-func (server *Server) HandleShutdown(httpServer HTTPServer) {
+func (server *Server) RegisterShutdown(httpServer HTTPServer) {
 	go func() {
 		duration := server.shutdownDuration
 		time.Sleep(duration * time.Second)
-		err := httpServer.Shutdown(context.Background())
-		if err != nil {
-			log.Printf("Shutdown Err = %v ", err)
-		}
+		defer httpServer.Shutdown(context.Background())
 	}()
 }
 
