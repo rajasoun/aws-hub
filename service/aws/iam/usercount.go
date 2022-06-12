@@ -13,7 +13,7 @@ type UserList struct {
 // Interface for Amazon IAM ListUsers API
 // This will enable TDD using mocking
 type IAMListUsersAPIClient interface {
-	iam.ListUsersAPIClient // Only for Refernce to Actual Client
+	iam.ListUsersAPIClient // Only for Reference to Actual Client
 	ListUsers(ctx context.Context,
 		params *iam.ListUsersInput,
 		optFns ...func(*iam.Options)) (*iam.ListUsersOutput, error)
@@ -26,9 +26,9 @@ type IAMListUsersAPIClient interface {
 //     If successful, a Users object containing the count and nil.
 //     Otherwise, nil and an error from the call.
 func GetUserCount(client IAMListUsersAPIClient) (UserList, error) {
-	var ctx context.Context = context.TODO()
+	emptyContext := context.TODO()
 	input := &iam.ListUsersInput{}
-	result, err := client.ListUsers(ctx, input)
+	result, err := client.ListUsers(emptyContext, input)
 	if err != nil {
 		return UserList{Count: 0}, err
 	}

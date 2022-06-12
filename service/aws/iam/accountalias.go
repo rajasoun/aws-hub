@@ -11,10 +11,10 @@ type Aliases struct {
 	List []string `json:"list"`
 }
 
-//Interface for Amazon IAM ListAccountAliases API
-//This will enable TDD using mocking
+// Interface for Amazon IAM ListAccountAliases API
+// This will enable TDD using mocking
 type IAMListAccountAliasesAPIClient interface {
-	iam.ListAccountAliasesAPIClient // Only for Refernce to Actual Client
+	iam.ListAccountAliasesAPIClient // Only for Reference to Actual Client
 	ListAccountAliases(ctx context.Context,
 		params *iam.ListAccountAliasesInput,
 		optFns ...func(*iam.Options)) (*iam.ListAccountAliasesOutput, error)

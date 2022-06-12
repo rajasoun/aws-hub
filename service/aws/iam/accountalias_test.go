@@ -72,7 +72,7 @@ type MockListAccountAliasesAPIClient func(ctx context.Context,
 	params *iam.ListAccountAliasesInput,
 	optFns ...func(*iam.Options)) (*iam.ListAccountAliasesOutput, error)
 
-// Implement AWS IAM ListAccountAliases Interface with mock reciever
+// Implement AWS IAM ListAccountAliases Interface with mock receiver
 func (mock MockListAccountAliasesAPIClient) ListAccountAliases(ctx context.Context,
 	params *iam.ListAccountAliasesInput,
 	optFns ...func(*iam.Options)) (*iam.ListAccountAliasesOutput, error) {
