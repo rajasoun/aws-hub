@@ -37,12 +37,15 @@ func TestNewServer(t *testing.T) {
 }
 
 func TestHTTPServerStart(t *testing.T) {
+	assert := assert.New(t)
+	t.Parallel()
 	cliContext := arg.NewCliContext(&cli.Context{})
 	server, _ := NewServer(cliContext.GetCache(), cliContext.GetAwsProfileType())
 	srv := server.NewHTTPServer(":45566")
 	go func() {
 		time.Sleep(0 * time.Second)
-		srv.Shutdown(context.Background())
+		err := srv.Shutdown(context.Background())
+		assert.NoError(err, "srv.Shutdown() = %v", err)
 	}()
 	err := srv.StartHTTPServer()
 	if err != nil {

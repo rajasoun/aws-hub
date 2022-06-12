@@ -49,11 +49,11 @@ func (cliCtx *CliContext) GetDuration() int {
 
 func (cliCtx *CliContext) GetCache() cache.Cache {
 	var cacheHandler cache.Cache
-	cache := cliCtx.args.String("cache")
-	if cache == "" {
-		cache = DefaultCacheType
+	cacheType := cliCtx.args.String("cache")
+	if cacheType == "" {
+		cacheType = DefaultCacheType
 	}
-	cacheHandler = cliCtx.GetCacheHandler(cache)
+	cacheHandler = cliCtx.GetCacheHandler(cacheType)
 	return cacheHandler
 }
 
