@@ -1,14 +1,14 @@
 # syntax=docker/dockerfile:1
 # argument for Go version
 ARG GO_VERSION=1.18
- 
+
 # STAGE 1: building the executable
 FROM golang:${GO_VERSION}-alpine AS golang-build
- 
+
 RUN apk add --no-cache git make gcc musl-dev bash
 WORKDIR /src
 RUN git clone https://github.com/rajasoun/aws-hub
-# Install Packages 
+# Install Packages
 WORKDIR /src/aws-hub
 RUN make install-packages
 RUN go mod tidy

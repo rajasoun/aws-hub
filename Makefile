@@ -23,7 +23,7 @@ build:  build/bin/$(APP) test ## Build Go
 build/bin/$(APP): bin
 	go build -v -installsuffix 'static' -o $@ -ldflags "-X main.Version='${VERSION}'"
 
-check-for-updates:	## View minor/patch upgrades 
+check-for-updates:	## View minor/patch upgrades
 	go list -u -f '{{if (and (not (or .Main .Indirect)) .Update)}}{{.Path}}: {{.Version}} -> {{.Update.Version}}{{end}}' -m all 2> /dev/null
 
 bin: clean
@@ -33,7 +33,7 @@ clean: ## Clean Go
 	rm -rf build/bin
 
 lint: ## Go Lint
-	golangci-lint run 
+	golangci-lint run
 
 gosec: ## Lint Go Code for security issues
 	gosec -fmt=json -out=build/security/results.json -stdout --verbose=text  ./...
@@ -60,12 +60,12 @@ tdd-understand: ## Generate Sequence Diagram
 	gotestsum --format testname -- test/api/understand_test.go
 
 docker-build: ## Build aws-hub docker container
-	docker build  -t $(IMAGE_NAME) $(CONTEXT) 
+	docker build  -t $(IMAGE_NAME) $(CONTEXT)
 
-docker-start: ## Run container 
+docker-start: ## Run container
 	docker run --rm --name $(APP) --publish 3000:3000 -v "${PWD}:/workspace" $(IMAGE_NAME)
 
-docker-stop: ## Stop container 
+docker-stop: ## Stop container
 	docker stop $(APP)
 
 install-packages: ## Install go packages

@@ -1,10 +1,10 @@
-#!/usr/bin/env bash 
+#!/usr/bin/env bash
 
 FAILED=()
 
 function check_status(){
     echo -e "Checking $server/$url "
-    url=$1 
+    url=$1
     if http --check-status --ignore-stdin --timeout=5 HEAD $url 'profile:secops-experiments' &> /dev/null; then
         echo 'OK!'
     else
@@ -37,10 +37,10 @@ function echoStderr(){
 
 function main(){
     urls=(
-        health 
-        aws/profiles 
-        aws/iam/users 
-        aws/iam/account 
+        health
+        aws/profiles
+        aws/iam/users
+        aws/iam/account
         aws/iam/alias
         )
 

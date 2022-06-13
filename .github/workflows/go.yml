@@ -28,7 +28,7 @@ jobs:
     - name: Test
       run: export SKIP_E2E=true && go test -v  -coverprofile=build/coverage/coverage.out ./...
 
-    - name: Code Coverage 
+    - name: Code Coverage
       uses: codecov/codecov-action@v2
       with:
         token: ${{ secrets.CODECOV_TOKEN }} # not required for public repos

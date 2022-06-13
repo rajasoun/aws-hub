@@ -86,7 +86,7 @@ linters:
     # - rowserrcheck
     # - structcheck
     # - unparam
-    
+
   # don't enable:
   # - asciicheck
   # - scopelint
@@ -121,4 +121,3 @@ issues:
     - linters:
         - gocritic
       text: "unnecessaryDefer:"
-
