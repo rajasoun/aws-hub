@@ -36,7 +36,7 @@ lint: ## Go Lint
 	golangci-lint run 
 
 gosec: ## Lint Go Code for security issues
-	gosec -fmt=json -out=build/security/results.json -stdout --verbose=text  ./...
+	@gosec -exclude=G104 -fmt=json -out=build/security/results.json -stdout --verbose=text  ./...
 
 tdd:  ## Test Go
 	go test ./... -v
@@ -67,6 +67,8 @@ docker-start: ## Run container
 
 docker-stop: ## Stop container 
 	docker stop $(APP)
+
+check-all: tdd-unit lint ## Check Lint & Unit Test
 
 install-packages: ## Install go packages
 	go install -v golang.org/x/tools/gopls@latest
