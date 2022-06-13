@@ -79,7 +79,7 @@ func (mock MockListAccountAliasesAPIClient) ListAccountAliases(ctx context.Conte
 	return mock(ctx, params, optFns...)
 }
 
-func (mock MockAccountAliases) NewClient() IAMListAccountAliasesAPIClient {
+func NewAccountAliasesMockClient() IAMListAccountAliasesAPIClient {
 	fn := func(ctx context.Context,
 		params *iam.ListAccountAliasesInput,
 		optFns ...func(*iam.Options)) (*iam.ListAccountAliasesOutput, error) {
@@ -105,8 +105,8 @@ func TestGetAliasesviaHandMadeMock(t *testing.T) {
 
 	for _, tt := range cases {
 		t.Run(tt.name, func(t *testing.T) {
-			mock := MockAccountAliases{}
-			client := mock.NewClient()
+			// mock := MockAccountAliases{}
+			client := NewAccountAliasesMockClient()
 			got, err := GetAliases(client)
 			assert.NoError(err, "expect no error, got %v", err)
 			assert.Equal(tt.want, got.List[0], "got GetUserCount = %v, want = %v", got.List[0], tt.want)
