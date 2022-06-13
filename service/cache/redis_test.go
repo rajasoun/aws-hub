@@ -28,6 +28,20 @@ func NewMockRedis(t *testing.T) (*miniredis.Miniredis, *Redis) {
 	return server, client
 }
 
+func TestConnectErr(t *testing.T) {
+	assert := assert.New(t)
+	server := miniredis.RunT(t)
+	client := NewRedisClient(server)
+	t.Run("Check Redis Connect Err", func(t *testing.T) {
+		server.SetError(mockErr)
+		client.Connect()
+		err := client.Ping()
+		assert.Error(err, "Err err = %v ", err)
+	})
+	defer server.Close()
+	defer client.client.Close()
+}
+
 func TestRedisPing(t *testing.T) {
 	assert := assert.New(t)
 	t.Parallel()

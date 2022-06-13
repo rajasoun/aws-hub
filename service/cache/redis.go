@@ -45,11 +45,10 @@ func (r *Redis) Get(key string) (interface{}, bool) {
 	if err == redis.Nil {
 		return val, false
 	}
+	// Set ensures no invalid value gets into cache
+	// so ignoring err check for json.Unmarshal
 	var data interface{}
-	unMarshalErr := json.Unmarshal([]byte(val), &data)
-	if err != nil {
-		log.Printf("json.Unmarshal() = %v", unMarshalErr)
-	}
+	json.Unmarshal([]byte(val), &data)
 	return data, true
 }
 
