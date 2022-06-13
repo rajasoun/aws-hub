@@ -1,14 +1,20 @@
 #!/usr/bin/env bash
 
 function fix_n_commits_behind(){
-    main_branch=$1
-    dev_branch=$2
-    git checkout $main_branch
-    git pull origin $main_branch --rebase
-    git checkout $dev_branch
-    git merge $main_branch
+    upstream_branch=$1
+    current_branch=$2
+    git checkout $upstream_branch
+    git pull origin $upstream_branch --rebase
+    git checkout $current_branch
+    git merge $upstream_branch
     # dev_branch is in sync with local main_branch
-    git push origin $dev_branch
+    git push origin $current_branch
 }
-fix_n_commits_behind "develop" "integration_branch"
-fix_n_commits_behind "main" "develop"
+
+function main(){
+    fix_n_commits_behind "develop" "integration_branch"
+    fix_n_commits_behind "main" "develop"
+}
+
+main
+
