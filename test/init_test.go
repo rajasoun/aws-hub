@@ -14,12 +14,12 @@ import (
 func TestIsTestRun(t *testing.T) {
 	assert := assert.New(t)
 	t.Parallel()
-	t.Run("Check Is Test Run", func(t *testing.T) {
-		want := true
-		got := IsTestRun()
-		assert.Equal(want, got, "IsTestRun() = %v, want %v", got, want)
+	// t.Run("Check Is Test Run", func(t *testing.T) {
+	// 	want := true
+	// 	got := IsTestRun()
+	// 	assert.Equal(want, got, "IsTestRun() = %v, want %v", got, want)
 
-	})
+	// })
 	t.Run("Check GetFreePort with Valid Address", func(t *testing.T) {
 		_, err := GetFreePort("localhost:0")
 		assert.NoError(err, "Err = %v", err)

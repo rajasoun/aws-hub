@@ -23,7 +23,10 @@ func (r *Redis) Connect() {
 		Addr: r.Addr,
 		DB:   0,
 	})
-	r.Ping()
+	err := r.Ping()
+	if err != nil {
+		log.Printf("Err Ping() = %v", err)
+	}
 }
 
 func (r *Redis) Ping() error {
@@ -43,7 +46,10 @@ func (r *Redis) Get(key string) (interface{}, bool) {
 		return val, false
 	}
 	var data interface{}
-	json.Unmarshal([]byte(val), &data)
+	unMarshalErr := json.Unmarshal([]byte(val), &data)
+	if err != nil {
+		log.Printf("json.Unmarshal() = %v", unMarshalErr)
+	}
 	return data, true
 }
 

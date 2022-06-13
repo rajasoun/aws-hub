@@ -3,6 +3,7 @@ package handlers
 import (
 	"encoding/json"
 	"fmt"
+	"log"
 	"net/http"
 	"time"
 
@@ -50,7 +51,10 @@ func (awsWrapper *AWSWrapper) RespondWithJSON(code int, payload interface{}) {
 	responseWritter := awsWrapper.writer
 	responseWritter.Header().Set("Content-Type", "application/json")
 	responseWritter.WriteHeader(code)
-	responseWritter.Write(response)
+	_, err := responseWritter.Write(response)
+	if err != nil {
+		log.Printf("Err responseWritter.Write() = %v", err)
+	}
 }
 
 func (awsWrapper *AWSWrapper) RespondWithErrorJSON(err error, errMsg string) {
@@ -76,7 +80,10 @@ func (awsWrapper *AWSWrapper) InvokeAPI(awsAPI api.AwsAPI, cacheKeyCode, errMsg 
 		if err != nil {
 			awsWrapper.RespondWithErrorJSON(err, errMsg)
 		} else {
-			awsWrapper.cache.Set(cacheKey, response)
+			err := awsWrapper.cache.Set(cacheKey, response)
+			if err != nil {
+				log.Printf("error in cache Set() = %v", err)
+			}
 			awsWrapper.RespondWithJSON(http.StatusOK, response)
 		}
 	}

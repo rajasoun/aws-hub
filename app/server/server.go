@@ -68,7 +68,10 @@ func (server *Server) RegisterShutdown(httpServer HTTPServer) {
 	go func() {
 		duration := server.shutdownDuration
 		time.Sleep(duration * time.Second)
-		defer httpServer.Shutdown(context.Background())
+		err := httpServer.Shutdown(context.Background())
+		if err != nil {
+			log.Printf("Err httpServer.Shutdown() = %v", err)
+		}
 	}()
 }
 
