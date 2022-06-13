@@ -38,6 +38,7 @@ func TestGetProducts(t *testing.T) {
 func TestGetProduct(t *testing.T) {
 	assert := assert.New(t)
 	t.Parallel()
+	setUpStoreDB()
 	mock := test.MockServer{}
 	tests := []struct {
 		name    string
@@ -56,7 +57,6 @@ func TestGetProduct(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		setUpStoreDB()
 		t.Run("Check Get Product", func(t *testing.T) {
 			responseRecorder := mock.DoSimulation(GetProductHandler, tt.muxVars)
 			got := responseRecorder.Code

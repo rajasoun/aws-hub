@@ -32,8 +32,7 @@ func New() *CredentialLoader {
 func (credLoader *CredentialLoader) LoadDefaultConfig() (aws.Config, error) {
 	emptyContext := context.TODO()
 	region := config.WithRegion(defaultRegion)
-	// cfg, err := config.LoadDefaultConfig(cmptyContext, region)
-	cfg, err := credLoader.LocalLoaderFunc(emptyContext, region) // config.LoadDefaultConfig(cmptyContext, region)
+	cfg, err := credLoader.LocalLoaderFunc(emptyContext, region)
 	if err != nil {
 		log.Printf("failed to load default configuration, %v", err)
 	}
@@ -52,7 +51,6 @@ func (credLoader *CredentialLoader) LoadDefaultConfigForProfile(profile string) 
 	region := config.WithRegion(defaultRegion)
 	sharedConfigFiles := config.WithSharedConfigFiles(config.DefaultSharedConfigFiles)
 	profileOpt := config.WithSharedConfigProfile(profile)
-	// cfg, err := config.LoadDefaultConfig(cmptyContext, region, sharedConfigFiles, profileOpt)
 	cfg, err := credLoader.LocalLoaderFunc(cmptyContext, region, sharedConfigFiles, profileOpt)
 	if err != nil {
 		log.Printf("failed to load configuration for profile - %v, err = %v", profile, err)
