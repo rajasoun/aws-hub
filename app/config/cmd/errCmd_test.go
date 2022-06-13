@@ -19,7 +19,6 @@ func TestGetErrCommand(t *testing.T) {
 		commands := []*cli.Command{&startCommand}
 		mockApp.Commands = commands
 		mockApp.CommandNotFound = ErrCommand()
-
 		err := mockApp.Run([]string{"invalidCommand"})
 		assert.NoError(err, "err = %v ", err)
 	})
