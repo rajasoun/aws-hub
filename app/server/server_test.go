@@ -8,13 +8,12 @@ import (
 
 	"github.com/rajasoun/aws-hub/app/config/arg"
 	"github.com/stretchr/testify/assert"
-	"github.com/urfave/cli/v2"
 )
 
 func TestNewServer(t *testing.T) {
 	assert := assert.New(t)
 	t.Parallel()
-	cliContext := arg.NewCliContext(&cli.Context{})
+	cliContext := arg.NewDefaultCliContext()
 	server, _ := NewServer(cliContext.GetCache(), cliContext.GetAwsProfileType())
 	tests := []struct {
 		name string
@@ -40,7 +39,7 @@ func TestNewServer(t *testing.T) {
 func TestHTTPServerStart(t *testing.T) {
 	assert := assert.New(t)
 	t.Parallel()
-	cliContext := arg.NewCliContext(&cli.Context{})
+	cliContext := arg.NewDefaultCliContext()
 	server, _ := NewServer(cliContext.GetCache(), cliContext.GetAwsProfileType())
 	srv := server.NewHTTPServer(":45566")
 	go func() {
@@ -58,7 +57,7 @@ func TestHandleShutdown(t *testing.T) {
 	//assert := assert.New(t)
 	t.Parallel()
 	t.Run("Check Handle Server Shutdown", func(t *testing.T) {
-		cliContext := arg.NewCliContext(&cli.Context{})
+		cliContext := arg.NewDefaultCliContext()
 		server, _ := NewServer(cliContext.GetCache(), cliContext.GetAwsProfileType())
 		httpServer := server.NewHTTPServer(":0")
 		server.RegisterShutdown(httpServer)

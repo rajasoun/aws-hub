@@ -22,6 +22,26 @@ type CliContext struct {
 	isMultipleAWSProfile bool
 }
 
+func NewDefaultCliContext() *CliContext {
+	appCtx := &cli.Context{}
+	ctx := CliContext{args: appCtx}
+	ctx.port = ctx.GetPort()
+	ctx.duration = ctx.GetDuration()
+	ctx.cache = ctx.GetCache()
+	ctx.isMultipleAWSProfile = ctx.GetAwsProfileType()
+	return &ctx
+}
+
+func NewCustomCliContext(port, duration int, cacheHadler cache.Cache, isMultiple bool) *CliContext {
+	appCtx := &cli.Context{}
+	ctx := CliContext{args: appCtx}
+	ctx.port = port
+	ctx.duration = duration
+	ctx.cache = cacheHadler
+	ctx.isMultipleAWSProfile = isMultiple
+	return &ctx
+}
+
 func NewCliContext(appCtx *cli.Context) *CliContext {
 	ctx := CliContext{args: appCtx}
 	ctx.port = ctx.GetPort()
