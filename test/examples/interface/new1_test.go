@@ -4,8 +4,8 @@ import "testing"
 
 func Test_perimeter_Perimeter(t *testing.T) {
 	type fields struct {
-		wi float64
-		he float64
+		width  float64
+		height float64
 	}
 	tests := []struct {
 		name   string
@@ -16,8 +16,8 @@ func Test_perimeter_Perimeter(t *testing.T) {
 		{
 			name: "perimeter",
 			fields: fields{
-				wi: 12,
-				he: 12,
+				width:  12,
+				height: 12,
 			},
 			want: 48,
 		},
@@ -25,8 +25,8 @@ func Test_perimeter_Perimeter(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			p := &perimeter{
-				wi: tt.fields.wi,
-				he: tt.fields.he,
+				width:  tt.fields.width,
+				height: tt.fields.height,
 			}
 			if got := p.Perimeter(); got != tt.want {
 				t.Errorf("perimeter.Perimeter() = %v, want %v", got, tt.want)
