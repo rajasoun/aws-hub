@@ -106,8 +106,10 @@ linters:
 issues:
   # Excluding configuration per-path, per-linter, per-text and per-source
   exclude:
-  - 'bad syntax for struct tag key'
-  - 'bad syntax for struct tag pair'
+  - 'Error return value of `json.Unmarshal` is not checked'
+  - 'Error return value of `awsWrapper.cache.Set` is not checked'
+  - 'Error return value of `httpServer.Shutdown` is not checked'
+  - 'Error return value of `responseWritter.Write` is not checked'
 
   exclude-rules:
     - path: _test\.go
