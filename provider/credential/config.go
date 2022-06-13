@@ -14,18 +14,13 @@ import (
 
 var defaultRegion string = "us-east-1"
 
-type ConfigLoader interface {
-	LoadDefaultConfig() (cfg aws.Config, err error)
-	LoadDefaultConfigForProfile(profile string) (cfg aws.Config, err error)
-}
-
 type CredentialLoader struct {
-	LoaderFunc func(ctx context.Context, optFns ...func(*config.LoadOptions) error) (cfg aws.Config, err error)
+	LocalLoaderFunc func(ctx context.Context, optFns ...func(*config.LoadOptions) error) (cfg aws.Config, err error)
 }
 
 func New() *CredentialLoader {
 	credentialLoader := CredentialLoader{}
-	credentialLoader.LoaderFunc = config.LoadDefaultConfig
+	credentialLoader.LocalLoaderFunc = config.LoadDefaultConfig
 	return &credentialLoader
 }
 
@@ -35,9 +30,10 @@ func New() *CredentialLoader {
 //     Otherwise, empty aws.Config and an error.
 //	   Ref: https://aws.github.io/aws-sdk-go-v2/docs/configuring-sdk/
 func (credLoader *CredentialLoader) LoadDefaultConfig() (aws.Config, error) {
-	cmptyContext := context.TODO()
+	emptyContext := context.TODO()
 	region := config.WithRegion(defaultRegion)
-	cfg, err := config.LoadDefaultConfig(cmptyContext, region)
+	// cfg, err := config.LoadDefaultConfig(cmptyContext, region)
+	cfg, err := credLoader.LocalLoaderFunc(emptyContext, region) // config.LoadDefaultConfig(cmptyContext, region)
 	if err != nil {
 		log.Printf("failed to load default configuration, %v", err)
 	}
@@ -56,7 +52,8 @@ func (credLoader *CredentialLoader) LoadDefaultConfigForProfile(profile string) 
 	region := config.WithRegion(defaultRegion)
 	sharedConfigFiles := config.WithSharedConfigFiles(config.DefaultSharedConfigFiles)
 	profileOpt := config.WithSharedConfigProfile(profile)
-	cfg, err := config.LoadDefaultConfig(cmptyContext, region, sharedConfigFiles, profileOpt)
+	// cfg, err := config.LoadDefaultConfig(cmptyContext, region, sharedConfigFiles, profileOpt)
+	cfg, err := credLoader.LocalLoaderFunc(cmptyContext, region, sharedConfigFiles, profileOpt)
 	if err != nil {
 		log.Printf("failed to load configuration for profile - %v, err = %v", profile, err)
 	}
