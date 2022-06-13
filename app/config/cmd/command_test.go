@@ -78,7 +78,7 @@ func TestCreateCommand(t *testing.T) {
 			args := append(os.Args[0:1], tt.cmd)
 			err := app.Run(args)
 
-			assert.NoError(err, "mock start failed error = %v ", err)
+			assert.NoError(err, "Err app.Run() = %v with %v", err, tt.cmd)
 			got := outputBuffer.String()
 			assert.Contains(got, tt.want, "got = %v, want = %v , args = %v", got, tt.want, tt.cmd)
 		})
