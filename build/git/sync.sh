@@ -1,5 +1,9 @@
 #!/usr/bin/env bash
 
+# Means your copy of the remote main branch (a.ka.a origin/main) 
+# has n commits more than the local version of the main branch. 
+# Below Function fixes teh issue
+# Typically happens is fast paced development environment with long running branches
 function fix_n_commits_behind(){
     upstream_branch=$1
     current_branch=$2
