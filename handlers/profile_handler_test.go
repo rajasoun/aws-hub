@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"encoding/json"
+	"log"
 	"net/http"
 	"testing"
 
@@ -52,5 +53,8 @@ func PingHandler(responseWriter http.ResponseWriter, request *http.Request) {
 	jsonPayLoad, _ := json.Marshal(payload)
 	responseWriter.Header().Set("Content-Type", "application/json")
 	responseWriter.WriteHeader(http.StatusOK)
-	responseWriter.Write(jsonPayLoad)
+	_, err := responseWriter.Write(jsonPayLoad)
+	if err != nil {
+		log.Printf("PingHandler() Err = %v", err)
+	}
 }

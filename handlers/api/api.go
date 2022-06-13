@@ -50,6 +50,6 @@ func handleErr(err error, msg string) {
 	if err != nil {
 		log.Println(msg+" Load Failed err = %v", err)
 	} else {
-		log.Println(msg + "loaded successfuly")
+		log.Println(msg + "loaded successfully")
 	}
 }

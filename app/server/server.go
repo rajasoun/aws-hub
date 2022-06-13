@@ -24,11 +24,9 @@ type Server struct {
 	shutdownDuration time.Duration
 }
 
-//var awsHandler *aws.AWSHandler
-
-func setUpCache(cache cache.Cache, multiple bool) *aws.AWSHandler {
-	cache.Connect()
-	return aws.NewAWSHandler(cache, multiple)
+func setUpCache(cacheHandler cache.Cache, multiple bool) *aws.AWSHandler {
+	cacheHandler.Connect()
+	return aws.NewAWSHandler(cacheHandler, multiple)
 }
 
 func setUpCors() *cors.Cors {
@@ -40,11 +38,11 @@ func setUpCors() *cors.Cors {
 	return corsOptions
 }
 
-func NewServer(cache cache.Cache, multiple bool) (*Server, *mux.Router) {
+func NewServer(cacheHandler cache.Cache, multiple bool) (*Server, *mux.Router) {
 	server := Server{}
 	server.name = "Mux Server 0.1"
-	server.awsHandler = setUpCache(cache, multiple)
-	//Connects Routes to Handlers
+	server.awsHandler = setUpCache(cacheHandler, multiple)
+	// Connects Routes to Handlers
 	router := server.awsHandler.SetUpRoutes()
 	server.routes = router
 	server.cors = setUpCors()
@@ -60,14 +58,18 @@ func (server *Server) Start(port int, enableShutdown bool) error {
 	portString := ":" + strconv.Itoa(port)
 	httpServer := server.NewHTTPServer(portString)
 	if enableShutdown {
-		go func() {
-			duration := server.shutdownDuration
-			time.Sleep(duration * time.Second)
-			httpServer.Shutdown(context.Background())
-		}()
+		server.RegisterShutdown(httpServer)
 	}
 	err := httpServer.StartHTTPServer()
 	return err
+}
+
+func (server *Server) RegisterShutdown(httpServer HTTPServer) {
+	go func() {
+		duration := server.shutdownDuration
+		time.Sleep(duration * time.Second)
+		defer httpServer.Shutdown(context.Background())
+	}()
 }
 
 type HTTPServer struct {

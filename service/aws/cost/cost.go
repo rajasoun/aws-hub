@@ -1,187 +1,183 @@
 package cost
 
-import (
-	"context"
+// import (
+// 	"github.com/aws/aws-sdk-go-v2/aws"
+// 	"github.com/rajasoun/aws-hub/service/aws/cost/model"
+// )
 
-	"github.com/aws/aws-sdk-go-v2/aws"
-	"github.com/rajasoun/aws-hub/service/aws/cost/model"
+// func DescribeCostAndUsage(cfg aws.Config) (model.Bill, error) {
+// 	// svc := costexplorer.NewFromConfig(cfg)
+// 	// input := &costexplorer.GetCostAndUsageInput{}
+// 	// svc.GetCostAndUsage(context.TODO(), input)
+// 	// result, err := GetCostAndUsageRequest(context.TODO(), svc, input)
+// 	// currentTime := time.Now().Local()
+// 	// start := currentTime.AddDate(0, -6, 0).Format("2006-01-02")
+// 	// end := currentTime.Format("2006-01-02")
+// 	// cfg.Region = "us-east-1"
+// 	// svc := costexplorer.New(cfg)
+// 	// req := svc.GetCostAndUsageRequest(&costexplorer.GetCostAndUsageInput{
+// 	// 	Metrics:     []string{"BlendedCost"},
+// 	// 	Granularity: costexplorer.GranularityMonthly,
+// 	// 	TimePeriod: &costexplorer.DateInterval{
+// 	// 		Start: &start,
+// 	// 		End:   &end,
+// 	// 	},
+// 	// 	GroupBy: []costexplorer.GroupDefinition{
+// 	// 		{
+// 	// 			Key:  awsClient.String("SERVICE"),
+// 	// 			Type: costexplorer.GroupDefinitionTypeDimension,
+// 	// 		},
+// 	// 	},
+// 	// })
+// 	// result, err := req.Send(context.Background())
+// 	// if err != nil {
+// 	// 	return awsModel.Bill{}, err
+// 	// }
 
-	"github.com/aws/aws-sdk-go-v2/service/costexplorer"
-)
+// 	// costs := make([]awsModel.Cost, 0)
+// 	// for _, res := range result.ResultsByTime {
+// 	// 	start, _ := time.Parse("2006-01-02", *res.TimePeriod.Start)
+// 	// 	end, _ := time.Parse("2006-01-02", *res.TimePeriod.End)
 
-func DescribeCostAndUsage(cfg aws.Config) (model.Bill, error) {
-	svc := costexplorer.NewFromConfig(cfg)
-	input := &costexplorer.GetCostAndUsageInput{}
-	svc.GetCostAndUsage(context.TODO(), input)
-	//result, err := GetCostAndUsageRequest(context.TODO(), svc, input)
-	// currentTime := time.Now().Local()
-	// start := currentTime.AddDate(0, -6, 0).Format("2006-01-02")
-	// end := currentTime.Format("2006-01-02")
-	// cfg.Region = "us-east-1"
-	// svc := costexplorer.New(cfg)
-	// req := svc.GetCostAndUsageRequest(&costexplorer.GetCostAndUsageInput{
-	// 	Metrics:     []string{"BlendedCost"},
-	// 	Granularity: costexplorer.GranularityMonthly,
-	// 	TimePeriod: &costexplorer.DateInterval{
-	// 		Start: &start,
-	// 		End:   &end,
-	// 	},
-	// 	GroupBy: []costexplorer.GroupDefinition{
-	// 		{
-	// 			Key:  awsClient.String("SERVICE"),
-	// 			Type: costexplorer.GroupDefinitionTypeDimension,
-	// 		},
-	// 	},
-	// })
-	// result, err := req.Send(context.Background())
-	// if err != nil {
-	// 	return awsModel.Bill{}, err
-	// }
+// 	// 	unit := "USD"
 
-	// costs := make([]awsModel.Cost, 0)
-	// for _, res := range result.ResultsByTime {
-	// 	start, _ := time.Parse("2006-01-02", *res.TimePeriod.Start)
-	// 	end, _ := time.Parse("2006-01-02", *res.TimePeriod.End)
+// 	// 	groups := make([]awsModel.Group, 0)
+// 	// 	for _, group := range res.Groups {
+// 	// 		amount, _ := strconv.ParseFloat(*group.Metrics["BlendedCost"].Amount, 64)
+// 	// 		groups = append(groups, awsModel.Group{
+// 	// 			Key:    group.Keys[0],
+// 	// 			Amount: amount,
+// 	// 		})
+// 	// 		unit = *group.Metrics["BlendedCost"].Unit
+// 	// 	}
 
-	// 	unit := "USD"
+// 	// 	sort.Slice(groups, func(i, j int) bool {
+// 	// 		return groups[i].Amount > groups[j].Amount
+// 	// 	})
 
-	// 	groups := make([]awsModel.Group, 0)
-	// 	for _, group := range res.Groups {
-	// 		amount, _ := strconv.ParseFloat(*group.Metrics["BlendedCost"].Amount, 64)
-	// 		groups = append(groups, awsModel.Group{
-	// 			Key:    group.Keys[0],
-	// 			Amount: amount,
-	// 		})
-	// 		unit = *group.Metrics["BlendedCost"].Unit
-	// 	}
+// 	// 	costs = append(costs, awsModel.Cost{
+// 	// 		Start:  start,
+// 	// 		End:    end,
+// 	// 		Unit:   unit,
+// 	// 		Groups: groups,
+// 	// 	})
+// 	// }
 
-	// 	sort.Slice(groups, func(i, j int) bool {
-	// 		return groups[i].Amount > groups[j].Amount
-	// 	})
+// 	// var currentBill float64
+// 	// for _, group := range costs[len(costs)-1].Groups {
+// 	// 	currentBill += group.Amount
+// 	// }
 
-	// 	costs = append(costs, awsModel.Cost{
-	// 		Start:  start,
-	// 		End:    end,
-	// 		Unit:   unit,
-	// 		Groups: groups,
-	// 	})
-	// }
+// 	// return awsModel.Bill{
+// 	// 	Total:   currentBill,
+// 	// 	History: costs,
+// 	// }, nil
 
-	// var currentBill float64
-	// for _, group := range costs[len(costs)-1].Groups {
-	// 	currentBill += group.Amount
-	// }
+// 	// Remove Below Lines
+// 	return model.Bill{
+// 		Total:   0,
+// 		History: nil,
+// 	}, nil
+// }
 
-	// return awsModel.Bill{
-	// 	Total:   currentBill,
-	// 	History: costs,
-	// }, nil
+// func DescribeCostAndUsagePerInstanceType(cfg aws.Config) (model.Bill, error) {
+// 	// currentTime := time.Now().Local()
+// 	// start := currentTime.AddDate(0, -6, 0).Format("2006-01-02")
+// 	// end := currentTime.Format("2006-01-02")
+// 	// cfg.Region = "us-east-1"
+// 	// svc := costexplorer.New(cfg)
+// 	// req := svc.GetCostAndUsageRequest(&costexplorer.GetCostAndUsageInput{
+// 	// 	Metrics:     []string{"BlendedCost"},
+// 	// 	Granularity: costexplorer.GranularityMonthly,
+// 	// 	TimePeriod: &costexplorer.DateInterval{
+// 	// 		Start: &start,
+// 	// 		End:   &end,
+// 	// 	},
+// 	// 	GroupBy: []costexplorer.GroupDefinition{
+// 	// 		{
+// 	// 			Key:  awsClient.String("INSTANCE_TYPE"),
+// 	// 			Type: costexplorer.GroupDefinitionTypeDimension,
+// 	// 		},
+// 	// 	},
+// 	// 	Filter: &costexplorer.Expression{
+// 	// 		Dimensions: &costexplorer.DimensionValues{
+// 	// 			Key:    costexplorer.DimensionService,
+// 	// 			Values: []string{"Amazon Elastic Compute Cloud - Compute"},
+// 	// 		},
+// 	// 	},
+// 	// })
+// 	// result, err := req.Send(context.Background())
+// 	// if err != nil {
+// 	// 	return awsModel.Bill{}, err
+// 	// }
 
-	// Remove Below Lines
-	return model.Bill{
-		Total:   0,
-		History: nil,
-	}, nil
-}
+// 	// costs := make([]awsModel.Cost, 0)
+// 	// for _, res := range result.ResultsByTime {
+// 	// 	start, _ := time.Parse("2006-01-02", *res.TimePeriod.Start)
+// 	// 	end, _ := time.Parse("2006-01-02", *res.TimePeriod.End)
 
-func DescribeCostAndUsagePerInstanceType(cfg aws.Config) (model.Bill, error) {
-	// currentTime := time.Now().Local()
-	// start := currentTime.AddDate(0, -6, 0).Format("2006-01-02")
-	// end := currentTime.Format("2006-01-02")
-	// cfg.Region = "us-east-1"
-	// svc := costexplorer.New(cfg)
-	// req := svc.GetCostAndUsageRequest(&costexplorer.GetCostAndUsageInput{
-	// 	Metrics:     []string{"BlendedCost"},
-	// 	Granularity: costexplorer.GranularityMonthly,
-	// 	TimePeriod: &costexplorer.DateInterval{
-	// 		Start: &start,
-	// 		End:   &end,
-	// 	},
-	// 	GroupBy: []costexplorer.GroupDefinition{
-	// 		{
-	// 			Key:  awsClient.String("INSTANCE_TYPE"),
-	// 			Type: costexplorer.GroupDefinitionTypeDimension,
-	// 		},
-	// 	},
-	// 	Filter: &costexplorer.Expression{
-	// 		Dimensions: &costexplorer.DimensionValues{
-	// 			Key:    costexplorer.DimensionService,
-	// 			Values: []string{"Amazon Elastic Compute Cloud - Compute"},
-	// 		},
-	// 	},
-	// })
-	// result, err := req.Send(context.Background())
-	// if err != nil {
-	// 	return awsModel.Bill{}, err
-	// }
+// 	// 	unit := "USD"
 
-	// costs := make([]awsModel.Cost, 0)
-	// for _, res := range result.ResultsByTime {
-	// 	start, _ := time.Parse("2006-01-02", *res.TimePeriod.Start)
-	// 	end, _ := time.Parse("2006-01-02", *res.TimePeriod.End)
+// 	// 	groups := make([]awsModel.Group, 0)
+// 	// 	for _, group := range res.Groups {
+// 	// 		amount, _ := strconv.ParseFloat(*group.Metrics["BlendedCost"].Amount, 64)
+// 	// 		groups = append(groups, awsModel.Group{
+// 	// 			Key:    group.Keys[0],
+// 	// 			Amount: amount,
+// 	// 		})
+// 	// 		unit = *group.Metrics["BlendedCost"].Unit
+// 	// 	}
 
-	// 	unit := "USD"
+// 	// 	sort.Slice(groups, func(i, j int) bool {
+// 	// 		return groups[i].Amount > groups[j].Amount
+// 	// 	})
 
-	// 	groups := make([]awsModel.Group, 0)
-	// 	for _, group := range res.Groups {
-	// 		amount, _ := strconv.ParseFloat(*group.Metrics["BlendedCost"].Amount, 64)
-	// 		groups = append(groups, awsModel.Group{
-	// 			Key:    group.Keys[0],
-	// 			Amount: amount,
-	// 		})
-	// 		unit = *group.Metrics["BlendedCost"].Unit
-	// 	}
+// 	// 	costs = append(costs, awsModel.Cost{
+// 	// 		Start:  start,
+// 	// 		End:    end,
+// 	// 		Unit:   unit,
+// 	// 		Groups: groups,
+// 	// 	})
+// 	// }
 
-	// 	sort.Slice(groups, func(i, j int) bool {
-	// 		return groups[i].Amount > groups[j].Amount
-	// 	})
+// 	// var currentBill float64
+// 	// for _, group := range costs[len(costs)-1].Groups {
+// 	// 	currentBill += group.Amount
+// 	// }
 
-	// 	costs = append(costs, awsModel.Cost{
-	// 		Start:  start,
-	// 		End:    end,
-	// 		Unit:   unit,
-	// 		Groups: groups,
-	// 	})
-	// }
+// 	// return awsModel.Bill{
+// 	// 	Total:   currentBill,
+// 	// 	History: costs,
+// 	// }, nil
 
-	// var currentBill float64
-	// for _, group := range costs[len(costs)-1].Groups {
-	// 	currentBill += group.Amount
-	// }
+// 	// Remove Below Lines
+// 	return model.Bill{
+// 		Total:   0,
+// 		History: nil,
+// 	}, nil
+// }
 
-	// return awsModel.Bill{
-	// 	Total:   currentBill,
-	// 	History: costs,
-	// }, nil
+// func DescribeForecastPrice(cfg aws.Config) (string, error) {
+// 	// currentTime := time.Now().Local()
+// 	// start := currentTime.AddDate(0, 0, 1).Format("2006-01-02")
+// 	// end := currentTime.AddDate(0, 1, -currentTime.Day()).Format("2006-01-02")
+// 	// cfg.Region = "us-east-1"
+// 	// svc := costexplorer.New(cfg)
+// 	// req := svc.GetCostForecastRequest(&costexplorer.GetCostForecastInput{
+// 	// 	Metric:      costexplorer.MetricBlendedCost,
+// 	// 	Granularity: costexplorer.GranularityMonthly,
+// 	// 	TimePeriod: &costexplorer.DateInterval{
+// 	// 		Start: &start,
+// 	// 		End:   &end,
+// 	// 	},
+// 	// })
+// 	// result, err := req.Send(context.Background())
+// 	// if err != nil {
+// 	// 	return "", nil
+// 	// }
 
-	// Remove Below Lines
-	return model.Bill{
-		Total:   0,
-		History: nil,
-	}, nil
-}
+// 	// return *result.Total.Amount, nil
 
-func DescribeForecastPrice(cfg aws.Config) (string, error) {
-	// currentTime := time.Now().Local()
-	// start := currentTime.AddDate(0, 0, 1).Format("2006-01-02")
-	// end := currentTime.AddDate(0, 1, -currentTime.Day()).Format("2006-01-02")
-	// cfg.Region = "us-east-1"
-	// svc := costexplorer.New(cfg)
-	// req := svc.GetCostForecastRequest(&costexplorer.GetCostForecastInput{
-	// 	Metric:      costexplorer.MetricBlendedCost,
-	// 	Granularity: costexplorer.GranularityMonthly,
-	// 	TimePeriod: &costexplorer.DateInterval{
-	// 		Start: &start,
-	// 		End:   &end,
-	// 	},
-	// })
-	// result, err := req.Send(context.Background())
-	// if err != nil {
-	// 	return "", nil
-	// }
-
-	// return *result.Total.Amount, nil
-
-	//Remove Below Line
-	return "None", nil
-}
+// 	//Remove Below Line
+// 	return "None", nil
+// }

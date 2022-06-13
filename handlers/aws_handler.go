@@ -19,14 +19,15 @@ type AWSHandler struct {
 }
 
 func NewDefaultAWSHandler(multiple bool) *AWSHandler {
-	cache := &cache.Memory{Expiration: time.Duration(30)}
-	cache.Connect()
-	return NewAWSHandler(cache, multiple)
+	defaultCacheDuration := 30
+	cacheHandler := &cache.Memory{Expiration: time.Duration(defaultCacheDuration)}
+	cacheHandler.Connect()
+	return NewAWSHandler(cacheHandler, multiple)
 }
 
-func NewAWSHandler(cache cache.Cache, multiple bool) *AWSHandler {
+func NewAWSHandler(cacheHandler cache.Cache, multiple bool) *AWSHandler {
 	awsHandler := AWSHandler{
-		cache:    cache,
+		cache:    cacheHandler,
 		multiple: multiple,
 		aws:      aws.AWS{},
 	}
@@ -53,7 +54,7 @@ func (awsWrapper *AWSWrapper) RespondWithJSON(code int, payload interface{}) {
 }
 
 func (awsWrapper *AWSWrapper) RespondWithErrorJSON(err error, errMsg string) {
-	var errReasons string = "Possible Reasons: Connectivity Failed or Credential Missing or Policy Denied"
+	var errReasons = "Possible Reasons: Connectivity Failed or Credential Missing or Policy Denied"
 	errMessage := errMsg + " : " + errReasons
 	if err != nil {
 		code := http.StatusInternalServerError
@@ -61,21 +62,21 @@ func (awsWrapper *AWSWrapper) RespondWithErrorJSON(err error, errMsg string) {
 	}
 }
 
-func (awsWrapper *AWSWrapper) InvokeAPI(awsApi api.AwsAPI, keyCode string, errMsg string) {
+func (awsWrapper *AWSWrapper) InvokeAPI(awsAPI api.AwsAPI, cacheKeyCode, errMsg string) {
 	profile := awsWrapper.request.Header.Get("profile")
-	key := fmt.Sprintf(keyCode, profile)
-	response, foundInCache := awsWrapper.cache.Get(key)
+	cacheKey := fmt.Sprintf(cacheKeyCode, profile)
+	response, foundInCache := awsWrapper.cache.Get(cacheKey)
 	if foundInCache {
 		awsWrapper.RespondWithJSON(http.StatusOK, response)
 		return
 	} else {
 		cfg, _ := api.GetConfigFromFileSystem(profile, awsWrapper.multiple)
 		client := iam.NewFromConfig(cfg)
-		response, err := awsApi.Execute(client)
+		response, err := awsAPI.Execute(client)
 		if err != nil {
 			awsWrapper.RespondWithErrorJSON(err, errMsg)
 		} else {
-			awsWrapper.cache.Set(key, response)
+			awsWrapper.cache.Set(cacheKey, response)
 			awsWrapper.RespondWithJSON(http.StatusOK, response)
 		}
 	}

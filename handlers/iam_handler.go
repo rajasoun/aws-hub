@@ -20,8 +20,8 @@ func (handler *AWSHandler) IAMGetUserCountHandler(w http.ResponseWriter, r *http
 		cache:    handler.cache,
 		multiple: handler.multiple,
 	}
-	api := GetAPI(r, apiToBeInvoked)
-	awsWrapper.InvokeAPI(api, cacheKey, onErrMsg)
+	awsAPI := GetAPI(r, apiToBeInvoked)
+	awsWrapper.InvokeAPI(awsAPI, cacheKey, onErrMsg)
 }
 
 func (handler *AWSHandler) IAMGetUserIdentityHandler(w http.ResponseWriter, r *http.Request) {
@@ -34,8 +34,8 @@ func (handler *AWSHandler) IAMGetUserIdentityHandler(w http.ResponseWriter, r *h
 		cache:    handler.cache,
 		multiple: handler.multiple,
 	}
-	api := GetAPI(r, apiToBeInvoked)
-	awsWrapper.InvokeAPI(api, cacheKey, onErrMsg)
+	awsAPI := GetAPI(r, apiToBeInvoked)
+	awsWrapper.InvokeAPI(awsAPI, cacheKey, onErrMsg)
 }
 
 func (handler *AWSHandler) IAMGetAliasesHandler(w http.ResponseWriter, r *http.Request) {
@@ -48,8 +48,8 @@ func (handler *AWSHandler) IAMGetAliasesHandler(w http.ResponseWriter, r *http.R
 		cache:    handler.cache,
 		multiple: handler.multiple,
 	}
-	api := GetAPI(r, apiToBeInvoked)
-	awsWrapper.InvokeAPI(api, cacheKey, onErrMsg)
+	awsAPI := GetAPI(r, apiToBeInvoked)
+	awsWrapper.InvokeAPI(awsAPI, cacheKey, onErrMsg)
 }
 
 func GetAPI(r *http.Request, apiToBeInvoked string) api.AwsAPI {

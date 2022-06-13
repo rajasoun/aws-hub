@@ -81,7 +81,7 @@ func (mock MockIAMGetUserAPIClient) GetUser(ctx context.Context,
 	return mock(ctx, params, optFns...)
 }
 
-func (mock MockUserIdentity) NewClient() IAMGetUserAPIClient {
+func NewGetUserMockClient() IAMGetUserAPIClient {
 	client := MockIAMGetUserAPIClient(func(ctx context.Context,
 		params *iam.GetUserInput,
 		optFns ...func(*iam.Options)) (*iam.GetUserOutput, error) {
@@ -111,8 +111,8 @@ func TestGetUserIdentity(t *testing.T) {
 
 	for _, tt := range cases {
 		t.Run(tt.name, func(t *testing.T) {
-			mock := MockUserIdentity{}
-			client := mock.NewClient()
+			// mock := MockUserIdentity{}
+			client := NewGetUserMockClient()
 			got, err := GetUserIdentity(client)
 			assert.NoError(err, "expect no error, got %v", err)
 			assert.Equal(tt.want, got.Username, "got GetUserIdentity = %v, want = %v", got.Username, tt.want)
