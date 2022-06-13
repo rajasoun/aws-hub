@@ -3,6 +3,7 @@ package test
 import (
 	"encoding/json"
 	"errors"
+	"log"
 	"net"
 	"net/http"
 	"testing"
@@ -30,7 +31,10 @@ func TestIsTestRun(t *testing.T) {
 }
 
 func PingHandler(responseWriter http.ResponseWriter, request *http.Request) {
-	json.NewEncoder(responseWriter).Encode("{Ok}")
+	err := json.NewEncoder(responseWriter).Encode("{Ok}")
+	if err != nil {
+		log.Printf("JSON Encoding Err = %v", err)
+	}
 }
 
 func TestDoSimulation(t *testing.T) {
