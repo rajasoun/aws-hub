@@ -16,8 +16,7 @@ function fix_n_commits_behind(){
 }
 
 function main(){
-    fix_n_commits_behind "develop" "integration_branch"
-    fix_n_commits_behind "main" "develop"
+    fix_n_commits_behind "main" "integration_branch"
 }
 
 main
