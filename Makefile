@@ -30,7 +30,10 @@ clean: ## Clean Go
 	rm -rf build/bin
 
 lint: ## Go Lint
-	golangci-lint run --enable-all
+	golangci-lint run 
+
+gosec: ## Lint Go Code for security issues
+	gosec -fmt=json -out=build/security/results.json -stdout --verbose=text  ./...
 
 tdd:  ## Test Go
 	go test ./... -v
@@ -43,7 +46,8 @@ tdd-cover: ## Go Coverage
 	go tool cover -html=coverage/coverage.out
 
 tdd-unit: ## Prints formatted unit test output
-	export SKIP_E2E=true && gotestsum --format testname -- -coverprofile=build/coverage/coverage.out ./...
+	@export SKIP_E2E=true && gotestsum --format testname -- -coverprofile=build/coverage/coverage.out ./...
+	@go tool cover -html=build/coverage/coverage.out -o build/coverage/coverage.html
 	@bash -c "test/coverage_check.sh"
 
 tdd-integration: ## Prints formatted integration test output
@@ -55,3 +59,4 @@ tdd-understand: ## Generate Sequence Diagram
 install-packages: ## Install go packages
 	go install -v gotest.tools/gotestsum@latest
 	go install -v github.com/cweill/gotests/gotests@latest
+	go install github.com/securego/gosec/v2/cmd/gosec@latest

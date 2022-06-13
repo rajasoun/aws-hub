@@ -56,8 +56,8 @@ func TestGetProduct(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
+		setUpStoreDB()
 		t.Run("Check Get Product", func(t *testing.T) {
-			setUpStoreDB()
 			responseRecorder := mock.DoSimulation(GetProductHandler, tt.muxVars)
 			got := responseRecorder.Code
 			assert.Equal(tt.want, got, "GetProductHandler() = %v want %v", got, tt.want)

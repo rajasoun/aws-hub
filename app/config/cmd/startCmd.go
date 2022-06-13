@@ -12,7 +12,9 @@ type CmdHandler struct {
 
 func (handler *CmdHandler) StartCommand(appCtx *cli.Context) error {
 	cliContext := arg.NewCliContext(appCtx)
-	server, _ := server.NewServer(cliContext.GetCache(), cliContext.GetAwsProfileType())
-	err := server.Start(cliContext.GetPort(), handler.EnableShutdDown)
+	cache := cliContext.GetCache()
+	isMultipleProfile := cliContext.GetAwsProfileType()
+	httpServer, _ := server.NewServer(cache, isMultipleProfile)
+	err := httpServer.Start(cliContext.GetPort(), handler.EnableShutdDown)
 	return err
 }

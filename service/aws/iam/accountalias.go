@@ -11,10 +11,10 @@ type Aliases struct {
 	List []string `json:"list"`
 }
 
-//Interface for Amazon IAM ListAccountAliases API
-//This will enable TDD using mocking
+// Interface for Amazon IAM ListAccountAliases API
+// This will enable TDD using mocking
 type IAMListAccountAliasesAPIClient interface {
-	iam.ListAccountAliasesAPIClient // Only for Refernce to Actual Client
+	iam.ListAccountAliasesAPIClient // Only for Reference to Actual Client
 	ListAccountAliases(ctx context.Context,
 		params *iam.ListAccountAliasesInput,
 		optFns ...func(*iam.Options)) (*iam.ListAccountAliasesOutput, error)
@@ -27,9 +27,9 @@ type IAMListAccountAliasesAPIClient interface {
 //     If successful, a ListAccountAliasesOutput object containing the result of the service call and nil.
 //     Otherwise, nil and an error from the call to ListAccountAliases.
 func GetAliases(client IAMListAccountAliasesAPIClient) (Aliases, error) {
-	var ctx context.Context = context.TODO()
+	emptyContext := context.TODO()
 	input := &iam.ListAccountAliasesInput{}
-	result, err := client.ListAccountAliases(ctx, input)
+	result, err := client.ListAccountAliases(emptyContext, input)
 	if err != nil {
 		log.Println("Got an error retrieving account aliases")
 		return Aliases{List: []string{}}, err

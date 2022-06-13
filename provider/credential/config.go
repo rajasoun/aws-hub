@@ -27,9 +27,9 @@ type CredentialLoader struct{}
 //     Otherwise, empty aws.Config and an error.
 //	   Ref: https://aws.github.io/aws-sdk-go-v2/docs/configuring-sdk/
 func (credLoader *CredentialLoader) LoadDefaultConfig() (aws.Config, error) {
-	context := context.TODO()
+	cmptyContext := context.TODO()
 	region := config.WithRegion(defaultRegion)
-	cfg, err := config.LoadDefaultConfig(context, region)
+	cfg, err := config.LoadDefaultConfig(cmptyContext, region)
 	if err != nil {
 		log.Printf("failed to load default configuration, %v", err)
 	}
@@ -44,11 +44,11 @@ func (credLoader *CredentialLoader) LoadDefaultConfig() (aws.Config, error) {
 //     Otherwise, empty aws.Config and an error.
 //	   Ref: https://aws.github.io/aws-sdk-go-v2/docs/configuring-sdk/
 func (credLoader *CredentialLoader) LoadDefaultConfigForProfile(profile string) (aws.Config, error) {
-	context := context.TODO()
+	cmptyContext := context.TODO()
 	region := config.WithRegion(defaultRegion)
 	sharedConfigFiles := config.WithSharedConfigFiles(config.DefaultSharedConfigFiles)
 	profileOpt := config.WithSharedConfigProfile(profile)
-	cfg, err := config.LoadDefaultConfig(context, region, sharedConfigFiles, profileOpt)
+	cfg, err := config.LoadDefaultConfig(cmptyContext, region, sharedConfigFiles, profileOpt)
 	if err != nil {
 		log.Printf("failed to load configuration for profile - %v, err = %v", profile, err)
 	}
@@ -60,7 +60,6 @@ func (credLoader *CredentialLoader) LoadDefaultConfigForProfile(profile string) 
 //     If successful, Returns sections within the ~/.aws/credential file
 //     Otherwise, empty sections and an error.
 func (credLoader *CredentialLoader) GetSections(credentialFile string) (ini.Sections, error) {
-	//credentialFile := config.DefaultSharedCredentialsFilename()
 	if fileExists(credentialFile) {
 		return ini.OpenFile(credentialFile)
 	} else {

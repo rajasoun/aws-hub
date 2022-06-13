@@ -5,7 +5,7 @@ import (
 
 	"github.com/rajasoun/aws-hub/service/cache"
 
-	"github.com/urfave/cli/v2"
+	cli "github.com/urfave/cli/v2"
 )
 
 const (
@@ -15,7 +15,7 @@ const (
 )
 
 type CliContext struct {
-	ctx                  *cli.Context
+	args                 *cli.Context
 	port                 int
 	duration             int
 	cache                cache.Cache
@@ -23,7 +23,7 @@ type CliContext struct {
 }
 
 func NewCliContext(appCtx *cli.Context) *CliContext {
-	ctx := CliContext{ctx: appCtx}
+	ctx := CliContext{args: appCtx}
 	ctx.port = ctx.GetPort()
 	ctx.duration = ctx.GetDuration()
 	ctx.cache = ctx.GetCache()
@@ -31,52 +31,52 @@ func NewCliContext(appCtx *cli.Context) *CliContext {
 	return &ctx
 }
 
-func (cli *CliContext) GetPort() int {
-	port := cli.ctx.Int("port")
+func (cliCtx *CliContext) GetPort() int {
+	port := cliCtx.args.Int("port")
 	if port == 0 {
 		port = DefaultPort
 	}
 	return port
 }
 
-func (cli *CliContext) GetDuration() int {
-	duration := cli.ctx.Int("duration")
+func (cliCtx *CliContext) GetDuration() int {
+	duration := cliCtx.args.Int("duration")
 	if duration == 0 {
 		duration = DefaultDuration
 	}
 	return duration
 }
 
-func (cli *CliContext) GetCache() cache.Cache {
+func (cliCtx *CliContext) GetCache() cache.Cache {
 	var cacheHandler cache.Cache
-	cache := cli.ctx.String("cache")
-	if cache == "" {
-		cache = DefaultCacheType
+	cacheType := cliCtx.args.String("cache")
+	if cacheType == "" {
+		cacheType = DefaultCacheType
 	}
-	cacheHandler = cli.GetCacheHandler(cache)
+	cacheHandler = cliCtx.GetCacheHandler(cacheType)
 	return cacheHandler
 }
 
-func (cli *CliContext) GetCacheHandler(cacheType string) cache.Cache {
+func (cliCtx *CliContext) GetCacheHandler(cacheType string) cache.Cache {
 	var cacheHandler cache.Cache
-	duration := cli.GetDuration()
+	duration := cliCtx.GetDuration()
 	switch {
 	case cacheType == "in-memory":
-		cacheHandler = cli.GetInMemoryCachehandler(duration)
+		cacheHandler = cliCtx.GetInMemoryCachehandler(duration)
 	case cacheType == "redis":
-		cacheHandler = cli.GetRedisCachehandler(cacheType, duration)
+		cacheHandler = cliCtx.GetRedisCachehandler(cacheType, duration)
 	}
 	return cacheHandler
 }
 
-func (cli *CliContext) GetInMemoryCachehandler(duration int) cache.Cache {
+func (cliCtx *CliContext) GetInMemoryCachehandler(duration int) cache.Cache {
 	cacheHandler := &cache.Memory{
 		Expiration: time.Duration(duration),
 	}
 	return cacheHandler
 }
 
-func (cli *CliContext) GetRedisCachehandler(redis string, duration int) cache.Cache {
+func (cliCtx *CliContext) GetRedisCachehandler(redis string, duration int) cache.Cache {
 	cacheHandler := &cache.Redis{
 		Addr:       redis,
 		Expiration: time.Duration(duration),
@@ -84,6 +84,6 @@ func (cli *CliContext) GetRedisCachehandler(redis string, duration int) cache.Ca
 	return cacheHandler
 }
 
-func (cli *CliContext) GetAwsProfileType() bool {
-	return cli.ctx.Bool("multiple")
+func (cliCtx *CliContext) GetAwsProfileType() bool {
+	return cliCtx.args.Bool("multiple")
 }

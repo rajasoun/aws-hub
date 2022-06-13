@@ -4,6 +4,7 @@ import (
 	"flag"
 	"fmt"
 	"io"
+	"log"
 	"net"
 	"net/http"
 	"net/http/httptest"
@@ -29,13 +30,18 @@ func IsTestRun() bool {
 
 // GetFreePort asks the kernel for a free open port that is ready to use.
 func GetFreePort(address string) (int, error) {
-	//"localhost:0"
+	// "localhost:0"
 	addr, err := net.ResolveTCPAddr("tcp", address)
 	if err != nil {
 		return 0, err
 	}
+	port, err := CheckAddressAvailable(net.ListenTCP, addr)
+	return port, err
+}
 
-	l, err := createTCPListener(addr)
+func CheckAddressAvailable(tcpHandler func(network string, laddr *net.TCPAddr) (*net.TCPListener, error),
+	addr *net.TCPAddr) (int, error) {
+	l, err := tcpHandler("tcp", addr)
 	if err != nil {
 		return 0, err
 	}
@@ -43,17 +49,12 @@ func GetFreePort(address string) (int, error) {
 	return l.Addr().(*net.TCPAddr).Port, nil
 }
 
-func createTCPListener(addr *net.TCPAddr) (*net.TCPListener, error) {
-	l, err := net.ListenTCP("tcp", addr)
-	return l, err
-}
-
 type MockServer struct {
 }
 
 func (mock *MockServer) DoSimulation(handlerName func(w http.ResponseWriter, r *http.Request),
 	muxRequestVars map[string]string) *httptest.ResponseRecorder {
-	request, _ := http.NewRequest("GET", "/test", nil)
+	request, _ := http.NewRequest("GET", "/test", http.NoBody)
 	request = mux.SetURLVars(request, muxRequestVars)
 	responseRecorder := httptest.NewRecorder()
 	handler := http.HandlerFunc(handlerName)
@@ -65,12 +66,20 @@ func MockSuccessHandler(responseWriter http.ResponseWriter, request *http.Reques
 	responseWriter.Header().Set("Content-Type", "text/json")
 	responseWriter.WriteHeader(http.StatusOK)
 	payLoad := `{"Message":"test simulation"}`
-	io.WriteString(responseWriter, payLoad)
+	_, err := io.WriteString(responseWriter, payLoad)
+	handleErr(err, "MockSuccessHandler()")
 }
 
 func MockFailureHandler(responseWriter http.ResponseWriter, request *http.Request) {
 	responseWriter.Header().Set("Content-Type", "text/json")
 	responseWriter.WriteHeader(http.StatusInternalServerError)
 	payLoad := `{"Message":"simulated error"}`
-	io.WriteString(responseWriter, payLoad)
+	_, err := io.WriteString(responseWriter, payLoad)
+	handleErr(err, "MockFailureHandler()")
+}
+
+func handleErr(err error, errMsg string) {
+	if err != nil {
+		log.Printf(errMsg+"Err = %v", err)
+	}
 }

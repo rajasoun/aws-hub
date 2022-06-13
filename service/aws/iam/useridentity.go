@@ -12,13 +12,13 @@ type User struct {
 	ARN              string    `json:"arn"`
 	CreateDate       time.Time `json:"createDate"`
 	PasswordLastUsed time.Time `json:"passwordLastUsed"`
-	UserId           string    `json:"userId"`
+	UserID           string    `json:"userId"`
 }
 
 // Interface for Amazon IAM GetUser API
 // This will enable TDD using mocking
 type IAMGetUserAPIClient interface {
-	iam.GetUserAPIClient // Only for Refernce to Actual Client
+	iam.GetUserAPIClient // Only for Reference to Actual Client
 	GetUser(ctx context.Context,
 		params *iam.GetUserInput,
 		optFns ...func(*iam.Options)) (*iam.GetUserOutput, error)
@@ -31,9 +31,9 @@ type IAMGetUserAPIClient interface {
 //     If successful, a Users object containing the account details and nil.
 //     Otherwise, nil and an error from the call.
 func GetUserIdentity(client IAMGetUserAPIClient) (User, error) {
-	var ctx context.Context = context.TODO()
+	emptyContext := context.TODO()
 	input := &iam.GetUserInput{}
-	result, err := client.GetUser(ctx, input)
+	result, err := client.GetUser(emptyContext, input)
 
 	if err != nil {
 		return User{}, err
@@ -48,7 +48,7 @@ func GetUserIdentity(client IAMGetUserAPIClient) (User, error) {
 		Username:         *result.User.UserName,
 		ARN:              *result.User.Arn,
 		CreateDate:       *result.User.CreateDate,
-		UserId:           *result.User.UserId,
+		UserID:           *result.User.UserId,
 		PasswordLastUsed: lastUsed,
 	}
 	return userAccount, nil
