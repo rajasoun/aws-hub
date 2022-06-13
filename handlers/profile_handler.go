@@ -13,7 +13,7 @@ type Profile struct {
 }
 
 func (handler *AWSHandler) GetSections(w http.ResponseWriter, credentialFile string) []string {
-	cl := credential.CredentialLoader{}
+	cl := credential.New()
 	sections, err := cl.GetSections(credentialFile)
 	if err != nil {
 		awsWrapper := AWSWrapper{writer: w}

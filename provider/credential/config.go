@@ -19,7 +19,15 @@ type ConfigLoader interface {
 	LoadDefaultConfigForProfile(profile string) (cfg aws.Config, err error)
 }
 
-type CredentialLoader struct{}
+type CredentialLoader struct {
+	LoaderFunc func(ctx context.Context, optFns ...func(*config.LoadOptions) error) (cfg aws.Config, err error)
+}
+
+func New() *CredentialLoader {
+	credentialLoader := CredentialLoader{}
+	credentialLoader.LoaderFunc = config.LoadDefaultConfig
+	return &credentialLoader
+}
 
 // Loads Default Configuration from files ~/.aws/config and ~/.aws/credential
 // Output:

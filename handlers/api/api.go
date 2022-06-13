@@ -35,7 +35,7 @@ func NewAwsAPI(api string) AwsAPI {
 func GetConfigFromFileSystem(profile string, isMultipleProfile bool) (aws.Config, error) {
 	var cfg aws.Config
 	var err error
-	credentialLoader := credential.CredentialLoader{}
+	credentialLoader := credential.New()
 	if isMultipleProfile {
 		cfg, err = credentialLoader.LoadDefaultConfigForProfile(profile)
 		handleErr(err, "AWSConfig For multiple Profile ")
