@@ -1,32 +1,29 @@
 package test
 
 import (
-	"flag"
-	"fmt"
 	"io"
 	"log"
 	"net"
 	"net/http"
 	"net/http/httptest"
-	"testing"
 
 	"github.com/gorilla/mux"
 )
 
-// Initialize go test
-func init() {
-	testing.Init()
-	flag.Bool("isTest", true, "Returns true if run from go test")
-	flag.Parse()
-}
+// // Initialize go test
+// func init() {
+// 	testing.Init()
+// 	flag.Bool("isTest", true, "Returns true if run from go test")
+// 	flag.Parse()
+// }
 
-// Returns true if invoked with go test -v or go test
-func IsTestRun() bool {
-	fmt.Println()
-	verbose := flag.Lookup("test.v").Value.(flag.Getter).Get().(bool)
-	isTest := flag.Lookup("isTest").Value.(flag.Getter).Get().(bool)
-	return verbose || isTest
-}
+// // Returns true if invoked with go test -v or go test
+// func IsTestRun() bool {
+// 	fmt.Println()
+// 	verbose := flag.Lookup("test.v").Value.(flag.Getter).Get().(bool)
+// 	isTest := flag.Lookup("isTest").Value.(flag.Getter).Get().(bool)
+// 	return verbose || isTest
+// }
 
 // GetFreePort asks the kernel for a free open port that is ready to use.
 func GetFreePort(address string) (int, error) {

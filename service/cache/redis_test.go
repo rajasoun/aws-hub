@@ -28,6 +28,20 @@ func NewMockRedis(t *testing.T) (*miniredis.Miniredis, *Redis) {
 	return server, client
 }
 
+func TestConnectErr(t *testing.T) {
+	assert := assert.New(t)
+	server := miniredis.RunT(t)
+	client := NewRedisClient(server)
+	t.Run("Check Redis Connect Err", func(t *testing.T) {
+		server.SetError(mockErr)
+		client.Connect()
+		err := client.Ping()
+		assert.Error(err, "Err err = %v ", err)
+	})
+	defer server.Close()
+	defer client.client.Close()
+}
+
 func TestRedisPing(t *testing.T) {
 	assert := assert.New(t)
 	t.Parallel()
@@ -54,11 +68,7 @@ func TestRedisPing(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			switch {
-			case tt.wantErr == false: //Happy Path
-				err := client.Ping()
-				assert.NoError(err)
-			case tt.wantErr == true: //Edge Case
+			if tt.wantErr {
 				var outputBuffer bytes.Buffer
 				log.SetOutput(&outputBuffer)
 				server.SetError(mockErr)
@@ -66,7 +76,10 @@ func TestRedisPing(t *testing.T) {
 				assert.Error(err, "Err err = %v ", err)
 				gotLog := outputBuffer.String()
 				assert.Contains(gotLog, tt.want, "Ping() got = %v , want = %v ", gotLog, tt.want)
+				return
 			}
+			err := client.Ping()
+			assert.NoError(err)
 		})
 	}
 }
@@ -105,15 +118,7 @@ func TestRedisGetSet(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			switch {
-			case tt.wantErr == false: //Happy Path
-				err := client.Set(tt.key, tt.value)
-				assert.NoError(err, "Error err = %v ", err)
-				got, foundKey := client.Get(tt.key)
-				assert.True(foundKey, "Cache Set & Get Sequenced Failed for key = %v", tt.key)
-				assert.Equal(tt.value, got, "Get () = %v, want = %v", got, tt.value)
-				assert.Equal(tt.wantType, client.Type(), "Get () = %v, want = %v", client.Type(), tt.wantType)
-			case tt.wantErr == true: //Edge Case
+			if tt.wantErr {
 				//With Wrong Value
 				err := client.Set(tt.key, tt.value)
 				assert.Error(err, "Error err = %v ", err)
@@ -125,7 +130,14 @@ func TestRedisGetSet(t *testing.T) {
 				server.SetError(mockErr)
 				errMock := client.Set(tt.key, "dummy")
 				assert.Error(errMock, "Simulated Err Failed err = %v ", errMock)
+				return
 			}
+			err := client.Set(tt.key, tt.value)
+			assert.NoError(err, "Error err = %v ", err)
+			got, foundKey := client.Get(tt.key)
+			assert.True(foundKey, "Cache Set & Get Sequenced Failed for key = %v", tt.key)
+			assert.Equal(tt.value, got, "Get () = %v, want = %v", got, tt.value)
+			assert.Equal(tt.wantType, client.Type(), "Get () = %v, want = %v", client.Type(), tt.wantType)
 		})
 	}
 }

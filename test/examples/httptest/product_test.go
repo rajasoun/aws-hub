@@ -37,7 +37,6 @@ func TestGetProducts(t *testing.T) {
 
 func TestGetProduct(t *testing.T) {
 	assert := assert.New(t)
-	t.Parallel()
 	setUpStoreDB()
 	mock := test.MockServer{}
 	tests := []struct {

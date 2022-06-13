@@ -23,7 +23,10 @@ func (r *Redis) Connect() {
 		Addr: r.Addr,
 		DB:   0,
 	})
-	r.Ping()
+	err := r.Ping()
+	if err != nil {
+		log.Printf("Err Ping() = %v", err)
+	}
 }
 
 func (r *Redis) Ping() error {
@@ -42,6 +45,8 @@ func (r *Redis) Get(key string) (interface{}, bool) {
 	if err == redis.Nil {
 		return val, false
 	}
+	// Set ensures no invalid value gets into cache
+	// so ignoring err check for json.Unmarshal
 	var data interface{}
 	json.Unmarshal([]byte(val), &data)
 	return data, true
