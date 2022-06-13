@@ -13,7 +13,7 @@ import (
 
 func GetRouteMap(r *mux.Router) map[string]string {
 	routes := make(map[string]string)
-	r.Walk(func(route *mux.Route, router *mux.Router, ancestors []*mux.Route) error {
+	err := r.Walk(func(route *mux.Route, router *mux.Router, ancestors []*mux.Route) error {
 		path, err := route.GetPathTemplate()
 		if err != nil {
 			log.Printf("err = %v", err)
@@ -22,6 +22,9 @@ func GetRouteMap(r *mux.Router) map[string]string {
 		routes[path] = path
 		return nil
 	})
+	if err != nil {
+		log.Printf("GetRouteMap() Err = %v", err)
+	}
 	log.Printf("Routes%s\n", routes)
 	return routes
 }

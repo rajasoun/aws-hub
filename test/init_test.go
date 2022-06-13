@@ -2,6 +2,8 @@ package test
 
 import (
 	"encoding/json"
+	"errors"
+	"net"
 	"net/http"
 	"testing"
 
@@ -52,4 +54,79 @@ func TestDoSimulation(t *testing.T) {
 		want := http.StatusInternalServerError
 		assert.Equal(want, got, "MockFailureHandler() = %v, want = %v", got, want)
 	})
+}
+
+func TestHandleErr(t *testing.T) {
+	t.Parallel()
+	type args struct {
+		err    error
+		errMsg string
+	}
+	tests := []struct {
+		name string
+		args args
+	}{
+		{
+			name: "Check HandleErr with nil",
+			args: args{
+				err:    nil,
+				errMsg: "",
+			},
+		},
+		{
+			name: "Check HandleErr with err",
+			args: args{
+				err:    errors.New("test error"),
+				errMsg: "TestErr",
+			},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			handleErr(tt.args.err, tt.args.errMsg)
+		})
+	}
+}
+
+func TestCheckAddressAvailable(t *testing.T) {
+	assert := assert.New(t)
+	t.Parallel()
+	type args struct {
+		addr *net.TCPAddr
+	}
+	tests := []struct {
+		name    string
+		args    args
+		want    int
+		wantErr bool
+	}{
+		{
+			name: "Check Address Available",
+			args: args{
+				addr: &net.TCPAddr{
+					Port: 44519,
+				},
+			},
+			wantErr: false,
+		},
+		{
+			name: "Check Address Available",
+			args: args{
+				addr: &net.TCPAddr{
+					Port: 0,
+				},
+			},
+			wantErr: false,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			_, err := CheckAddressAvailable(tt.args.addr)
+			assert.NoError(err, "CheckAddressAvailable() = %v", err)
+			if (err != nil) != tt.wantErr {
+				assert.Error(err, "CheckAddressAvailable() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+		})
+	}
 }

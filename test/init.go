@@ -4,6 +4,7 @@ import (
 	"flag"
 	"fmt"
 	"io"
+	"log"
 	"net"
 	"net/http"
 	"net/http/httptest"
@@ -34,7 +35,11 @@ func GetFreePort(address string) (int, error) {
 	if err != nil {
 		return 0, err
 	}
+	port, err := CheckAddressAvailable(addr)
+	return port, err
+}
 
+func CheckAddressAvailable(addr *net.TCPAddr) (int, error) {
 	l, err := createTCPListener(addr)
 	if err != nil {
 		return 0, err
@@ -65,12 +70,20 @@ func MockSuccessHandler(responseWriter http.ResponseWriter, request *http.Reques
 	responseWriter.Header().Set("Content-Type", "text/json")
 	responseWriter.WriteHeader(http.StatusOK)
 	payLoad := `{"Message":"test simulation"}`
-	io.WriteString(responseWriter, payLoad)
+	_, err := io.WriteString(responseWriter, payLoad)
+	handleErr(err, "MockSuccessHandler()")
 }
 
 func MockFailureHandler(responseWriter http.ResponseWriter, request *http.Request) {
 	responseWriter.Header().Set("Content-Type", "text/json")
 	responseWriter.WriteHeader(http.StatusInternalServerError)
 	payLoad := `{"Message":"simulated error"}`
-	io.WriteString(responseWriter, payLoad)
+	_, err := io.WriteString(responseWriter, payLoad)
+	handleErr(err, "MockFailureHandler()")
+}
+
+func handleErr(err error, errMsg string) {
+	if err != nil {
+		log.Printf(errMsg+"Err = %v", err)
+	}
 }

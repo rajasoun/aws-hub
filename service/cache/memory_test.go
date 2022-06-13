@@ -31,7 +31,8 @@ func TestMemoryCachePingGetSet(t *testing.T) {
 	m.Connect()
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			m.Set(tt.key, tt.value)
+			err := m.Set(tt.key, tt.value)
+			assert.NoError(err, "Set() = %v", err)
 			got, found := m.Get(tt.key)
 			assert.True(found, "Cache Set & Get Sequenced Failed for key = %v", tt.key)
 			assert.Equal(tt.value, got, "Get () = %v, want = %v", got, tt.value)
