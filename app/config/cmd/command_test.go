@@ -49,7 +49,7 @@ func TestCreateCommand(t *testing.T) {
 		want string
 	}{
 		{"Check Start with Mock handler", "start", "mockStartCommandHandler"},
-		{"Check InValid Command Handler", "dummy", "Command Not Found "},
+		{"Check InValid Command Handler", "dummy", CommandNotFoundMsg},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {

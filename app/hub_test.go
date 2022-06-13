@@ -5,6 +5,7 @@ import (
 	"os"
 	"testing"
 
+	"github.com/rajasoun/aws-hub/app/config/cmd"
 	"github.com/rajasoun/aws-hub/app/config/flag"
 	"github.com/stretchr/testify/assert"
 )
@@ -70,7 +71,7 @@ func TestExecute(t *testing.T) {
 		{
 			name: "Check Starting App with wrong command",
 			args: append(args, "dummy"),
-			want: "Command Not Found",
+			want: cmd.CommandNotFoundMsg,
 		},
 	}
 	for _, tt := range tests {

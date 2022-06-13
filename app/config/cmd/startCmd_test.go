@@ -22,8 +22,7 @@ func TestStartCmd(t *testing.T) {
 		portString := strconv.Itoa(port)
 		_ = set.Parse([]string{"start", "--port", portString})
 		context := cli.NewContext(mockApp, set, nil)
-		cmdhandler := CmdHandler{}
-		cmdhandler.EnableShutdDown = true
+		cmdhandler := CmdHandler{EnableShutdDown: true}
 		startCommand := GetCommand(cmdhandler.StartCommand)
 		err := startCommand.Run(context)
 		assert.NoError(err, "err = %v ", err)
