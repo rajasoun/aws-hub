@@ -5,6 +5,10 @@ import (
 	"github.com/urfave/cli/v2"
 )
 
+type CmdHandler struct {
+	EnableShutdDown bool
+}
+
 // Create Start Command with the supplied handler
 func CreateCommand(handler func(appCtx *cli.Context) error) cli.Command {
 	command := cli.Command{

@@ -42,23 +42,13 @@ func NewContext() *cli.Context {
 func TestGetCommand(t *testing.T) {
 	assert := assert.New(t)
 	t.Parallel()
-
-	tests := []struct {
-		name            string
-		wantCommandsLen int
-		wantCommandName string
-	}{
-		{"Check start command", 1, "start"},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			cmdhandler := CmdHandler{EnableShutdDown: true}
-			cmds := GetCommand(cmdhandler.StartCommand)
-			gotCommandName := cmds.Name
-			assert.Containsf(tt.wantCommandName, gotCommandName,
-				"setUpCommands() = %v , want = %v", gotCommandName, tt.wantCommandName)
-		})
-	}
+	t.Run("Check start command", func(t *testing.T) {
+		cmdhandler := CmdHandler{EnableShutdDown: true}
+		cmds := GetCommand(cmdhandler.StartCommand)
+		got := cmds.Name
+		want := "start"
+		assert.Containsf(want, got, "GetCommand() = %v , want = %v", got, want)
+	})
 }
 
 func TestCreateCommand(t *testing.T) {

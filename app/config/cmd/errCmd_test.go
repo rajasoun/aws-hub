@@ -8,7 +8,7 @@ import (
 	"github.com/urfave/cli/v2"
 )
 
-func TestGetErrCommand(t *testing.T) {
+func TestErrCommand(t *testing.T) {
 	t.Parallel()
 	assert := assert.New(t)
 	t.Run("Check ErrCommand With Invalid Input", func(t *testing.T) {

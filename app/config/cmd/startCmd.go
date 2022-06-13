@@ -6,10 +6,6 @@ import (
 	"github.com/urfave/cli/v2"
 )
 
-type CmdHandler struct {
-	EnableShutdDown bool
-}
-
 func (handler *CmdHandler) StartCommand(appCtx *cli.Context) error {
 	cliContext := arg.NewCliContext(appCtx)
 	cache := cliContext.GetCache()
