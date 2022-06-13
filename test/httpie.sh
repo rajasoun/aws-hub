@@ -35,18 +35,21 @@ function echoStderr(){
     echo "$@" 1>&2
 }
 
-urls=(
-    health 
-    aws/profiles 
-    aws/iam/users 
-    aws/iam/account 
-    aws/iam/alias
-    )
+function main(){
+    urls=(
+        health 
+        aws/profiles 
+        aws/iam/users 
+        aws/iam/account 
+        aws/iam/alias
+        )
 
-server="http://localhost:3000"
-for url in "${urls[@]}"
-do
-    check_status "$server/$url"
-done
-reportResults
+    server="http://localhost:3000"
+    for url in "${urls[@]}"
+    do
+        check_status "$server/$url"
+    done
+    reportResults
+}
 
+main
