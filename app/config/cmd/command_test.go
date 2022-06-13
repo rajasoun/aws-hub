@@ -19,10 +19,10 @@ import (
 func NewAppWithMockCommands(writer io.Writer) *cli.App {
 	app := &cli.App{}
 	app.Flags = hubConfig.GetFlags()
-	mockCmd := CreateCommand(mockStartCommand)
+	mockCmd := CreateCommand(MockStartCommand)
 	commands := []*cli.Command{&mockCmd}
 	app.Commands = commands
-	app.CommandNotFound = ErrCommand()
+	app.CommandNotFound = GetErrCommand()
 	app.Writer = writer
 	log.SetOutput(writer)
 	log.SetFlags(0)
