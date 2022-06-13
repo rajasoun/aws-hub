@@ -91,42 +91,43 @@ func TestHandleErr(t *testing.T) {
 func TestCheckAddressAvailable(t *testing.T) {
 	assert := assert.New(t)
 	t.Parallel()
+
+	tcpMockHandler := func(network string, laddr *net.TCPAddr) (*net.TCPListener, error) {
+		return nil, errors.New("simulated error")
+	}
 	type args struct {
 		addr *net.TCPAddr
 	}
 	tests := []struct {
-		name    string
-		args    args
-		want    int
-		wantErr bool
+		name       string
+		tcpHandler func(network string, laddr *net.TCPAddr) (*net.TCPListener, error)
+		args       args
+		want       int
+		wantErr    bool
 	}{
 		{
-			name: "Check Address Available",
-			args: args{
-				addr: &net.TCPAddr{
-					Port: 44519,
-				},
-			},
-			wantErr: false,
+			name:       "Check Address Available",
+			args:       args{addr: &net.TCPAddr{Port: 0}},
+			tcpHandler: net.ListenTCP,
+			wantErr:    false,
 		},
 		{
-			name: "Check Address Available",
-			args: args{
-				addr: &net.TCPAddr{
-					Port: 0,
-				},
-			},
-			wantErr: false,
+			name:       "Check Address Available Err ",
+			args:       args{addr: &net.TCPAddr{Port: 0}},
+			tcpHandler: tcpMockHandler,
+			want:       0,
+			wantErr:    true,
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			_, err := CheckAddressAvailable(tt.args.addr)
-			assert.NoError(err, "CheckAddressAvailable() = %v", err)
-			if (err != nil) != tt.wantErr {
+			port, err := CheckAddressAvailable(tt.tcpHandler, tt.args.addr)
+			if tt.wantErr {
+				assert.Equal(tt.want, port, "CheckAddressAvailable() got = %v , want = %v", port, tt.want)
 				assert.Error(err, "CheckAddressAvailable() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
+			assert.NoError(err, "CheckAddressAvailable() = %v", err)
 		})
 	}
 }
