@@ -2,9 +2,10 @@ package iam
 
 import (
 	"context"
+	"errors"
+	"log"
 	"testing"
 
-	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/service/iam"
 
 	"github.com/stretchr/testify/assert"
@@ -28,11 +29,11 @@ func (mockFunc *MockAccountAliases) ListAccountAliases(ctx context.Context,
 	// The Function to be Called and Result will be Injected in Test
 	result := mockFunc.Called(ctx, params, optFns)
 	//Return Result On Error
-	if result.Get(0) == nil {
-		return nil, result.Error(1)
+	if result.Get(1) != nil {
+		return result.Get(0).(*iam.ListAccountAliasesOutput), result.Error(1)
 	}
 	//Return Result If No Error
-	return result.Get(0).(*iam.ListAccountAliasesOutput), result.Error(1)
+	return result.Get(0).(*iam.ListAccountAliasesOutput), nil
 }
 
 var testAlias string = "aws-test-account-alias"
@@ -41,7 +42,6 @@ func TestListAccountAliasesViaMockFramework(t *testing.T) {
 	assert := assert.New(t)
 	t.Parallel()
 	t.Run("Check ListAccountAliases", func(t *testing.T) {
-		//client := new(iammock.MockClient)
 		client := new(MockAccountAliases)
 		aliases := []string{testAlias}
 		expectedOutput := &iam.ListAccountAliasesOutput{
@@ -55,11 +55,20 @@ func TestListAccountAliasesViaMockFramework(t *testing.T) {
 		assert.NoError(err, "expect no error, got %v", err)
 		assert.Equal(testAlias, got.List[0], "got GetAliases = %v, want = %v", got.List[0], testAlias)
 	})
-	t.Run("Check GetUserCount returns err with Empty aws.Config{}", func(t *testing.T) {
-		emptyCfg := aws.Config{}
-		noOpClient := iam.NewFromConfig(emptyCfg)
-		_, err := GetAliases(noOpClient)
-		assert.Error(err, "err = %v, want = nil", err)
+	t.Run("Check ListAccountAliases with Err", func(t *testing.T) {
+		client := new(MockAccountAliases)
+		aliases := []string{}
+		expectedOutput := &iam.ListAccountAliasesOutput{
+			AccountAliases: aliases,
+		}
+		// Inject Mock Function to be Called along with Resturn values as Parameter
+		client.
+			On("ListAccountAliases", mock.Anything, mock.Anything, mock.Anything).
+			Return(expectedOutput, errors.New("simulated error"))
+		got, err := GetAliases(client)
+		log.Println(got)
+		assert.Error(err, "expect no error, got %v", err)
+		assert.Empty(got.List, "GetAliases() = %v", got.List)
 	})
 }
 
