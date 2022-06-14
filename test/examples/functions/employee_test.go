@@ -20,14 +20,13 @@ func TestEmployee(t *testing.T) {
 			name: "sakmoto",
 			args: args{
 				name: "manu",
-				age: 20,
-				id: 007,
+				age:  20,
+				id:   007,
 			},
-			want: "manu",
+			want:  "manu",
 			want1: 20,
 			want2: 007,
 		},
-
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
