@@ -71,3 +71,30 @@ func Test_newaudio(t *testing.T) {
 		})
 	}
 }
+
+func TestPlayerDetails(t *testing.T) {
+	tests := []struct {
+		name string
+		want *player
+	}{
+		// TODO: Add test cases.
+		{
+			name: "define the player name ",
+			want: &player{
+				name: "ajit kumar",
+				age:  25,
+				perimeter: perimeter{
+					width:  10,
+					height: 20,
+				},
+			},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := PlayerDetails(); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("PlayerDetails() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}

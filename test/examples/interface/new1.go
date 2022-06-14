@@ -9,6 +9,11 @@ type Audio interface {
 	SayHello() string
 	//perimeter()
 }
+type player struct {
+	name      string
+	age       int64
+	perimeter perimeter
+}
 
 func (p *perimeter) Perimeter() float64 {
 	return 2 * (p.width + p.height)
@@ -19,4 +24,17 @@ func newaudio(lang string) Audio {
 	}
 	return Spanish{}
 
+}
+
+func PlayerDetails() *player {
+	new := player{
+		name: "ajit kumar",
+		age:  25,
+		perimeter: perimeter{
+			height: 10,
+			width:  20,
+		},
+	}
+
+	return &new
 }
