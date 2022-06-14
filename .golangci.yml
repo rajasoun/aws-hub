@@ -110,6 +110,7 @@ issues:
   - 'Error return value of `awsWrapper.cache.Set` is not checked'
   - 'Error return value of `httpServer.Shutdown` is not checked'
   - 'Error return value of `responseWritter.Write` is not checked'
+  - 'ST1016: methods on the same type should have the same receiver name (seen 1x "mock", 2x "mockClient")'
 
   exclude-rules:
     - path: _test\.go
