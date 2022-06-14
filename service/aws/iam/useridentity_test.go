@@ -97,33 +97,26 @@ func TestGetUserIdentityViaMockFramework(t *testing.T) {
 * Mock via manual creation - Just For Reference
  */
 
-//Mock Function
-type MockIAMGetUserAPIClient func(ctx context.Context,
-	params *iam.GetUserInput,
-	optFns ...func(*iam.Options)) (*iam.GetUserOutput, error)
-
-// Implement AWS IAM GetUser Method with Mock Function Receiver
-func (mock MockIAMGetUserAPIClient) GetUser(ctx context.Context,
-	params *iam.GetUserInput,
-	optFns ...func(*iam.Options)) (*iam.GetUserOutput, error) {
-	return mock(ctx, params, optFns...)
+type MockReciever struct {
+	wantErr error
 }
 
-func NewGetUserMockClient() IAMGetUserAPIClient {
-	client := MockIAMGetUserAPIClient(func(ctx context.Context,
-		params *iam.GetUserInput,
-		optFns ...func(*iam.Options)) (*iam.GetUserOutput, error) {
-		user := &types.User{
-			Arn:              aws.String("arn:aws:iam::000123456789:user/test@example.com"),
-			CreateDate:       &time.Time{},
-			UserId:           aws.String("ABCDEFGHIJKLMNOPQRST"),
-			UserName:         aws.String(testUserName),
-			PasswordLastUsed: &time.Time{},
-		}
-		result := &iam.GetUserOutput{User: user}
-		return result, nil
-	})
-	return client
+// Implement AWS IAM GetUser Method with Mock Receiver struct
+func (mockReceiver MockReciever) GetUser(ctx context.Context,
+	params *iam.GetUserInput,
+	optFns ...func(*iam.Options)) (*iam.GetUserOutput, error) {
+	if mockReceiver.wantErr != nil {
+		return &iam.GetUserOutput{User: &types.User{}}, errors.New("simulated error")
+	}
+	user := &types.User{
+		Arn:              aws.String("arn:aws:iam::000123456789:user/test@example.com"),
+		CreateDate:       &time.Time{},
+		UserId:           aws.String("ABCDEFGHIJKLMNOPQRST"),
+		UserName:         aws.String(testUserName),
+		PasswordLastUsed: &time.Time{},
+	}
+	result := &iam.GetUserOutput{User: user}
+	return result, nil
 }
 
 func TestGetUserIdentity(t *testing.T) {
@@ -131,19 +124,34 @@ func TestGetUserIdentity(t *testing.T) {
 	t.Parallel()
 
 	cases := []struct {
-		name string
-		want string
+		name    string
+		client  MockReciever
+		want    string
+		wantErr bool
 	}{
-		{"Check GetUserIdentity For Account", testUserName},
+		{
+			name:    "Check GetUserIdentity For Account",
+			client:  MockReciever{wantErr: nil},
+			want:    testUserName,
+			wantErr: false,
+		},
+		{
+			name:    "Check GetUserIdentity For Account with Err",
+			client:  MockReciever{wantErr: errors.New("simulated error")},
+			want:    "",
+			wantErr: true,
+		},
 	}
 
 	for _, tt := range cases {
 		t.Run(tt.name, func(t *testing.T) {
-			// mock := MockUserIdentity{}
-			client := NewGetUserMockClient()
-			got, err := GetUserIdentity(client)
-			assert.NoError(err, "expect no error, got %v", err)
-			assert.Equal(tt.want, got.Username, "got GetUserIdentity = %v, want = %v", got.Username, tt.want)
+			got, err := GetUserIdentity(tt.client)
+			if tt.wantErr {
+				assert.Error(err, "GetUserIdentity() %v", err)
+				return
+			}
+			assert.NoError(err, "GetUserIdentity() %v", err)
+			assert.Equal(tt.want, got.Username, "GetUserIdentity() = %v, want = %v", got.Username, tt.want)
 		})
 	}
 }
