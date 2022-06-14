@@ -98,3 +98,45 @@ func TestPlayerDetails(t *testing.T) {
 		})
 	}
 }
+
+func Test_player_playingGames(t *testing.T) {
+	type fields struct {
+		name      string
+		age       int64
+		langu     string
+		perimeter perimeter
+	}
+	tests := []struct {
+		name   string
+		fields fields
+		want   string
+	}{
+		// TODO: Add test cases.
+		{
+			name: "checking the details ",
+			fields: fields{
+				name:  "ajit kumar",
+				age:   25,
+				langu: "English",
+				perimeter: perimeter{
+					width:  20,
+					height: 20,
+				},
+			},
+			want: "Hola",
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			p := &player{
+				name:      tt.fields.name,
+				age:       tt.fields.age,
+				langu:     tt.fields.langu,
+				perimeter: tt.fields.perimeter,
+			}
+			if got := p.playingGames(); got != tt.want {
+				t.Errorf("player.playingGames() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}

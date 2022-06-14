@@ -12,6 +12,7 @@ type Audio interface {
 type player struct {
 	name      string
 	age       int64
+	langu     string
 	perimeter perimeter
 }
 
@@ -37,4 +38,16 @@ func PlayerDetails() *player {
 	}
 
 	return &new
+}
+
+func (p *player) playingGames() string {
+	mk := player{}
+	mk.age = 25
+	mk.name = "ajit kumar"
+	mk.perimeter.height = 20
+	mk.perimeter.width = 30
+	mk.langu = "English"
+
+	new := newaudio(mk.langu)
+	return new.SayHello()
 }
