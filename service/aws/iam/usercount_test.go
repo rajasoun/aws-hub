@@ -12,11 +12,6 @@ import (
 	"github.com/stretchr/testify/mock"
 )
 
-// To mock AWS operations
-type MockListUsers struct {
-	mock.Mock
-}
-
 /**
 * Mock using testify Framework
  */
@@ -27,12 +22,12 @@ type MockListUsers struct {
 // Steps:
 //	1. make an object of struct
 //	2. implements all methods in the interface for mocking real implementation
-func (c *MockListUsers) ListUsers(ctx context.Context,
+func (mockClient *MockClient) ListUsers(ctx context.Context,
 	params *iam.ListUsersInput,
 	optFns ...func(*iam.Options)) (*iam.ListUsersOutput, error) {
 	// Mock ListUsers of AWS
 	// Mocked ListUsers Function will be Called and Results Injected
-	args := c.Called(ctx, params, optFns)
+	args := mockClient.Called(ctx, params, optFns)
 	// On Error
 	if args.Get(1) != nil {
 		return args.Get(0).(*iam.ListUsersOutput), args.Error(1)
@@ -68,7 +63,7 @@ func TestGetUserCountViaMockFramework(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			client := new(MockListUsers)
+			client := new(MockClient)
 			expectedOutput := &iam.ListUsersOutput{Users: tt.input}
 			// Inject Mock Function to be Called along with Resturn values as Parameter
 			client.

@@ -11,11 +11,6 @@ import (
 	"github.com/stretchr/testify/mock"
 )
 
-// To mock AWS operations
-type MockAccountAliases struct {
-	mock.Mock
-}
-
 /**
 * Mock using testify Framework
  */
@@ -26,7 +21,7 @@ type MockAccountAliases struct {
 // Steps:
 //	1. make an object of struct
 //	2. implements all methods in the interface for mocking real implementation
-func (mock *MockAccountAliases) ListAccountAliases(ctx context.Context,
+func (mock *MockClient) ListAccountAliases(ctx context.Context,
 	params *iam.ListAccountAliasesInput,
 	optFns ...func(*iam.Options)) (*iam.ListAccountAliasesOutput, error) {
 	// Mock ListAccountAliases of AWS
@@ -65,7 +60,7 @@ func TestListAccountAliasesViaMockFramework(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			client := new(MockAccountAliases)
+			client := new(MockClient)
 			expectedOutput := &iam.ListAccountAliasesOutput{
 				AccountAliases: tt.input,
 			}

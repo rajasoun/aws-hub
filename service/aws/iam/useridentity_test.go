@@ -15,11 +15,6 @@ import (
 
 const testUserName = "test@example.com"
 
-// Mock Receiver
-type MockUserIdentity struct {
-	mock.Mock
-}
-
 /**
 * Mock using testify Framework
  */
@@ -30,10 +25,10 @@ type MockUserIdentity struct {
 // Steps:
 //	1. make an object of struct
 //	2. implements all methods in the interface for mocking real implementation
-func (c *MockUserIdentity) GetUser(ctx context.Context,
+func (mockClient *MockClient) GetUser(ctx context.Context,
 	params *iam.GetUserInput,
 	optFns ...func(*iam.Options)) (*iam.GetUserOutput, error) {
-	args := c.Called(ctx, params, optFns)
+	args := mockClient.Called(ctx, params, optFns)
 	// On Error
 	if args.Get(1) != nil {
 		return args.Get(0).(*iam.GetUserOutput), args.Error(1)
@@ -72,7 +67,7 @@ func TestGetUserIdentityViaMockFramework(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			client := new(MockUserIdentity)
+			client := new(MockClient)
 			expectedOutput := &iam.GetUserOutput{
 				User: tt.input,
 			}
