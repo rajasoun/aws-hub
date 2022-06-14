@@ -2,6 +2,7 @@ package iam
 
 import (
 	"context"
+	"errors"
 	"testing"
 	"time"
 
@@ -23,46 +24,69 @@ type MockUserIdentity struct {
 * Mock using testify Framework
  */
 
-// Get User Mock
+// Mock Function to AWS GetUser
+// Technique: Interface Substitution
+// Interface Substitution is done by mocking methods that are implemented by an interface.
+// Steps:
+//	1. make an object of struct
+//	2. implements all methods in the interface for mocking real implementation
 func (c *MockUserIdentity) GetUser(ctx context.Context,
 	params *iam.GetUserInput,
 	optFns ...func(*iam.Options)) (*iam.GetUserOutput, error) {
 	args := c.Called(ctx, params, optFns)
-	if args.Get(0) == nil {
-		return nil, args.Error(1)
+	// On Error
+	if args.Get(1) != nil {
+		return args.Get(0).(*iam.GetUserOutput), args.Error(1)
 	}
-	return args.Get(0).(*iam.GetUserOutput), args.Error(1)
+	// If No Error
+	return args.Get(0).(*iam.GetUserOutput), nil
 }
 
 func TestGetUserIdentityViaMockFramework(t *testing.T) {
 	assert := assert.New(t)
 	t.Parallel()
-	t.Run("Check ListUsers via Mocking Framework ", func(t *testing.T) {
-		client := new(MockUserIdentity)
-		user := &types.User{
-			Arn:              aws.String("arn:aws:iam::000123456789:user/test@example.com"),
-			CreateDate:       &time.Time{},
-			UserId:           aws.String("ABCDEFGHIJKLMNOPQRST"),
-			UserName:         aws.String(testUserName),
-			PasswordLastUsed: &time.Time{},
-		}
-		expectedOutput := &iam.GetUserOutput{User: user}
-
-		// Inject Mock Function to be Called along with Resturn values as Parameter
-		client.
-			On("GetUser", mock.Anything, mock.Anything, mock.Anything).
-			Return(expectedOutput, nil)
-		want := "test@example.com"
-		got, err := GetUserIdentity(client)
-		assert.NoError(err, "expect no error, got %v", err)
-		assert.Equal(want, got.Username, "got GetUserIdentity = %v, want = %v", got.Username, want)
-	})
-	t.Run("Check GetUserIdentity returns err with Empty aws.Config{}", func(t *testing.T) {
-		emptyCfg := aws.Config{}
-		noOpClient := iam.NewFromConfig(emptyCfg) //mock.NewMockClient(emptyCfg)
-		_, err := GetUserIdentity(noOpClient)
-		assert.Error(err, "err = %v, want = nil", err)
-	})
+	tests := []struct {
+		name    string
+		input   *types.User
+		want    string
+		wantErr error
+	}{
+		{
+			name: "Check ListUsers via Mocking Framework",
+			input: &types.User{
+				Arn:              aws.String("arn:aws:iam::000123456789:user/test@example.com"),
+				CreateDate:       &time.Time{},
+				UserId:           aws.String("ABCDEFGHIJKLMNOPQRST"),
+				UserName:         aws.String(testUserName),
+				PasswordLastUsed: &time.Time{},
+			},
+			want:    "test@example.com",
+			wantErr: nil,
+		},
+		{
+			name:    "Check ListUsers via Mocking Framework with Err",
+			input:   &types.User{},
+			want:    "",
+			wantErr: errors.New("simulated error"),
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			client := new(MockUserIdentity)
+			expectedOutput := &iam.GetUserOutput{User: tt.input}
+			// Inject Mock Function to be Called along with Resturn values as Parameter
+			client.
+				On("GetUser", mock.Anything, mock.Anything, mock.Anything).
+				Return(expectedOutput, tt.wantErr)
+			got, err := GetUserIdentity(client)
+			assert.Equal(tt.want, got.Username, "GetUserIdentity().Username = %v, want = %v", got.Username, tt.name)
+			if tt.wantErr != nil {
+				assert.Error(err, " GetUserIdentity() %v", err)
+				return
+			}
+			assert.NoError(err, " GetUserIdentity() %v", err)
+		})
+	}
 }
 
 /**

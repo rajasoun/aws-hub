@@ -21,15 +21,24 @@ type MockListUsers struct {
 * Mock using testify Framework
  */
 
-// List Users Mock
+// Mock Function to AWS ListUsers
+// Technique: Interface Substitution
+// Interface Substitution is done by mocking methods that are implemented by an interface.
+// Steps:
+//	1. make an object of struct
+//	2. implements all methods in the interface for mocking real implementation
 func (c *MockListUsers) ListUsers(ctx context.Context,
 	params *iam.ListUsersInput,
 	optFns ...func(*iam.Options)) (*iam.ListUsersOutput, error) {
+	// Mock ListUsers of AWS
+	// Mocked ListUsers Function will be Called and Results Injected
 	args := c.Called(ctx, params, optFns)
+	// On Error
 	if args.Get(1) != nil {
 		return args.Get(0).(*iam.ListUsersOutput), args.Error(1)
 	}
-	return args.Get(0).(*iam.ListUsersOutput), args.Error(1)
+	// If No Error
+	return args.Get(0).(*iam.ListUsersOutput), nil
 }
 
 func TestGetUserCountViaMockFramework(t *testing.T) {
