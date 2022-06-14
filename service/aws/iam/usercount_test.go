@@ -35,37 +35,45 @@ func (c *MockListUsers) ListUsers(ctx context.Context,
 func TestGetUserCountViaMockFramework(t *testing.T) {
 	assert := assert.New(t)
 	t.Parallel()
-	t.Run("Check ListUsers via Mocking Framework ", func(t *testing.T) {
-		client := new(MockListUsers)
-		userList := []types.User{
-			{UserName: aws.String("test1@example.com")},
-			{UserName: aws.String("test2@example.com")},
-		}
-		expectedOutput := &iam.ListUsersOutput{Users: userList}
-
-		// Inject Mock Function to be Called along with Resturn values as Parameter
-		client.
-			On("ListUsers", mock.Anything, mock.Anything, mock.Anything).
-			Return(expectedOutput, nil)
-		wantUserCount := 2
-		got, err := GetUserCount(client)
-		assert.NoError(err, "expect no error, got %v", err)
-		assert.Equal(wantUserCount, got.Count, "got GetAliases = %v, want = %v", got.Count, wantUserCount)
-	})
-	t.Run("Check ListUsers via Mocking Framework with Err", func(t *testing.T) {
-		client := new(MockListUsers)
-		userList := []types.User{}
-		expectedOutput := &iam.ListUsersOutput{Users: userList}
-
-		// Inject Mock Function to be Called along with Resturn values as Parameter
-		client.
-			On("ListUsers", mock.Anything, mock.Anything, mock.Anything).
-			Return(expectedOutput, errors.New("simulated error"))
-		wantUserCount := 0
-		got, err := GetUserCount(client)
-		assert.Error(err, "expect no error, got %v", err)
-		assert.Equal(wantUserCount, got.Count, "got GetAliases = %v, want = %v", got.Count, wantUserCount)
-	})
+	tests := []struct {
+		name    string
+		input   []types.User
+		want    int
+		wantErr error
+	}{
+		{
+			name: "Check ListUsers via Mocking Framework",
+			input: []types.User{
+				{UserName: aws.String("test1@example.com")},
+				{UserName: aws.String("test2@example.com")},
+			},
+			want:    2,
+			wantErr: nil,
+		},
+		{
+			name:    "Check ListUsers via Mocking Framework with Err",
+			input:   []types.User{},
+			want:    0,
+			wantErr: errors.New("simulated error"),
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			client := new(MockListUsers)
+			expectedOutput := &iam.ListUsersOutput{Users: tt.input}
+			// Inject Mock Function to be Called along with Resturn values as Parameter
+			client.
+				On("ListUsers", mock.Anything, mock.Anything, mock.Anything).
+				Return(expectedOutput, tt.wantErr)
+			got, err := GetUserCount(client)
+			assert.Equal(tt.want, got.Count, "GetUserCount() = %v, want = %v", got.Count, tt.want)
+			if tt.wantErr != nil {
+				assert.Error(err, "GetUserCount() %v", err)
+				return
+			}
+			assert.NoError(err, "GetUserCount() %v", err)
+		})
+	}
 }
 
 /**
