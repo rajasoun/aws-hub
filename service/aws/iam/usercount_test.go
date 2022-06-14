@@ -2,6 +2,7 @@ package iam
 
 import (
 	"context"
+	"errors"
 	"testing"
 
 	"github.com/aws/aws-sdk-go-v2/aws"
@@ -25,8 +26,8 @@ func (c *MockListUsers) ListUsers(ctx context.Context,
 	params *iam.ListUsersInput,
 	optFns ...func(*iam.Options)) (*iam.ListUsersOutput, error) {
 	args := c.Called(ctx, params, optFns)
-	if args.Get(0) == nil {
-		return nil, args.Error(1)
+	if args.Get(1) != nil {
+		return args.Get(0).(*iam.ListUsersOutput), args.Error(1)
 	}
 	return args.Get(0).(*iam.ListUsersOutput), args.Error(1)
 }
@@ -51,11 +52,19 @@ func TestGetUserCountViaMockFramework(t *testing.T) {
 		assert.NoError(err, "expect no error, got %v", err)
 		assert.Equal(wantUserCount, got.Count, "got GetAliases = %v, want = %v", got.Count, wantUserCount)
 	})
-	t.Run("Check GetUserCount returns err with Empty aws.Config{}", func(t *testing.T) {
-		emptyCfg := aws.Config{}
-		noOpClient := iam.NewFromConfig(emptyCfg) //mock.NewMockClient(emptyCfg)
-		_, err := GetUserCount(noOpClient)
-		assert.Error(err, "err = %v, want = nil", err)
+	t.Run("Check ListUsers via Mocking Framework with Err", func(t *testing.T) {
+		client := new(MockListUsers)
+		userList := []types.User{}
+		expectedOutput := &iam.ListUsersOutput{Users: userList}
+
+		// Inject Mock Function to be Called along with Resturn values as Parameter
+		client.
+			On("ListUsers", mock.Anything, mock.Anything, mock.Anything).
+			Return(expectedOutput, errors.New("simulated error"))
+		wantUserCount := 0
+		got, err := GetUserCount(client)
+		assert.Error(err, "expect no error, got %v", err)
+		assert.Equal(wantUserCount, got.Count, "got GetAliases = %v, want = %v", got.Count, wantUserCount)
 	})
 }
 
