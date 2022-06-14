@@ -95,6 +95,7 @@ func TestGetUserIdentityViaMockFramework(t *testing.T) {
 
 /**
 * Mock via manual creation - Just For Reference
+* Technique : Interface Substitution
  */
 
 type MockReciever struct {
