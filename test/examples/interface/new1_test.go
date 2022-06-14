@@ -1,6 +1,9 @@
 package spike
 
-import "testing"
+import (
+	"reflect"
+	"testing"
+)
 
 func Test_perimeter_Perimeter(t *testing.T) {
 	type fields struct {
@@ -30,6 +33,40 @@ func Test_perimeter_Perimeter(t *testing.T) {
 			}
 			if got := p.Perimeter(); got != tt.want {
 				t.Errorf("perimeter.Perimeter() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func Test_newaudio(t *testing.T) {
+	type args struct {
+		lang string
+	}
+	tests := []struct {
+		name string
+		args args
+		want Audio
+	}{
+		// TODO: Add test cases.
+		{
+			name: "Check for English",
+			args: args{
+				lang: "Hello",
+			},
+			want: English{},
+		},
+		{
+			name: "check for spanish",
+			args: args{
+				lang: "Hola",
+			},
+			want: Spanish{},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := newaudio(tt.args.lang); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("newaudio() = %v, want %v", got, tt.want)
 			}
 		})
 	}
