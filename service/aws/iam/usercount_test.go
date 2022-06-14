@@ -87,54 +87,57 @@ func TestGetUserCountViaMockFramework(t *testing.T) {
 
 /**
 * Mock via manual creation - Just For Reference
+* Technique : Interface Substitution
  */
 
-// Mock Receiver
-type MockUser struct{}
-
-//Mock Function
-type MockIAMListUsersAPIClient func(ctx context.Context,
-	params *iam.ListUsersInput,
-	optFns ...func(*iam.Options)) (*iam.ListUsersOutput, error)
-
-// Implement AWS IAM ListUsers Method with Mock Function Receiver
-func (mock MockIAMListUsersAPIClient) ListUsers(ctx context.Context,
+// Implement AWS IAM GetUser Method with Mock Receiver struct
+func (mockReceiver MockReciever) ListUsers(ctx context.Context,
 	params *iam.ListUsersInput,
 	optFns ...func(*iam.Options)) (*iam.ListUsersOutput, error) {
-	return mock(ctx, params, optFns...)
+	if mockReceiver.wantErr != nil {
+		return &iam.ListUsersOutput{Users: []types.User{}}, errors.New("simulated error")
+	}
+	userList := []types.User{
+		{UserName: aws.String("test1@example.com")},
+		{UserName: aws.String("test2@example.com")},
+	}
+	result := &iam.ListUsersOutput{Users: userList}
+	return result, nil
 }
 
-func (mock MockUser) NewClient() IAMListUsersAPIClient {
-	client := MockIAMListUsersAPIClient(func(ctx context.Context,
-		params *iam.ListUsersInput,
-		optFns ...func(*iam.Options)) (*iam.ListUsersOutput, error) {
-		userList := []types.User{
-			{UserName: aws.String("test1@example.com")},
-			{UserName: aws.String("test2@example.com")},
-		}
-		result := &iam.ListUsersOutput{Users: userList}
-		return result, nil
-	})
-	return client
-}
-func TestGetUserCount(t *testing.T) {
+func TestGetUserCountviaManualMock(t *testing.T) {
 	assert := assert.New(t)
 	t.Parallel()
 
 	cases := []struct {
-		name string
-		want int
+		name    string
+		client  MockReciever
+		want    int
+		wantErr bool
 	}{
-		{"Check Get User Count", 2},
+		{
+			name:    "Check GetUserCount For Account",
+			client:  MockReciever{wantErr: nil},
+			want:    2,
+			wantErr: false,
+		},
+		{
+			name:    "Check GetUserCount For Account with Err",
+			client:  MockReciever{wantErr: errors.New("simulated error")},
+			want:    0,
+			wantErr: true,
+		},
 	}
 
 	for _, tt := range cases {
 		t.Run(tt.name, func(t *testing.T) {
-			mock := MockUser{}
-			client := mock.NewClient()
-			got, err := GetUserCount(client)
-			assert.NoError(err, "expect no error, got %v", err)
-			assert.Equal(tt.want, got.Count, "got GetUserCount = %v, want = %v", got.Count, tt.want)
+			got, err := GetUserCount(tt.client)
+			if tt.wantErr {
+				assert.Error(err, "GetUserCount() %v", err)
+				return
+			}
+			assert.NoError(err, "GetUserCount() %v", err)
+			assert.Equal(tt.want, got.Count, "GetUserCount() = %v, want = %v", got.Count, tt.want)
 		})
 	}
 }

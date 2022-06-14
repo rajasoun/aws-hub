@@ -98,10 +98,6 @@ func TestGetUserIdentityViaMockFramework(t *testing.T) {
 * Technique : Interface Substitution
  */
 
-type MockReciever struct {
-	wantErr error
-}
-
 // Implement AWS IAM GetUser Method with Mock Receiver struct
 func (mockReceiver MockReciever) GetUser(ctx context.Context,
 	params *iam.GetUserInput,
