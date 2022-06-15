@@ -1,5 +1,10 @@
 package spike
 
+import (
+	"log"
+	"os"
+)
+
 type perimeter struct {
 	width  float64
 	height float64
@@ -50,4 +55,25 @@ func (p *player) playingGames() string {
 
 	new := newaudio(mk.langu)
 	return new.SayHello()
+}
+
+/* writeing a function which will write in a file
+and if the file is not created
+it will create the file
+*/
+
+func CreatingFile(str byte) (*os.File, error) {
+	fileName := "DemoFile"
+	NewFile, err := os.OpenFile(fileName, os.O_CREATE, 0666)
+	if err != nil {
+		log.Println("Error whlie creating the file %s Err = %v", fileName)
+		return nil, err
+	}
+
+	leng, err := NewFile.Read(str)
+	if err != nil {
+		log.Println("Error in Writing inside the file ")
+		return nil, err
+	}
+	return leng, nil
 }
