@@ -1,7 +1,8 @@
+// Manual Mocking of AWS APIs
 package example
 
 /**
-* manual Mocking of AWS APIs
+* Manual Mocking of AWS APIs
 * Technique : Interface Substitution
  */
 

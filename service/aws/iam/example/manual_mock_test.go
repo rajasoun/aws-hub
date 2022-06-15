@@ -1,4 +1,4 @@
-// Manual Mocking of AWS APIs
+// Manual Mocking of AWS APIs Example
 package example
 
 import (
@@ -19,7 +19,7 @@ import (
 * Technique : Interface Substitution
  */
 
-// Implement AWS IAM GetUserIdentity Method with Mock Receiver struct
+// Implement AWS IAM ListAccountAliases Method with Mock Receiver struct
 func (mockReceiver MockReciever) ListAccountAliases(ctx context.Context,
 	params *iam.ListAccountAliasesInput,
 	optFns ...func(*iam.Options)) (*iam.ListAccountAliasesOutput, error) {
