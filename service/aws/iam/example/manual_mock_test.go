@@ -24,7 +24,7 @@ func (mockReceiver MockReciever) ListAccountAliases(ctx context.Context,
 	params *iam.ListAccountAliasesInput,
 	optFns ...func(*iam.Options)) (*iam.ListAccountAliasesOutput, error) {
 	if mockReceiver.wantErr != nil {
-		return &iam.ListAccountAliasesOutput{AccountAliases: []string{}}, errors.New("simulated error")
+		return &iam.ListAccountAliasesOutput{AccountAliases: []string{}}, errors.New(testErrMsg)
 	}
 	aliases := []string{testAlias}
 	result := &iam.ListAccountAliasesOutput{AccountAliases: aliases}
@@ -49,7 +49,7 @@ func TestGetAliasesviaHandMadeMock(t *testing.T) {
 		},
 		{
 			name:    "Check GetUserIdentity For Account with Err",
-			client:  MockReciever{wantErr: errors.New("simulated error")},
+			client:  MockReciever{wantErr: errors.New(testErrMsg)},
 			want:    0,
 			wantErr: true,
 		},
@@ -78,7 +78,7 @@ func (mockReceiver MockReciever) ListUsers(ctx context.Context,
 	params *iam.ListUsersInput,
 	optFns ...func(*iam.Options)) (*iam.ListUsersOutput, error) {
 	if mockReceiver.wantErr != nil {
-		return &iam.ListUsersOutput{Users: []types.User{}}, errors.New("simulated error")
+		return &iam.ListUsersOutput{Users: []types.User{}}, errors.New(testErrMsg)
 	}
 	userList := []types.User{
 		{UserName: aws.String(testUsers[0])},
@@ -106,7 +106,7 @@ func TestGetUserCountviaManualMock(t *testing.T) {
 		},
 		{
 			name:    "Check GetUserCount For Account with Err",
-			client:  MockReciever{wantErr: errors.New("simulated error")},
+			client:  MockReciever{wantErr: errors.New(testErrMsg)},
 			want:    0,
 			wantErr: true,
 		},
@@ -135,7 +135,7 @@ func (mockReceiver MockReciever) GetUser(ctx context.Context,
 	params *iam.GetUserInput,
 	optFns ...func(*iam.Options)) (*iam.GetUserOutput, error) {
 	if mockReceiver.wantErr != nil {
-		return &iam.GetUserOutput{User: &types.User{}}, errors.New("simulated error")
+		return &iam.GetUserOutput{User: &types.User{}}, errors.New(testErrMsg)
 	}
 	user := &types.User{
 		Arn:              aws.String(testARN),
@@ -166,7 +166,7 @@ func TestGetUserIdentity(t *testing.T) {
 		},
 		{
 			name:    "Check GetUserIdentity For Account with Err",
-			client:  MockReciever{wantErr: errors.New("simulated error")},
+			client:  MockReciever{wantErr: errors.New(testErrMsg)},
 			want:    "",
 			wantErr: true,
 		},
