@@ -85,20 +85,27 @@ func TestSimulateExecute(t *testing.T) {
 	t.Run("Flow Execute Simulation", func(t *testing.T) {
 		assert := assert.New(t)
 		var outputBuffer bytes.Buffer
+		outputBuffer.Reset()
 		log.SetOutput(&outputBuffer)
 		log.SetFlags(0)
 
-		set := flag.NewFlagSet("test", 0)
+		// Get Available random Port
 		port, _ := test.GetFreePort("localhost:0")
 		portString := strconv.Itoa(port)
+
+		// Simulate start with random port
+		set := flag.NewFlagSet("test", 0)
 		_ = set.Parse([]string{"start", "--port", portString})
 
+		// Create New Context
 		mockApp := &cli.App{Writer: ioutil.Discard}
 		context := cli.NewContext(mockApp, set, nil)
-		cmdhandler := cmd.CmdHandler{}
-		cmdhandler.EnableShutdDown = true
+
+		// get Start Command
+		cmdhandler := cmd.CmdHandler{EnableShutdDown: true}
 		startCommand := cmd.GetCommand(cmdhandler.StartCommand)
 		err := startCommand.Run(context)
+
 		assert.NoError(err, "err = %v ", err)
 
 		got := outputBuffer.String()
