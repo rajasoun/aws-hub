@@ -1,9 +1,7 @@
-package iam
-
-import "github.com/stretchr/testify/mock"
+package example
 
 /**
-* Mock using testify Framework
+* manual Mocking of AWS APIs
 * Technique : Interface Substitution
  */
 
@@ -14,7 +12,11 @@ const testUserID = "ABCDEFGHIJKLMNOPQRST"
 
 var testUsers = []string{"test1@example.com", "test2@example.com"}
 
-// To mock AWS operations
-type MockClient struct {
-	mock.Mock
+/**
+* Mock via manual creation - Just For Reference
+* Technique : Interface Substitution
+ */
+
+type MockReciever struct {
+	wantErr error
 }

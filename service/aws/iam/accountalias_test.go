@@ -21,12 +21,12 @@ import (
 // Steps:
 //	1. make an object of struct
 //	2. implements all methods in the interface for mocking real implementation
-func (mock *MockClient) ListAccountAliases(ctx context.Context,
+func (mockClient *MockClient) ListAccountAliases(ctx context.Context,
 	params *iam.ListAccountAliasesInput,
 	optFns ...func(*iam.Options)) (*iam.ListAccountAliasesOutput, error) {
 	// Mock ListAccountAliases of AWS
 	// Mocked ListAccountAliases Function will be Called and Results Injected
-	result := mock.Called(ctx, params, optFns)
+	result := mockClient.Called(ctx, params, optFns)
 	// On Error
 	if result.Get(1) != nil {
 		return result.Get(0).(*iam.ListAccountAliasesOutput), result.Error(1)
@@ -34,8 +34,6 @@ func (mock *MockClient) ListAccountAliases(ctx context.Context,
 	// If No Error
 	return result.Get(0).(*iam.ListAccountAliasesOutput), nil
 }
-
-var testAlias string = "aws-test-account-alias"
 
 func TestListAccountAliasesViaMockFramework(t *testing.T) {
 	assert := assert.New(t)
@@ -76,60 +74,6 @@ func TestListAccountAliasesViaMockFramework(t *testing.T) {
 			}
 			assert.NoError(err, "GetAliases() %v", err)
 			assert.Equal(testAlias, got.List[0], "GetAliases() = %v, want = %v", got.List[0], testAlias)
-		})
-	}
-}
-
-/**
-* Mock via manual creation - Just For Reference
-* Technique : Interface Substitution
- */
-
-// Implement AWS IAM GetUserIdentity Method with Mock Receiver struct
-func (mockReceiver MockReciever) ListAccountAliases(ctx context.Context,
-	params *iam.ListAccountAliasesInput,
-	optFns ...func(*iam.Options)) (*iam.ListAccountAliasesOutput, error) {
-	if mockReceiver.wantErr != nil {
-		return &iam.ListAccountAliasesOutput{AccountAliases: []string{}}, errors.New("simulated error")
-	}
-	aliases := []string{testAlias}
-	result := &iam.ListAccountAliasesOutput{AccountAliases: aliases}
-	return result, nil
-}
-
-func TestGetAliasesviaHandMadeMock(t *testing.T) {
-	assert := assert.New(t)
-	t.Parallel()
-
-	cases := []struct {
-		name    string
-		client  MockReciever
-		want    int
-		wantErr bool
-	}{
-		{
-			name:    "Check GetUserIdentity For Account",
-			client:  MockReciever{wantErr: nil},
-			want:    1,
-			wantErr: false,
-		},
-		{
-			name:    "Check GetUserIdentity For Account with Err",
-			client:  MockReciever{wantErr: errors.New("simulated error")},
-			want:    0,
-			wantErr: true,
-		},
-	}
-
-	for _, tt := range cases {
-		t.Run(tt.name, func(t *testing.T) {
-			got, err := GetAliases(tt.client)
-			assert.Equal(tt.want, len(got.List), "GetAliases() = %v, want = %v", len(got.List), tt.want)
-			if tt.wantErr {
-				assert.Error(err, "GetAliases() %v", err)
-				return
-			}
-			assert.NoError(err, "GetAliases() %v", err)
 		})
 	}
 }

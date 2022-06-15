@@ -48,8 +48,8 @@ func TestGetUserCountViaMockFramework(t *testing.T) {
 		{
 			name: "Check ListUsers via Mocking Framework",
 			input: []types.User{
-				{UserName: aws.String("test1@example.com")},
-				{UserName: aws.String("test2@example.com")},
+				{UserName: aws.String(testUsers[0])},
+				{UserName: aws.String(testUsers[1])},
 			},
 			want:    2,
 			wantErr: nil,
@@ -76,63 +76,6 @@ func TestGetUserCountViaMockFramework(t *testing.T) {
 				return
 			}
 			assert.NoError(err, "GetUserCount() %v", err)
-		})
-	}
-}
-
-/**
-* Mock via manual creation - Just For Reference
-* Technique : Interface Substitution
- */
-
-// Implement AWS IAM GetUser Method with Mock Receiver struct
-func (mockReceiver MockReciever) ListUsers(ctx context.Context,
-	params *iam.ListUsersInput,
-	optFns ...func(*iam.Options)) (*iam.ListUsersOutput, error) {
-	if mockReceiver.wantErr != nil {
-		return &iam.ListUsersOutput{Users: []types.User{}}, errors.New("simulated error")
-	}
-	userList := []types.User{
-		{UserName: aws.String("test1@example.com")},
-		{UserName: aws.String("test2@example.com")},
-	}
-	result := &iam.ListUsersOutput{Users: userList}
-	return result, nil
-}
-
-func TestGetUserCountviaManualMock(t *testing.T) {
-	assert := assert.New(t)
-	t.Parallel()
-
-	cases := []struct {
-		name    string
-		client  MockReciever
-		want    int
-		wantErr bool
-	}{
-		{
-			name:    "Check GetUserCount For Account",
-			client:  MockReciever{wantErr: nil},
-			want:    2,
-			wantErr: false,
-		},
-		{
-			name:    "Check GetUserCount For Account with Err",
-			client:  MockReciever{wantErr: errors.New("simulated error")},
-			want:    0,
-			wantErr: true,
-		},
-	}
-
-	for _, tt := range cases {
-		t.Run(tt.name, func(t *testing.T) {
-			got, err := GetUserCount(tt.client)
-			if tt.wantErr {
-				assert.Error(err, "GetUserCount() %v", err)
-				return
-			}
-			assert.NoError(err, "GetUserCount() %v", err)
-			assert.Equal(tt.want, got.Count, "GetUserCount() = %v, want = %v", got.Count, tt.want)
 		})
 	}
 }
