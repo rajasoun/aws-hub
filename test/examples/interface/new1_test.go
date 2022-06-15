@@ -1,6 +1,7 @@
 package spike
 
 import (
+	"os"
 	"reflect"
 	"testing"
 )
@@ -136,6 +137,25 @@ func Test_player_playingGames(t *testing.T) {
 			}
 			if got := p.playingGames(); got != tt.want {
 				t.Errorf("player.playingGames() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestCreatingFile(t *testing.T) {
+	tests := []struct {
+		name string
+		want *os.File
+	}{
+		{
+			name: "file name",
+			want: n,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := CreatingFile(); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("CreatingFile() = %v, want %v", got, tt.want)
 			}
 		})
 	}

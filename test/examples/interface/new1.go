@@ -62,18 +62,19 @@ and if the file is not created
 it will create the file
 */
 
-func CreatingFile(str byte) (*os.File, error) {
-	fileName := "DemoFile"
-	NewFile, err := os.OpenFile(fileName, os.O_CREATE, 0666)
+func CreatingFile() (*os.File, error) {
+	fileName := "DemoFile.txt"
+	NewFile, err := os.Create(fileName)
 	if err != nil {
 		log.Println("Error whlie creating the file %s Err = %v", fileName)
 		return nil, err
 	}
-
-	leng, err := NewFile.Read(str)
-	if err != nil {
-		log.Println("Error in Writing inside the file ")
-		return nil, err
-	}
-	return leng, nil
+	/*
+		leng, err := NewFile.Read()
+		if err != nil {
+			log.Println("Error in Writing inside the file ")
+			return nil, err
+		}
+	*/
+	return NewFile, nil
 }
