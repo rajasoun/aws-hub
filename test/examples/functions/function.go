@@ -15,6 +15,11 @@ func Dmart() {
 	fmt.Println("DmartAdd(1, 2)")
 }
 
+//on 15th june I added an interface and a function to the existing code
+type Shapes interface {
+	Area() float64
+}
+
 // dimensions of a square.
 type Square struct {
 	Height float64
@@ -24,4 +29,15 @@ type Square struct {
 // area of the square.
 func (r Square) Area() float64 {
 	return r.Height * r.Width
+}
+
+// dimension of a triangle.
+type Triangle struct {
+	Height float64
+	Base   float64
+}
+
+// area of the triangle.
+func (c Triangle) Area() float64 {
+	return (c.Height * c.Base) * 0.5
 }
