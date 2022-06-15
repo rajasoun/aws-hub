@@ -65,3 +65,13 @@ func TestAPI(t *testing.T) {
 		})
 	}
 }
+
+// func TestAWSAPI(t *testing.T) {
+// 	assert := assert.New(t)
+// 	cfg, _ := credential.New().LoadDefaultConfig()
+// 	client := iam.NewFromConfig(cfg)
+
+// 	response, apiErr := service.GetAliases(client)
+// 	assert.NoError(apiErr)
+// 	assert.Equal("secops-experiments", response.List[0])
+// }

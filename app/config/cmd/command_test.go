@@ -2,42 +2,53 @@ package cmd
 
 import (
 	"bytes"
+	"flag"
+	"io"
+	"io/ioutil"
 	"log"
 	"os"
-	"strings"
+	"strconv"
 	"testing"
 
-	"github.com/rajasoun/aws-hub/app/config/flag"
+	hubConfig "github.com/rajasoun/aws-hub/app/config/flag"
+	"github.com/rajasoun/aws-hub/test"
 	"github.com/stretchr/testify/assert"
 	"github.com/urfave/cli/v2"
 )
 
+func NewAppWithMockCommands(writer io.Writer) *cli.App {
+	app := &cli.App{}
+	app.Flags = hubConfig.GetFlags()
+	mockCmd := CreateCommand(MockStartCommand)
+	commands := []*cli.Command{&mockCmd}
+	app.Commands = commands
+	app.CommandNotFound = GetErrCommand()
+	app.Writer = writer
+	log.SetOutput(writer)
+	log.SetFlags(0)
+	return app
+}
+
+func NewContext() *cli.Context {
+	mockApp := &cli.App{Writer: ioutil.Discard}
+	set := flag.NewFlagSet("test", 0)
+	port, _ := test.GetFreePort("localhost:0")
+	portString := strconv.Itoa(port)
+	_ = set.Parse([]string{"start", "--port", portString})
+	context := cli.NewContext(mockApp, set, nil)
+	return context
+}
+
 func TestGetCommand(t *testing.T) {
 	assert := assert.New(t)
 	t.Parallel()
-
-	tests := []struct {
-		name            string
-		wantCommandsLen int
-		wantCommandName string
-	}{
-		{"Check start command", 1, "start"},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			cmdhandler := CmdHandler{}
-			cmdhandler.EnableShutdDown = true
-			cmds := GetCommand(cmdhandler.StartCommand)
-			gotCommandName := cmds.Name
-			assert.Containsf(tt.wantCommandName, gotCommandName,
-				"setUpCommands() = %v , want = %v", gotCommandName, tt.wantCommandName)
-		})
-	}
-}
-
-func mockStartCommand(appCtx *cli.Context) error {
-	log.Println("mockStartCommandHandler !!!")
-	return nil
+	t.Run("Check start command", func(t *testing.T) {
+		cmdhandler := CmdHandler{EnableShutdDown: true}
+		cmds := GetCommand(cmdhandler.StartCommand)
+		got := cmds.Name
+		want := "start"
+		assert.Containsf(want, got, "GetCommand() = %v , want = %v", got, want)
+	})
 }
 
 func TestCreateCommand(t *testing.T) {
@@ -48,27 +59,28 @@ func TestCreateCommand(t *testing.T) {
 		cmd  string
 		want string
 	}{
-		{"Check Start with Mock handler", "start", "mockStartCommandHandler"},
-		{"Check InValid Command Handler", "dummy", "Command Not Found "},
+		{
+			name: "Check Start with Mock handler",
+			cmd:  "start",
+			want: "mockStartCommandHandler",
+		},
+		{
+			name: "Check InValid Command Handler",
+			cmd:  "dummy",
+			want: CommandNotFoundMsg,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			app := &cli.App{}
-			app.Flags = flag.GetFlags()
-			mockCmd := CreateCommand(mockStartCommand)
-			commands := []*cli.Command{&mockCmd}
-			app.Commands = commands
-			app.CommandNotFound = ErrCommand()
-			var bufferWriter bytes.Buffer
-			args := os.Args[0:1]
-			args = append(args, tt.cmd)
-			app.Writer = &bufferWriter
-			log.SetOutput(&bufferWriter)
+			var outputBuffer bytes.Buffer
+			outputBuffer.Reset()
+			app := NewAppWithMockCommands(&outputBuffer)
+			args := append(os.Args[0:1], tt.cmd)
 			err := app.Run(args)
-			assert.NoError(err, "mock start failed error = %v ", err)
-			got := bufferWriter.String()
-			contains := strings.Contains(got, tt.want)
-			assert.True(contains, "got = %v, want = %v ", got, tt.want)
+
+			assert.NoError(err, "Err app.Run() = %v with %v", err, tt.cmd)
+			got := outputBuffer.String()
+			assert.Contains(got, tt.want, "got = %v, want = %v , args = %v", got, tt.want, tt.cmd)
 		})
 	}
 }

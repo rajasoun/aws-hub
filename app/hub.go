@@ -42,7 +42,7 @@ func (hub *Hub) setUpCommands() {
 	startCommand := cmd.GetCommand(cmdhandler.StartCommand)
 	commands := []*cli.Command{&startCommand}
 	hub.cli.Commands = commands
-	hub.cli.CommandNotFound = cmd.ErrCommand()
+	hub.cli.CommandNotFound = cmd.GetErrCommand()
 }
 
 func (hub *Hub) setUpOutput(writer io.Writer) {
