@@ -1,7 +1,6 @@
 package spike
 
 import (
-	"log"
 	"os"
 )
 
@@ -62,13 +61,16 @@ and if the file is not created
 it will create the file
 */
 
-func CreatingFile() (*os.File, error) {
+func CreatingFile() *os.File {
+
 	fileName := "DemoFile.txt"
-	NewFile, err := os.Create(fileName)
-	if err != nil {
+	NewFile, _ := os.Create(fileName)
+	/*if err != nil {
 		log.Println("Error whlie creating the file %s Err = %v", fileName)
 		return nil, err
 	}
+	*/
+
 	/*
 		leng, err := NewFile.Read()
 		if err != nil {
@@ -76,5 +78,5 @@ func CreatingFile() (*os.File, error) {
 			return nil, err
 		}
 	*/
-	return NewFile, nil
+	return NewFile
 }

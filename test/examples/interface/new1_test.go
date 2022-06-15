@@ -143,20 +143,22 @@ func Test_player_playingGames(t *testing.T) {
 }
 
 func TestCreatingFile(t *testing.T) {
-	tests := []struct {
-		name string
-		want *os.File
-	}{
-		{
-			name: "file name",
-			want: n,
-		},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			if got := CreatingFile(); !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("CreatingFile() = %v, want %v", got, tt.want)
-			}
-		})
-	}
+	t.Run("testing the file path", func(t *testing.T) {
+		//assert := assert.New(t)
+		t.Parallel()
+		name := CreatingFile().Name()
+		//path, _ := os.Getwd()
+		fileInfo, _ := os.Stat(name)
+
+		got := name
+		want := fileInfo.Name()
+		if got != want {
+			t.Errorf("got %q want %q", got, want)
+
+		}
+		//log.Println(baseP)
+		//got := CreatingFile()
+
+	})
+
 }
