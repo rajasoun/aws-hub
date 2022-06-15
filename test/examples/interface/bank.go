@@ -1,5 +1,7 @@
 package spike
 
+import "fmt"
+
 
 type BankAccountDetails interface {
 	account()
@@ -13,6 +15,26 @@ type acc_details struct{
 }
 
 
-func (ad *acc_details) account() (string, int, string,float32) {
-	return ad.acc_holder_name,ad.acc_number,ad.acc_type,ad.acc_balance
+func (ad *acc_details) getaccountnamenumber() (string, int) {
+accname:= ad.acc_holder_name;accnumber:= ad.acc_number
+fmt.Printf("Account Holder Name: %s\n", accname)
+fmt.Printf("Account Number: %d\n", accnumber)
+	return ad.acc_holder_name,ad.acc_number
+}
+
+func (ad *acc_details) getaccounttypebalance() (string, float32) {
+	acctype:= ad.acc_type;accbalance:= ad.acc_balance
+	fmt.Printf("Account Type: %s\n", acctype)
+	fmt.Printf("Account Balance: %f\n", accbalance)
+		return ad.acc_type,ad.acc_balance
+	}
+
+func AccoutDetails() *acc_details{
+	AccDetails:= acc_details{
+		acc_holder_name: "Manu V H",
+		acc_number: 543210,
+		acc_type: "Savings",
+		acc_balance: 5678.95,
+	}
+	return &AccDetails
 }

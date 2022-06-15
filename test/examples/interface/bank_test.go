@@ -1,34 +1,29 @@
 package spike
 
-import "testing"
+import (
+	"reflect"
+	"testing"
+)
 
-func Test_acc_details_account(t *testing.T) {
+func Test_acc_details_getaccountnamenumber(t *testing.T) {
 	type fields struct {
 		acc_holder_name string
 		acc_number      int
-		acc_type        string
-		acc_balance     float32
 	}
 	tests := []struct {
 		name   string
 		fields fields
 		want   string
 		want1  int
-		want2  string
-		want3  float32
 	}{
 		// TODO: Add test cases.
-		{name : "manu",
-		 fields: fields{
-			acc_holder_name: "Manu V. H",
-			acc_number  :    012345,
-			acc_type   :     "Savings Account",
-			acc_balance :    5324.75,
-		 },
-		 want : "Manu V. H",
-		 want1: 012345,
-		 want2 : "Savings Account",
-		 want3 : 5324.75,
+		{name: "Account Name & Number",
+			fields: fields{
+				acc_holder_name: "Manu V H",
+				acc_number:      543210,
+			},
+			want:  "Manu V H",
+			want1: 543210,
 		},
 	}
 	for _, tt := range tests {
@@ -36,21 +31,75 @@ func Test_acc_details_account(t *testing.T) {
 			ad := &acc_details{
 				acc_holder_name: tt.fields.acc_holder_name,
 				acc_number:      tt.fields.acc_number,
-				acc_type:        tt.fields.acc_type,
-				acc_balance:     tt.fields.acc_balance,
 			}
-			got, got1, got2, got3 := ad.account()
+			got, got1 := ad.getaccountnamenumber()
 			if got != tt.want {
-				t.Errorf("acc_details.account() got = %v, want %v", got, tt.want)
+				t.Errorf("Account Name: got = %v, want %v", got, tt.want)
 			}
 			if got1 != tt.want1 {
-				t.Errorf("acc_details.account() got1 = %v, want %v", got1, tt.want1)
+				t.Errorf("Account Number got1 = %v, want %v", got1, tt.want1)
 			}
-			if got2 != tt.want2 {
-				t.Errorf("acc_details.account() got2 = %v, want %v", got2, tt.want2)
+		})
+	}
+}
+
+func Test_acc_details_getaccounttypebalance(t *testing.T) {
+	type fields struct {
+		acc_type    string
+		acc_balance float32
+	}
+	tests := []struct {
+		name   string
+		fields fields
+		want   string
+		want1  float32
+	}{
+		// TODO: Add test cases.
+		{name: "Account Type & Balance",
+			fields: fields{
+				acc_type:    "Savings",
+				acc_balance: 5678.99,
+			},
+			want:  "Savings",
+			want1: 5678.99,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			ad := &acc_details{
+				acc_type:    tt.fields.acc_type,
+				acc_balance: tt.fields.acc_balance,
 			}
-			if got3 != tt.want3 {
-				t.Errorf("acc_details.account() got3 = %v, want %v", got3, tt.want3)
+			got, got1 := ad.getaccounttypebalance()
+			if got != tt.want {
+				t.Errorf("Account Type: got = %v, want %v", got, tt.want)
+			}
+			if got1 != tt.want1 {
+				t.Errorf("Account Balance() got1 = %v, want %v", got1, tt.want1)
+			}
+		})
+	}
+}
+
+func TestAccoutDetails(t *testing.T) {
+	tests := []struct {
+		name string
+		want *acc_details
+	}{
+		// TODO: Add test cases.
+		{name: "Account Details",
+			want: &acc_details{
+				acc_holder_name: "Manu V H",
+				acc_number:      543210,
+				acc_type:        "Savings",
+				acc_balance:     5678.95,
+			},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := AccoutDetails(); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("AccoutDetails() = %v, want %v", got, tt.want)
 			}
 		})
 	}
