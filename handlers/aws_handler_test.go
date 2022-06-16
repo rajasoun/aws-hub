@@ -39,7 +39,7 @@ func TestNewDefaultAWSHandler(t *testing.T) {
 	}
 }
 
-// To mock AWS operations
+// To mock AWS operations.
 type MockAwsAPI struct {
 	mock.Mock
 }
@@ -52,7 +52,7 @@ type MockOutput struct {
 * Mock using testify Framework
  */
 
-// Mock Execute Function
+// Mock Execute Function.
 func (mockFunc *MockAwsAPI) Execute(client *iam.Client) (interface{}, error) {
 	// Call Mock Function call
 	// The Function to be Called and Result will be Injected in Test

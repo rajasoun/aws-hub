@@ -12,7 +12,7 @@ type Aliases struct {
 }
 
 // Interface for Amazon IAM ListAccountAliases API
-// This will enable TDD using mocking
+// This will enable TDD using mocking.
 type ListAccountAliasesClient interface {
 	iam.ListAccountAliasesAPIClient // Only for Reference to Actual Client
 	ListAccountAliases(ctx context.Context,

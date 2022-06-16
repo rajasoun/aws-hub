@@ -10,7 +10,7 @@ import (
 
 const CommandNotFoundMsg = "Invalid Command. Not Found"
 
-// Create Start Command with the supplied handler
+// Create Start Command with the supplied handler.
 func CreateCommand(handler func(appCtx *cli.Context) error) cli.Command {
 	command := cli.Command{
 		Name:  "start",
@@ -24,13 +24,13 @@ func CreateCommand(handler func(appCtx *cli.Context) error) cli.Command {
 	return command
 }
 
-// Get all Commands created from the supplied handler
+// Get all Commands created from the supplied handler.
 func GetCommand(handler func(appCtx *cli.Context) error) cli.Command {
 	cmd := CreateCommand(handler)
 	return cmd
 }
 
-// Get Err Command
+// Get Err Command.
 func GetErrCommand() func(appCtx *cli.Context, command string) {
 	return func(appCtx *cli.Context, command string) {
 		errMsg := fmt.Sprintf(CommandNotFoundMsg+" '%s' ", command)

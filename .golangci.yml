@@ -65,9 +65,11 @@ linters:
     - containedctx
     - gochecknoglobals
     - gochecknoinits
+    - gocognit 
     - goconst
     - gocritic
     - gocyclo
+    - godot
     - gofmt
     - gomnd
     - goprintffuncname

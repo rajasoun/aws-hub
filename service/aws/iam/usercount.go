@@ -11,7 +11,7 @@ type UserList struct {
 }
 
 // Interface for Amazon IAM ListUsers API
-// This will enable TDD using mocking
+// This will enable TDD using mocking.
 type ListUsersAPIClient interface {
 	iam.ListUsersAPIClient // Only for Reference to Actual Client
 	ListUsers(ctx context.Context,

@@ -16,7 +16,7 @@ type User struct {
 }
 
 // Interface for Amazon IAM GetUser API
-// This will enable TDD using mocking
+// This will enable TDD using mocking.
 type GetUserAPIClient interface {
 	iam.GetUserAPIClient // Only for Reference to Actual Client
 	GetUser(ctx context.Context,

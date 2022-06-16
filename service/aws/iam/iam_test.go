@@ -15,7 +15,7 @@ const (
 * Technique : Interface Substitution
  */
 
-// To mock AWS operations
+// To mock AWS operations.
 type MockClient struct {
 	mock.Mock
 }

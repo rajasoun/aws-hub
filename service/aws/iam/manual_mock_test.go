@@ -18,7 +18,7 @@ import (
 * Technique : Interface Substitution
  */
 
-// Implement AWS IAM ListAccountAliases Method with Mock Receiver struct
+// Implement AWS IAM ListAccountAliases Method with Mock Receiver struct.
 func (mockReceiver MockReciever) ListAccountAliases(ctx context.Context,
 	params *iam.ListAccountAliasesInput,
 	optFns ...func(*iam.Options)) (*iam.ListAccountAliasesOutput, error) {
@@ -72,7 +72,7 @@ func TestGetAliasesviaHandMadeMock(t *testing.T) {
 * Technique : Interface Substitution
  */
 
-// Implement AWS IAM GetUser Method with Mock Receiver struct
+// Implement AWS IAM GetUser Method with Mock Receiver struct.
 func (mockReceiver MockReciever) ListUsers(ctx context.Context,
 	params *iam.ListUsersInput,
 	optFns ...func(*iam.Options)) (*iam.ListUsersOutput, error) {
@@ -129,7 +129,7 @@ func TestGetUserCountviaManualMock(t *testing.T) {
 * Technique : Interface Substitution
  */
 
-// Implement AWS IAM GetUser Method with Mock Receiver struct
+// Implement AWS IAM GetUser Method with Mock Receiver struct.
 func (mockReceiver MockReciever) GetUser(ctx context.Context,
 	params *iam.GetUserInput,
 	optFns ...func(*iam.Options)) (*iam.GetUserOutput, error) {
