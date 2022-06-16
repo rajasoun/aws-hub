@@ -6,39 +6,6 @@ import (
 	"testing"
 )
 
-func Test_perimeter_Perimeter(t *testing.T) {
-	type fields struct {
-		width  float64
-		height float64
-	}
-	tests := []struct {
-		name   string
-		fields fields
-		want   float64
-	}{
-		// TODO: Add test cases.
-		{
-			name: "perimeter",
-			fields: fields{
-				width:  12,
-				height: 12,
-			},
-			want: 48,
-		},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			p := &perimeter{
-				width:  tt.fields.width,
-				height: tt.fields.height,
-			}
-			if got := p.Perimeter(); got != tt.want {
-				t.Errorf("perimeter.Perimeter() = %v, want %v", got, tt.want)
-			}
-		})
-	}
-}
-
 func Test_newaudio(t *testing.T) {
 	type args struct {
 		lang string
@@ -161,4 +128,96 @@ func TestCreatingFile(t *testing.T) {
 
 	})
 
+}
+
+func Test_perimeter_Perimeter(t *testing.T) {
+	type fields struct {
+		width  float64
+		height float64
+	}
+	tests := []struct {
+		name   string
+		fields fields
+		want   float64
+	}{
+		{
+			name: "testing perimeter",
+			fields: fields{
+				width:  2.0,
+				height: 3.1,
+			},
+			want: 10.2,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			p := &perimeter{
+				width:  tt.fields.width,
+				height: tt.fields.height,
+			}
+			if got := p.Perimeter(); got != tt.want {
+				t.Errorf("perimeter.Perimeter() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+/*
+func TestCreatingFile(t *testing.T) {
+	type args struct {
+		val string
+	}
+	tests := []struct {
+		name string
+		args args
+		want *os.File
+	}{
+		// TODO: Add test cases.
+		{
+			name: "generating the test",
+			args: args{
+				val: "hi name is ajit ",
+			},
+			want: os.Stat(CreatingFile().Name()),
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := CreatingFile(tt.args.val); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("CreatingFile() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+*/
+
+func TestNewUser(t *testing.T) {
+	type args struct {
+		u User
+	}
+	tests := []struct {
+		name    string
+		args    args
+		wantErr bool
+	}{
+		{
+			name: "check avilable user ",
+			args: args{
+				User{
+					Name:     "ajit kumar",
+					Email:    "ajithkumar.sinha@srsconsultinginc.com",
+					UserName: "ajit",
+				},
+			},
+			wantErr: false,
+		},
+		// TODO: Add test cases
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if err := NewUser(tt.args.u); (err != nil) != tt.wantErr {
+				t.Errorf("NewUser() error = %v, wantErr %v", err, tt.wantErr)
+			}
+		})
+	}
 }

@@ -1,6 +1,8 @@
 package spike
 
 import (
+	"fmt"
+	"log"
 	"os"
 )
 
@@ -62,14 +64,22 @@ it will create the file
 */
 
 func CreatingFile() *os.File {
+	filename := "Demo.txt"
 
-	fileName := "DemoFile.txt"
-	NewFile, _ := os.Create(fileName)
+	NewFile, _ := os.OpenFile(filename, os.O_RDWR|os.O_CREATE, 0666)
+
 	/*if err != nil {
-		log.Println("Error whlie creating the file %s Err = %v", fileName)
+		log.Println("Error whlie creating the file %s Err = %v", NewFile)
 		return nil, err
 	}
 	*/
+	//info := os.Stat(NewFile)
+
+	//data := []byte(val)
+	/*err1 := ioutil.WriteFile(filename, data, 0644)
+	if err1 != nil {
+		log.Fatal(err1)
+	}*/
 
 	/*
 		leng, err := NewFile.Read()
@@ -79,4 +89,23 @@ func CreatingFile() *os.File {
 		}
 	*/
 	return NewFile
+}
+
+// moking
+
+type User struct {
+	Name     string //`json:"name"`
+	Email    string //`json:"email"`
+	UserName string //`json:"user_name"`
+}
+
+func NewUser(u User) error {
+
+	avilable := UserAvilable(u.Email)
+	if avilable {
+		return fmt.Errorf("email is already '%s'avilable", u.Email)
+	}
+	log.Println(u.Name)
+	return nil
+
 }
