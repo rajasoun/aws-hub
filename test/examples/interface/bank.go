@@ -2,7 +2,6 @@ package spike
 
 import (
 	"fmt"
-	"log"
 	"os"
 )
 
@@ -43,11 +42,12 @@ func AccoutDetails() *acc_details {
 	return &AccDetails
 }
 
-func Statement() {
+
+func Statement () *os.File{
 	file, err := os.Create("Statement.txt")
 	if err != nil {
-		log.Printf("Error generating Statement: %v", err)
-	} else {
-		log.Printf("Statement generated successfully: %v", file)
+		fmt.Printf("Error generating Statement: %s", err)
 	}
+	fmt.Printf("Statement Generated Successfully: %v", file)
+	return file
 }

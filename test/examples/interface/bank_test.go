@@ -1,6 +1,7 @@
 package spike
 
 import (
+	"os"
 	"reflect"
 	"testing"
 )
@@ -106,14 +107,14 @@ func TestAccoutDetails(t *testing.T) {
 }
 
 func TestStatement(t *testing.T) {
-	tests := []struct {
-		name string
-	}{
-		// TODO: Add test cases.
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			Statement()
+
+		t.Run("Generate Statement.txt", func(t *testing.T) {
+			filename := Statement().Name()
+			checkFile, err:=  os.Stat(filename)
+			actual :=filename
+			expected:= checkFile.Name()
+			if actual != expected {
+				t.Errorf("actual: %v,  expected: %v, error: %v", actual, expected, err)
+			}
 		})
 	}
-}
