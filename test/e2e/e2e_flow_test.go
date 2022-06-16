@@ -102,7 +102,7 @@ func TestSimulateExecute(t *testing.T) {
 
 		// get Start Command
 		cmdhandler := cmd.Handler{EnableShutdDown: true}
-		startCommand := cmd.GetCommand(cmdhandler.StartCommand)
+		startCommand := cmd.New("start", "Start Server", cmdhandler.StartCommand)
 		err := startCommand.Run(context)
 
 		assert.NoError(err, "err = %v ", err)

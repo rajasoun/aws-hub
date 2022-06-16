@@ -38,10 +38,10 @@ func (hub *Hub) setUpFlags() {
 
 func (hub *Hub) setUpCommands() {
 	handler := cmd.Handler{EnableShutdDown: false}
-	startCommand := cmd.GetCommand(handler.StartCommand)
+	startCommand := cmd.New("start", "Start Server", handler.StartCommand)
 	commands := []*cli.Command{&startCommand}
 	hub.cli.Commands = commands
-	hub.cli.CommandNotFound = cmd.GetErrCommand()
+	hub.cli.CommandNotFound = cmd.NewErr()
 }
 
 func (hub *Hub) setUpOutput(writer io.Writer) {

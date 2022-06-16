@@ -10,11 +10,11 @@ import (
 
 const CommandNotFoundMsg = "Invalid Command. Not Found"
 
-// Create Start Command with the supplied handler.
-func CreateCommand(handler func(appCtx *cli.Context) error) cli.Command {
+// Create New Command with the supplied handler.
+func New(name, usage string, handler func(appCtx *cli.Context) error) cli.Command {
 	command := cli.Command{
-		Name:  "start",
-		Usage: "Start Server",
+		Name:  name,
+		Usage: usage,
 		Flags: flag.GetFlags(),
 		Action: func(appCtx *cli.Context) error {
 			err := handler(appCtx)
@@ -24,14 +24,8 @@ func CreateCommand(handler func(appCtx *cli.Context) error) cli.Command {
 	return command
 }
 
-// Get all Commands created from the supplied handler.
-func GetCommand(handler func(appCtx *cli.Context) error) cli.Command {
-	cmd := CreateCommand(handler)
-	return cmd
-}
-
 // Get Err Command.
-func GetErrCommand() func(appCtx *cli.Context, command string) {
+func NewErr() func(appCtx *cli.Context, command string) {
 	return func(appCtx *cli.Context, command string) {
 		errMsg := fmt.Sprintf(CommandNotFoundMsg+" '%s' ", command)
 		log.Println(errMsg)

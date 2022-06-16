@@ -19,10 +19,10 @@ import (
 func NewAppWithMockCommands(writer io.Writer) *cli.App {
 	app := &cli.App{}
 	app.Flags = hubConfig.GetFlags()
-	mockCmd := CreateCommand(MockStartCommand)
+	mockCmd := New("start", "Mock Start Server", MockStartCommand)
 	commands := []*cli.Command{&mockCmd}
 	app.Commands = commands
-	app.CommandNotFound = GetErrCommand()
+	app.CommandNotFound = NewErr()
 	app.Writer = writer
 	log.SetOutput(writer)
 	log.SetFlags(0)
@@ -44,7 +44,7 @@ func TestGetCommand(t *testing.T) {
 	t.Parallel()
 	t.Run("Check start command", func(t *testing.T) {
 		cmdhandler := Handler{EnableShutdDown: true}
-		cmds := GetCommand(cmdhandler.StartCommand)
+		cmds := New("start", "Start Server", cmdhandler.StartCommand)
 		got := cmds.Name
 		want := "start"
 		assert.Containsf(want, got, "GetCommand() = %v , want = %v", got, want)
@@ -84,4 +84,21 @@ func TestCreateCommand(t *testing.T) {
 			assert.Contains(got, tt.want, "got = %v, want = %v , args = %v", got, tt.want, tt.cmd)
 		})
 	}
+}
+
+func TestNewErrCommand(t *testing.T) {
+	t.Parallel()
+	assert := assert.New(t)
+	t.Run("Check ErrCommand With Invalid Input", func(t *testing.T) {
+		mockApp := &cli.App{Writer: ioutil.Discard}
+		cmdhandler := Handler{}
+		cmdhandler.EnableShutdDown = false
+		startCommand := New("start", "Start Server", cmdhandler.StartCommand)
+		commands := []*cli.Command{&startCommand}
+		mockApp.Commands = commands
+		mockApp.CommandNotFound = NewErr()
+
+		err := mockApp.Run([]string{"invalidCommand"})
+		assert.NoError(err, "err = %v ", err)
+	})
 }
