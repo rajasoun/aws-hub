@@ -8,7 +8,7 @@ import (
 	"github.com/rajasoun/aws-hub/handlers/api"
 )
 
-var cacheKeyTemplate = "aws.%s.iam."
+const cacheKeyTemplate = "aws.%s.iam."
 
 func (handler *AWSHandler) IAMGetUserCountHandler(w http.ResponseWriter, r *http.Request) {
 	cacheKey := cacheKeyTemplate + "users"

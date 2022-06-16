@@ -59,8 +59,11 @@ linters:
     # - errchkjson
     - errname
     - errorlint 
+    - exhaustive 
+    # - exhaustruct 
     - funlen
     - containedctx
+    - gochecknoglobals
     - gochecknoinits
     - goconst
     - gocritic

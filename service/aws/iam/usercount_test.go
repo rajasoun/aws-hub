@@ -48,8 +48,8 @@ func TestGetUserCountViaMockFramework(t *testing.T) {
 		{
 			name: "Check ListUsers via Mocking Framework",
 			input: []types.User{
-				{UserName: aws.String(testUsers[0])},
-				{UserName: aws.String(testUsers[1])},
+				{UserName: aws.String("test1@example.com")},
+				{UserName: aws.String("test2@example.com")},
 			},
 			want:    2,
 			wantErr: nil,

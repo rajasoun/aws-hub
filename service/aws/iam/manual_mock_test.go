@@ -80,8 +80,8 @@ func (mockReceiver MockReciever) ListUsers(ctx context.Context,
 		return &iam.ListUsersOutput{Users: []types.User{}}, errors.New(testErrMsg)
 	}
 	userList := []types.User{
-		{UserName: aws.String(testUsers[0])},
-		{UserName: aws.String(testUsers[1])},
+		{UserName: aws.String("test1@example.com")},
+		{UserName: aws.String("test2@example.com")},
 	}
 	result := &iam.ListUsersOutput{Users: userList}
 	return result, nil

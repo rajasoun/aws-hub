@@ -7,10 +7,9 @@ import (
 	"os"
 )
 
-var (
+const (
 	DefaultFileName                = "e2e.md"
 	DefaultFileOptions             = os.O_RDWR | os.O_CREATE
-	DefaultFileOpener              = os.OpenFile
 	DefaultPermission  os.FileMode = 0666
 )
 
@@ -38,7 +37,7 @@ func NewFlowManager() *FlowManager {
 		fileName:       DefaultFileName,
 		fileOptions:    DefaultFileOptions,
 		filePermission: DefaultPermission,
-		FileOpener:     DefaultFileOpener,
+		FileOpener:     os.OpenFile,
 	}
 
 	flowManager := FlowManager{

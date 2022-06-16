@@ -10,10 +10,6 @@ const (
 	testErrMsg   = "simulated error"
 )
 
-var (
-	testUsers = []string{"test1@example.com", "test2@example.com"}
-)
-
 /**
 * Mock using testify Framework
 * Technique : Interface Substitution
