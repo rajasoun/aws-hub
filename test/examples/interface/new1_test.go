@@ -209,7 +209,7 @@ func TestNewUser(t *testing.T) {
 					UserName: "ajit",
 				},
 			},
-			wantErr: false,
+			wantErr: UserAvilable("ajithkumar.sinha@srsconsultinginc.com"),
 		},
 		// TODO: Add test cases
 	}
