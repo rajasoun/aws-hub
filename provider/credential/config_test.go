@@ -3,6 +3,7 @@ package credential
 import (
 	"context"
 	"errors"
+	"io/ioutil"
 	"os"
 	"testing"
 
@@ -55,32 +56,42 @@ func TestCredentialLoaderGetSections(t *testing.T) {
 		filename string
 	}
 	tests := []struct {
-		name string
-		args args
-		want bool
+		name            string
+		args            args
+		emptyCredential bool
 	}{
 		{
 			name: "Check GetSections if Credential File Exists",
 			args: args{
 				filename: config.DefaultSharedCredentialsFilename(),
 			},
-			want: true,
 		},
 		{
 			name: "Check GetSections if Credential File Not Exists",
 			args: args{
 				filename: ".aws/credentials",
 			},
-			want: false,
+		},
+		{
+			name: "Check GetSections with Custom Location with Empty File",
+			args: args{
+				filename: "/tmp/credentials",
+			},
+			emptyCredential: true,
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			if tt.emptyCredential {
+				_, err := ioutil.TempFile("/tmp/", "credentials")
+				assert.NoError(err, "os.Create() = %v", err)
+			}
 			credLoader := &Loader{}
 			got, _ := credLoader.GetSections(tt.args.filename)
 			want := 0
 			assert.GreaterOrEqual(len(got.List()), want,
 				"CredentialLoader.GetSections() = %v , want = %v", len(got.List()), want)
+
 		})
 	}
 }
