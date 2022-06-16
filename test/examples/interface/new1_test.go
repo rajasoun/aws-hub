@@ -66,7 +66,7 @@ func Test_newaudio(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := newaudio(tt.args.lang); !reflect.DeepEqual(got, tt.want) {
+			if got := NewAudio(tt.args.lang); !reflect.DeepEqual(got, tt.want) {
 				t.Errorf("newaudio() = %v, want %v", got, tt.want)
 			}
 		})
@@ -135,7 +135,7 @@ func Test_player_playingGames(t *testing.T) {
 				langu:     tt.fields.langu,
 				perimeter: tt.fields.perimeter,
 			}
-			if got := p.playingGames(); got != tt.want {
+			if got := p.PlayingGames(); got != tt.want {
 				t.Errorf("player.playingGames() = %v, want %v", got, tt.want)
 			}
 		})

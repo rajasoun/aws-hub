@@ -23,7 +23,7 @@ type player struct {
 func (p *perimeter) Perimeter() float64 {
 	return 2 * (p.width + p.height)
 }
-func newaudio(lang string) Audio {
+func NewAudio(lang string) Audio {
 	if lang == "Hello" {
 		return English{}
 	}
@@ -44,7 +44,7 @@ func PlayerDetails() *player {
 	return &new
 }
 
-func (p *player) playingGames() string {
+func (p *player) PlayingGames() string {
 	mk := player{}
 	mk.age = 25
 	mk.name = "ajit kumar"
@@ -52,7 +52,7 @@ func (p *player) playingGames() string {
 	mk.perimeter.width = 30
 	mk.langu = "English"
 
-	new := newaudio(mk.langu)
+	new := NewAudio(mk.langu)
 	return new.SayHello()
 }
 
