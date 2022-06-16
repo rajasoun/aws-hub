@@ -10,44 +10,32 @@ import (
 
 const cacheKeyTemplate = "aws.%s.iam."
 
+// Get Number of Users associated to a AWS Account.
 func (handler *AWSHandler) IAMGetUserCountHandler(w http.ResponseWriter, r *http.Request) {
 	cacheKey := cacheKeyTemplate + "users"
 	apiToBeInvoked := api.IAMGetUserCountAPI
 	onErrMsg := "iam:GetUserCount - Failed."
-	awsWrapper := AWSWrapper{
-		request:  r,
-		writer:   w,
-		cache:    handler.cache,
-		multiple: handler.multiple,
-	}
+	awsWrapper := NewAWSWrapper(r, w, handler)
 	awsAPI := GetAPI(r, apiToBeInvoked)
 	awsWrapper.InvokeAPI(awsAPI, cacheKey, onErrMsg)
 }
 
+// Get User Identity Details for the user associated to a AWS Account.
 func (handler *AWSHandler) IAMGetUserIdentityHandler(w http.ResponseWriter, r *http.Request) {
 	cacheKey := cacheKeyTemplate + "useraccount"
 	apiToBeInvoked := api.IAMGetUserIdentityAPI
 	onErrMsg := "iam:GetUserIdentity - Failed."
-	awsWrapper := AWSWrapper{
-		request:  r,
-		writer:   w,
-		cache:    handler.cache,
-		multiple: handler.multiple,
-	}
+	awsWrapper := NewAWSWrapper(r, w, handler)
 	awsAPI := GetAPI(r, apiToBeInvoked)
 	awsWrapper.InvokeAPI(awsAPI, cacheKey, onErrMsg)
 }
 
+// Get Aliases for the  AWS Account.
 func (handler *AWSHandler) IAMGetAliasesHandler(w http.ResponseWriter, r *http.Request) {
 	cacheKey := cacheKeyTemplate + "aliases"
 	apiToBeInvoked := api.IAMGetAliasesAPI
 	onErrMsg := "iam:GetAliases - Failed."
-	awsWrapper := AWSWrapper{
-		request:  r,
-		writer:   w,
-		cache:    handler.cache,
-		multiple: handler.multiple,
-	}
+	awsWrapper := NewAWSWrapper(r, w, handler)
 	awsAPI := GetAPI(r, apiToBeInvoked)
 	awsWrapper.InvokeAPI(awsAPI, cacheKey, onErrMsg)
 }

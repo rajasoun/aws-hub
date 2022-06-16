@@ -45,6 +45,16 @@ type AWSWrapper struct {
 	multiple bool
 }
 
+func NewAWSWrapper(r *http.Request, w http.ResponseWriter, handler *AWSHandler) AWSWrapper {
+	awsWrapper := AWSWrapper{
+		request:  r,
+		writer:   w,
+		cache:    handler.cache,
+		multiple: handler.multiple,
+	}
+	return awsWrapper
+}
+
 func (awsWrapper *AWSWrapper) RespondWithJSON(code int, payload interface{}) {
 	response, _ := json.Marshal(payload)
 	responseWritter := awsWrapper.writer
@@ -80,5 +90,4 @@ func (awsWrapper *AWSWrapper) InvokeAPI(awsAPI api.AwsAPI, cacheKeyCode, errMsg 
 	}
 	awsWrapper.cache.Set(cacheKey, response)
 	awsWrapper.RespondWithJSON(http.StatusOK, response)
-
 }
