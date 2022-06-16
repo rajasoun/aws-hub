@@ -77,6 +77,7 @@ linters:
     - maintidx
     - misspell
     - nakedret
+    # - paralleltest
     - unconvert
 
 issues:
