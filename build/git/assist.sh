@@ -1,5 +1,13 @@
 #!/usr/bin/env bash
 
+NC=$'\e[0m' # No Color
+BOLD=$'\033[1m'
+UNDERLINE=$'\033[4m'
+RED=$'\e[31m'
+GREEN=$'\e[32m'
+BLUE=$'\e[34m'
+ORANGE=$'\x1B[33m'
+
 # Means your copy of the remote main branch (a.ka.a origin/main) 
 # has n commits more than the local version of the main branch. 
 # Below Function fixes teh issue
@@ -27,7 +35,7 @@ function clean_branches(){
 
 opt="$1"
 choice=$( tr '[:upper:]' '[:lower:]' <<<"$opt" )
-echo "Starting --> $choice for $DEV_SHELL"
+
 case ${choice} in
     "clean")
         clean_branches
@@ -37,12 +45,13 @@ case ${choice} in
         fix_n_commits_behind "main" $current_branch
     ;;
     *)
-    echo "${RED}Usage: build/git/assist.sh <clean | sync> [-d]${NC}"
+    echo -e "\n${RED}Usage: build/git/assist.sh < clean | sync >${NC}\n"
 cat <<-EOF
 Commands:
 ---------
   clean       -> Remove Branches Not In Remote or Merged
   sync        -> Sync Current Branch with Main (for shared branches)
+
 EOF
     ;;
 esac
