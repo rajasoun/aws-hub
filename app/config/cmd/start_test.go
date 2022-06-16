@@ -1,23 +1,10 @@
 package cmd
 
 import (
-	"log"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
-	"github.com/urfave/cli/v2"
 )
-
-func MockStartCommand(appCtx *cli.Context) error {
-	log.Println("mockStartCommandHandler !!!")
-	return nil
-}
-
-func GetStartCommandWithShutdown() cli.Command {
-	cmdhandler := Handler{EnableShutdDown: true}
-	startCommand := New("start", "Start Server", cmdhandler.StartCommand)
-	return startCommand
-}
 
 func TestStartCmd(t *testing.T) {
 	assert := assert.New(t)
@@ -25,7 +12,8 @@ func TestStartCmd(t *testing.T) {
 
 	t.Run("Check Start Command With Custom Port Zero", func(t *testing.T) {
 		context := NewContext()
-		startCommand := GetStartCommandWithShutdown()
+		cmdhandler := Handler{EnableShutdDown: true}
+		startCommand := New("start", "Start Server", cmdhandler.StartCommand)
 		err := startCommand.Run(context)
 		assert.NoError(err, "err = %v ", err)
 	})

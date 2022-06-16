@@ -16,6 +16,11 @@ import (
 	"github.com/urfave/cli/v2"
 )
 
+func MockStartCommand(appCtx *cli.Context) error {
+	log.Println("mockStartCommandHandler !!!")
+	return nil
+}
+
 func NewAppWithMockCommands(writer io.Writer) *cli.App {
 	app := &cli.App{}
 	app.Flags = hubConfig.GetFlags()
@@ -91,8 +96,7 @@ func TestNewErrCommand(t *testing.T) {
 	assert := assert.New(t)
 	t.Run("Check ErrCommand With Invalid Input", func(t *testing.T) {
 		mockApp := &cli.App{Writer: ioutil.Discard}
-		cmdhandler := Handler{}
-		cmdhandler.EnableShutdDown = false
+		cmdhandler := Handler{EnableShutdDown: false}
 		startCommand := New("start", "Start Server", cmdhandler.StartCommand)
 		commands := []*cli.Command{&startCommand}
 		mockApp.Commands = commands
