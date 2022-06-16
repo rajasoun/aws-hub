@@ -1,5 +1,5 @@
 // Manual Mocking of AWS APIs Example
-package example
+package iam
 
 import (
 	"context"
@@ -10,7 +10,6 @@ import (
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/service/iam"
 	"github.com/aws/aws-sdk-go-v2/service/iam/types"
-	service "github.com/rajasoun/aws-hub/service/aws/iam"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -57,7 +56,7 @@ func TestGetAliasesviaHandMadeMock(t *testing.T) {
 
 	for _, tt := range cases {
 		t.Run(tt.name, func(t *testing.T) {
-			got, err := service.GetAliases(tt.client)
+			got, err := GetAliases(tt.client)
 			assert.Equal(tt.want, len(got.List), "GetAliases() = %v, want = %v", len(got.List), tt.want)
 			if tt.wantErr {
 				assert.Error(err, "GetAliases() %v", err)
@@ -114,7 +113,7 @@ func TestGetUserCountviaManualMock(t *testing.T) {
 
 	for _, tt := range cases {
 		t.Run(tt.name, func(t *testing.T) {
-			got, err := service.GetUserCount(tt.client)
+			got, err := GetUserCount(tt.client)
 			if tt.wantErr {
 				assert.Error(err, "GetUserCount() %v", err)
 				return
@@ -174,7 +173,7 @@ func TestGetUserIdentity(t *testing.T) {
 
 	for _, tt := range cases {
 		t.Run(tt.name, func(t *testing.T) {
-			got, err := service.GetUserIdentity(tt.client)
+			got, err := GetUserIdentity(tt.client)
 			if tt.wantErr {
 				assert.Error(err, "GetUserIdentity() %v", err)
 				return
