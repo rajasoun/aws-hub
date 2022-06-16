@@ -65,26 +65,7 @@ func (mockFunc *MockAwsAPI) Execute(client *iam.Client) (interface{}, error) {
 	return result.Get(0).(*MockOutput), result.Error(1)
 }
 
-func TestInvokeAPI(t *testing.T) {
-	t.Parallel()
-	t.Run("Check InvokeAPI for Success", func(t *testing.T) {
-		awsWrapper := MockAWSWrapper(test.MockSuccessHandler)
-		expectedOutput := &MockOutput{Message: "Test with Success"}
-		client := new(MockAwsAPI)
-		client.On("Execute", mock.Anything).Return(expectedOutput, nil)
-		awsWrapper.InvokeAPI(client, "dummy", "dummy")
-		// Check Cache
-		awsWrapper.InvokeAPI(client, "dummy", "dummy")
-	})
-	t.Run("Check InvokeAPI for Failure", func(t *testing.T) {
-		awsWrapper := MockAWSWrapper(test.MockFailureHandler)
-		expectedOutput := &MockOutput{Message: "Test with Failure"}
-		client := new(MockAwsAPI)
-		client.On("Execute", mock.Anything).Return(expectedOutput, errors.New("simulated error"))
-		awsWrapper.InvokeAPI(client, "dummy", "Simulated Error")
-	})
-}
-
+// Mock AWS Wrapper.
 func MockAWSWrapper(handler func(w http.ResponseWriter, r *http.Request)) *AWSWrapper {
 	awsHandler := NewDefaultAWSHandler(false)
 	mockServer := test.MockServer{}
@@ -97,4 +78,43 @@ func MockAWSWrapper(handler func(w http.ResponseWriter, r *http.Request)) *AWSWr
 		multiple: awsHandler.multiple,
 	}
 	return &awsWrapper
+}
+
+func TestInvokeAPI(t *testing.T) {
+	t.Parallel()
+	tests := []struct {
+		name       string
+		awsWrapper func(responseWriter http.ResponseWriter, request *http.Request)
+		msg        string
+		wantErr    bool
+	}{
+		{
+			name:       "Check InvokeAPI for Success",
+			awsWrapper: test.MockSuccessHandler,
+			msg:        "Test with Success",
+			wantErr:    false,
+		},
+		{
+			name:       "Check InvokeAPI for Failure",
+			awsWrapper: test.MockFailureHandler,
+			msg:        "Test with Failure",
+			wantErr:    true,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			awsWrapper := MockAWSWrapper(tt.awsWrapper)
+			expectedOutput := &MockOutput{Message: tt.msg}
+			client := new(MockAwsAPI)
+			if tt.wantErr {
+				client.On("Execute", mock.Anything).Return(expectedOutput, errors.New("simulated error"))
+				awsWrapper.InvokeAPI(client, "dummy", "Simulated Error")
+				return
+			}
+			client.On("Execute", mock.Anything).Return(expectedOutput, nil)
+			awsWrapper.InvokeAPI(client, "dummy", "dummy")
+			// Check Cache
+			awsWrapper.InvokeAPI(client, "dummy", "dummy")
+		})
+	}
 }
