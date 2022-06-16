@@ -190,7 +190,7 @@ func TestCreatingFile(t *testing.T) {
 	}
 }
 */
-
+//Without mocking
 func TestNewUser(t *testing.T) {
 	type args struct {
 		u User
@@ -221,3 +221,5 @@ func TestNewUser(t *testing.T) {
 		})
 	}
 }
+
+// with mocking

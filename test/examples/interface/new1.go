@@ -98,10 +98,23 @@ type User struct {
 	Email    string //`json:"email"`
 	UserName string //`json:"user_name"`
 }
+type precheck interface {
+	userExists(string) bool
+}
+type regiCheck struct{}
 
+func (r regiCheck) userExists(email string) bool {
+	return UserAvilable(email)
+}
+
+var regCond precheck
+
+func init() {
+	regCond = regiCheck{}
+}
 func NewUser(u User) error {
 
-	avilable := UserAvilable(u.Email)
+	avilable := regCond.userExists(u.Email)
 	if avilable {
 		return fmt.Errorf("email is already '%s'avilable", u.Email)
 	}
