@@ -12,7 +12,7 @@ import (
 	ini "github.com/rajasoun/go-parsers/aws_credentials"
 )
 
-var defaultRegion string = "us-east-1"
+const defaultRegion = "us-east-1"
 
 type Loader struct {
 	LocalLoaderFunc func(ctx context.Context, optFns ...func(*config.LoadOptions) error) (cfg aws.Config, err error)

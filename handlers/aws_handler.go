@@ -69,15 +69,16 @@ func (awsWrapper *AWSWrapper) InvokeAPI(awsAPI api.AwsAPI, cacheKeyCode, errMsg 
 	if foundInCache {
 		awsWrapper.RespondWithJSON(http.StatusOK, response)
 		return
-	} else {
-		cfg, _ := api.GetConfigFromFileSystem(profile, awsWrapper.multiple)
-		client := iam.NewFromConfig(cfg)
-		response, err := awsAPI.Execute(client)
-		if err != nil {
-			awsWrapper.RespondWithErrorJSON(err, errMsg)
-		} else {
-			awsWrapper.cache.Set(cacheKey, response)
-			awsWrapper.RespondWithJSON(http.StatusOK, response)
-		}
 	}
+	// Not In Cache
+	cfg, _ := api.GetConfigFromFileSystem(profile, awsWrapper.multiple)
+	client := iam.NewFromConfig(cfg)
+	response, err := awsAPI.Execute(client)
+	if err != nil {
+		awsWrapper.RespondWithErrorJSON(err, errMsg)
+		return
+	}
+	awsWrapper.cache.Set(cacheKey, response)
+	awsWrapper.RespondWithJSON(http.StatusOK, response)
+
 }

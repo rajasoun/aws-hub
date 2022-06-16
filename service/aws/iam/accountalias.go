@@ -13,7 +13,7 @@ type Aliases struct {
 
 // Interface for Amazon IAM ListAccountAliases API
 // This will enable TDD using mocking
-type IAMListAccountAliasesAPIClient interface {
+type ListAccountAliasesClient interface {
 	iam.ListAccountAliasesAPIClient // Only for Reference to Actual Client
 	ListAccountAliases(ctx context.Context,
 		params *iam.ListAccountAliasesInput,
@@ -26,7 +26,7 @@ type IAMListAccountAliasesAPIClient interface {
 // Output:
 //     If successful, a ListAccountAliasesOutput object containing the result of the service call and nil.
 //     Otherwise, nil and an error from the call to ListAccountAliases.
-func GetAliases(client IAMListAccountAliasesAPIClient) (Aliases, error) {
+func GetAliases(client ListAccountAliasesClient) (Aliases, error) {
 	emptyContext := context.TODO()
 	input := &iam.ListAccountAliasesInput{}
 	result, err := client.ListAccountAliases(emptyContext, input)

@@ -17,7 +17,7 @@ type User struct {
 
 // Interface for Amazon IAM GetUser API
 // This will enable TDD using mocking
-type IAMGetUserAPIClient interface {
+type GetUserAPIClient interface {
 	iam.GetUserAPIClient // Only for Reference to Actual Client
 	GetUser(ctx context.Context,
 		params *iam.GetUserInput,
@@ -30,7 +30,7 @@ type IAMGetUserAPIClient interface {
 // Output:
 //     If successful, a Users object containing the account details and nil.
 //     Otherwise, nil and an error from the call.
-func GetUserIdentity(client IAMGetUserAPIClient) (User, error) {
+func GetUserIdentity(client GetUserAPIClient) (User, error) {
 	emptyContext := context.TODO()
 	input := &iam.GetUserInput{}
 	result, err := client.GetUser(emptyContext, input)
