@@ -1,4 +1,4 @@
-package spike
+package voice
 
 type Voice interface {
 	SayHello() string
