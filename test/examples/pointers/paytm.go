@@ -33,37 +33,3 @@ func (u *User) GiveMyList() ([]string, error) {
 	}
 	return u.list, nil
 }
-
-// //func main() {
-
-// 	//RohiniList := NewUser("Rohini")
-// 	SomePersonList := NewUser("Unknown")
-
-// 	RohiniList.AddItem("Chocolates")
-// 	RohiniList.AddItem("Mobile")
-
-// 	SomePersonList.AddItem("Guns")
-// 	SomePersonList.AddItem("walkie-talkie")
-
-// 	log.Println("Rohini's items:")
-// 	RohiniList.ShowList()
-
-// 	abcList := *RohiniList
-// 	abcList.Name = "abc"
-
-// 	xyzList := RohiniList
-// 	xyzList.Name = "xyz"
-
-//}
-
-//x = "hi" => memeory address 0X02537182
-// x = "hello" = > memory address 0X62735283
-// y =&x
-// y = hello
-
-// x := &a >& = address
-// x > pointer variable
-// y = *x > y
-
-//&
-//*
