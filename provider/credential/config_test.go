@@ -3,6 +3,7 @@ package credential
 import (
 	"context"
 	"errors"
+	"io/ioutil"
 	"os"
 	"testing"
 
@@ -82,7 +83,8 @@ func TestCredentialLoaderGetSections(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			if tt.emptyCredential {
-				os.Create("/tmp/credentials")
+				_, err := ioutil.TempFile("/tmp/", "credentials")
+				assert.NoError(err, "os.Create() = %v", err)
 			}
 			credLoader := &Loader{}
 			got, _ := credLoader.GetSections(tt.args.filename)
