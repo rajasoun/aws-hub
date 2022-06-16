@@ -12,7 +12,7 @@ type Profile struct {
 	List     []string `json:"list"`
 }
 
-func (handler *AWSHandler) GetSections(w http.ResponseWriter, credentialFile string) []string {
+func praseSections(w http.ResponseWriter, credentialFile string) []string {
 	cl := credential.New()
 	sections, err := cl.GetSections(credentialFile)
 	if err != nil {
@@ -27,7 +27,7 @@ func (handler *AWSHandler) ListProfilesHandler(w http.ResponseWriter, r *http.Re
 	var sectionList []string
 	credentialFile := config.DefaultSharedCredentialsFilename()
 	if handler.multiple {
-		sectionList = handler.GetSections(w, credentialFile)
+		sectionList = praseSections(w, credentialFile)
 	} else {
 		sectionList = []string{"default"}
 	}

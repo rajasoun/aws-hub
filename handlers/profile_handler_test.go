@@ -1,8 +1,6 @@
 package handlers
 
 import (
-	"encoding/json"
-	"log"
 	"net/http"
 	"testing"
 
@@ -11,7 +9,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestAWSHandlerGetSections(t *testing.T) {
+func TestAWSListProfilesHandler(t *testing.T) {
 	assert := assert.New(t)
 	t.Parallel()
 	mock := test.MockServer{}
@@ -19,42 +17,39 @@ func TestAWSHandlerGetSections(t *testing.T) {
 		name           string
 		credentialFile string
 		isMultiple     bool
+		sections       int
+		wantErr        bool
 	}{
 		{
 			name:           "Check Get Sections for Multiple Profile",
 			credentialFile: config.DefaultSharedCredentialsFilename(),
 			isMultiple:     true,
+			sections:       0,
+			wantErr:        false,
 		},
 		{
 			name:           "Check Get Sections for Multiple Profile with Invalid File",
 			credentialFile: "InvalidFile",
 			isMultiple:     false,
+			sections:       0,
+			wantErr:        true,
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			handler := NewDefaultAWSHandler(tt.isMultiple)
-			responseWriter := mock.DoSimulation(PingHandler, nil)
-			credentialFile := tt.credentialFile
-			sections := handler.GetSections(responseWriter, credentialFile)
-			assert.GreaterOrEqual(len(sections), 0, "GetSections() = %v, want >= %v", len(sections), 0)
+			responseWriter := mock.DoSimulation(handler.HealthCheckHandler, nil)
+			handler.ListProfilesHandler(responseWriter, nil)
 			got := responseWriter.Code
 			assert.Equal(http.StatusOK, got, "Status = %v , want = %v", got, http.StatusOK)
-			handler.ListProfilesHandler(responseWriter, nil)
-			got = responseWriter.Code
-			assert.Equal(http.StatusOK, got, "Status = %v , want = %v", got, http.StatusOK)
+			if tt.wantErr {
+				credentialFile := tt.credentialFile
+				sections := praseSections(responseWriter, credentialFile)
+				assert.GreaterOrEqual(len(sections), tt.sections, "GetSections() = %v, want >= %v", len(sections), 0)
+				got := responseWriter.Code
+				assert.Equal(http.StatusOK, got, "Status = %v , want = %v", got, http.StatusOK)
+			}
 		})
 	}
 
-}
-
-func PingHandler(responseWriter http.ResponseWriter, request *http.Request) {
-	payload := map[string]string{"Status": "Ok"}
-	jsonPayLoad, _ := json.Marshal(payload)
-	responseWriter.Header().Set("Content-Type", "application/json")
-	responseWriter.WriteHeader(http.StatusOK)
-	_, err := responseWriter.Write(jsonPayLoad)
-	if err != nil {
-		log.Printf("PingHandler() Err = %v", err)
-	}
 }
