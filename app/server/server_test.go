@@ -54,7 +54,6 @@ func TestHTTPServerStart(t *testing.T) {
 }
 
 func TestHandleShutdown(t *testing.T) {
-	//assert := assert.New(t)
 	t.Parallel()
 	t.Run("Check Handle Server Shutdown", func(t *testing.T) {
 		cliContext := arg.NewDefaultCliContext()

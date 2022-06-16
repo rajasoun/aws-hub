@@ -119,14 +119,14 @@ func TestRedisGetSet(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			if tt.wantErr {
-				//With Wrong Value
+				// With Wrong Value
 				err := client.Set(tt.key, tt.value)
 				assert.Error(err, "Error err = %v ", err)
-				//With InValid Key
+				// With InValid Key
 				got, foundKey := client.Get("Invalid")
 				assert.False(foundKey, "Cache Set & Get Should Fail with Injected Err = %v", tt.key)
 				assert.Empty(got, "Get () = %v", got)
-				//With Redis Error
+				// With Redis Error
 				server.SetError(mockErr)
 				errMock := client.Set(tt.key, "dummy")
 				assert.Error(errMock, "Simulated Err Failed err = %v ", errMock)

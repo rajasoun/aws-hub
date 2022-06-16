@@ -12,6 +12,8 @@ import (
 )
 
 func TestLoadDefaultProfile(t *testing.T) {
+	testProfile := "secops-experiments"
+	testRegion := "us-east-1"
 	assert := assert.New(t)
 	t.Parallel()
 	credLoader := New()
@@ -19,7 +21,7 @@ func TestLoadDefaultProfile(t *testing.T) {
 		credLoader.LocalLoaderFunc = config.LoadDefaultConfig
 		cfg, err := credLoader.LoadDefaultConfig()
 		got := cfg.Region
-		want := "us-east-1"
+		want := testRegion
 		assert.NoError(err, "LoadDefaultProfile() error = %v", err)
 		assert.Equal(got, want, "LoadDefaultProfile() = %v, want %v", got, want)
 	})
@@ -31,20 +33,18 @@ func TestLoadDefaultProfile(t *testing.T) {
 		assert.Error(err, "LoadDefaultConfig() error = %v", err)
 	})
 	t.Run("Check Load Default Profile with Region", func(t *testing.T) {
-		profile := "secops-experiments"
 		credLoader.LocalLoaderFunc = config.LoadDefaultConfig
-		cfg, err := credLoader.LoadDefaultConfigForProfile(profile)
+		cfg, err := credLoader.LoadDefaultConfigForProfile(testProfile)
 		got := cfg.Region
-		want := "us-east-1"
+		want := testRegion
 		assert.NoError(err, "LoadDefaultConfigForProfile() error = %v", err)
 		assert.Equal(got, want, "LoadDefaultProfile() = %v, want %v", got, want)
 	})
 	t.Run("Check Load Default Profile with Region", func(t *testing.T) {
-		profile := "secops-experiments"
 		credLoader.LocalLoaderFunc = func(ctx context.Context, optFns ...func(*config.LoadOptions) error) (cfg aws.Config, err error) {
 			return aws.Config{}, errors.New("simulated error")
 		}
-		_, err := credLoader.LoadDefaultConfigForProfile(profile)
+		_, err := credLoader.LoadDefaultConfigForProfile(testProfile)
 		assert.Error(err, "LoadDefaultConfigForProfile() error = %v", err)
 	})
 }

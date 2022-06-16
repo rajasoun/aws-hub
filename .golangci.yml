@@ -70,9 +70,11 @@ linters:
     - gocritic
     - gocyclo
     - godot
+    - godox 
     - gofmt
     - gomnd
     - goprintffuncname
+    - maintidx
     - misspell
     - nakedret
     - unconvert
@@ -85,16 +87,4 @@ issues:
   - 'Error return value of `httpServer.Shutdown` is not checked'
   - 'Error return value of `responseWritter.Write` is not checked'
 
-  exclude-rules:
-    - path: _test\.go
-      linters:
-        - gomnd
-        - goconst
-        - gocritic
-        - gosec
-
-    # https://github.com/go-critic/go-critic/issues/926
-    - linters:
-        - gocritic
-      text: "unnecessaryDefer:"
 

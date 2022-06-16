@@ -75,7 +75,8 @@ func TestCreateCommand(t *testing.T) {
 			var outputBuffer bytes.Buffer
 			outputBuffer.Reset()
 			app := NewAppWithMockCommands(&outputBuffer)
-			args := append(os.Args[0:1], tt.cmd)
+			args := os.Args[0:1]
+			args = append(args, tt.cmd)
 			err := app.Run(args)
 
 			assert.NoError(err, "Err app.Run() = %v with %v", err, tt.cmd)

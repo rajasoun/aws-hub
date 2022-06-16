@@ -57,11 +57,11 @@ func (mockFunc *MockAwsAPI) Execute(client *iam.Client) (interface{}, error) {
 	// Call Mock Function call
 	// The Function to be Called and Result will be Injected in Test
 	result := mockFunc.Called(client)
-	//Return Result On Error
+	// Return Result On Error
 	if result.Get(0) == nil {
 		return nil, result.Error(1)
 	}
-	//Return Result If No Error
+	// Return Result If No Error
 	return result.Get(0).(*MockOutput), result.Error(1)
 }
 
