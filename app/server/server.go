@@ -2,6 +2,7 @@ package server
 
 import (
 	"context"
+	"errors"
 	"log"
 	"net/http"
 	"os"
@@ -88,7 +89,7 @@ func (server *Server) NewHTTPServer(adr string) HTTPServer {
 
 func (httpServer HTTPServer) StartHTTPServer() error {
 	err := httpServer.ListenAndServe()
-	if err != nil && err != http.ErrServerClosed {
+	if err != nil && !errors.Is(err, http.ErrServerClosed) {
 		return err
 	}
 	return nil

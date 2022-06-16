@@ -2,6 +2,7 @@ package cache
 
 import (
 	"encoding/json"
+	"errors"
 	"log"
 	"time"
 
@@ -41,7 +42,7 @@ func (r *Redis) Ping() error {
 
 func (r *Redis) Get(key string) (interface{}, bool) {
 	val, err := r.client.Get(key).Result()
-	if err == redis.Nil {
+	if errors.Is(err, redis.Nil) {
 		return val, false
 	}
 	// Set ensures no invalid value gets into cache
