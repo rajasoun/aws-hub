@@ -34,10 +34,6 @@ func NewAWSHandler(cacheHandler cache.Cache, multiple bool) *AWSHandler {
 	return &awsHandler
 }
 
-func (handler *AWSHandler) GetAWSHandler() aws.AWS {
-	return handler.aws
-}
-
 type AWSWrapper struct {
 	request  *http.Request
 	writer   http.ResponseWriter

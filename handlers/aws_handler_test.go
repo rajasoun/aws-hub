@@ -33,8 +33,8 @@ func TestNewDefaultAWSHandler(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			got := NewDefaultAWSHandler(tt.multiple)
-			assert.Equal(got.cache.Type(), tt.wantCacheType, "NewDefaultAWSHandler() = %v, want %v", got, tt.wantCacheType)
-			assert.Empty(got.GetAWSHandler(), "GetAWSHandler() = %v", got.GetAWSHandler())
+			assert.Equal(got.cache.Type(), tt.wantCacheType,
+				"NewDefaultAWSHandler() = %v, want %v", got, tt.wantCacheType)
 		})
 	}
 }
