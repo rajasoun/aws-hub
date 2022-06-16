@@ -52,10 +52,20 @@ linters:
   # inverted configuration with `enable-all` and `disable` is not scalable during updates of golangci-lint
   disable-all: true
   enable:
+    # Recommend using the following linters at a minimum
+    # Minimum Linters help to catch the most common issues 
+    # Balance high bar for code quality without being unnecessarily prescriptive
+    - errcheck # to ensure that errors are handled
+    - goimports # to format code and manage imports
+    - govet # to analyze code for common mistakes
+    - gosec # to point out security problems 
+    - revive # to point out common style mistakes
+    - staticcheck # to do various static analysis checks
+
+    # Additional Linters
     - deadcode
     - dogsled
     - dupl
-    - errcheck
     - exportloopref
     - exhaustive
     - funlen
@@ -64,44 +74,19 @@ linters:
     - gocritic
     - gocyclo
     - gofmt
-    - goimports
     - gomnd
     - goprintffuncname
-    - gosec
     - gosimple
     - govet
     - ineffassign
     - misspell
     - nakedret
     - nolintlint
-    - staticcheck
     - stylecheck
     - typecheck
     - unconvert
     - unused
     - varcheck
-    # - bodyclose
-    # - golint
-    # - noctx
-    # - rowserrcheck
-    # - structcheck
-    # - unparam
-    
-  # don't enable:
-  # - asciicheck
-  # - scopelint
-  # - gochecknoglobals
-  # - gocognit
-  # - godot
-  # - godox
-  # - goerr113
-  # - interfacer
-  # - maligned
-  # - nestif
-  # - prealloc
-  # - testpackage
-  # - revive
-  # - wsl
 
 issues:
   # Excluding configuration per-path, per-linter, per-text and per-source
