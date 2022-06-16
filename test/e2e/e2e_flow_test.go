@@ -102,7 +102,7 @@ func TestSimulateExecute(t *testing.T) {
 		context := cli.NewContext(mockApp, set, nil)
 
 		// get Start Command
-		cmdhandler := cmd.CmdHandler{EnableShutdDown: true}
+		cmdhandler := cmd.Handler{EnableShutdDown: true}
 		startCommand := cmd.GetCommand(cmdhandler.StartCommand)
 		err := startCommand.Run(context)
 

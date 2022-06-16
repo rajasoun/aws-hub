@@ -6,11 +6,11 @@ import (
 	"github.com/urfave/cli/v2"
 )
 
-type CmdHandler struct {
+type Handler struct {
 	EnableShutdDown bool
 }
 
-func (handler *CmdHandler) StartCommand(appCtx *cli.Context) error {
+func (handler *Handler) StartCommand(appCtx *cli.Context) error {
 	cliContext := arg.NewCliContext(appCtx)
 	cache := cliContext.GetCache()
 	isMultipleProfile := cliContext.GetAwsProfileType()

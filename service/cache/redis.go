@@ -34,10 +34,9 @@ func (r *Redis) Ping() error {
 	if err != nil {
 		log.Println("Cloudn't connect to Redis:", err)
 		return err
-	} else {
-		log.Println("Successfully connected to Redis")
-		return nil
 	}
+	log.Println("Successfully connected to Redis")
+	return nil
 }
 
 func (r *Redis) Get(key string) (interface{}, bool) {

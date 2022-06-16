@@ -43,7 +43,7 @@ func TestGetCommand(t *testing.T) {
 	assert := assert.New(t)
 	t.Parallel()
 	t.Run("Check start command", func(t *testing.T) {
-		cmdhandler := CmdHandler{EnableShutdDown: true}
+		cmdhandler := Handler{EnableShutdDown: true}
 		cmds := GetCommand(cmdhandler.StartCommand)
 		got := cmds.Name
 		want := "start"

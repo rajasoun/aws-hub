@@ -76,7 +76,7 @@ func TestCredentialLoaderGetSections(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			credLoader := &CredentialLoader{}
+			credLoader := &Loader{}
 			got, _ := credLoader.GetSections(tt.args.filename)
 			want := 0
 			assert.GreaterOrEqual(len(got.List()), want,

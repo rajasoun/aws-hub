@@ -14,13 +14,14 @@ import (
 
 var defaultRegion string = "us-east-1"
 
-type CredentialLoader struct {
+type Loader struct {
 	LocalLoaderFunc func(ctx context.Context, optFns ...func(*config.LoadOptions) error) (cfg aws.Config, err error)
 }
 
-func New() *CredentialLoader {
-	credentialLoader := CredentialLoader{}
-	credentialLoader.LocalLoaderFunc = config.LoadDefaultConfig
+func New() *Loader {
+	credentialLoader := Loader{
+		LocalLoaderFunc: config.LoadDefaultConfig,
+	}
 	return &credentialLoader
 }
 
@@ -29,7 +30,7 @@ func New() *CredentialLoader {
 //     If successful, aws.Config struct & nil
 //     Otherwise, empty aws.Config and an error.
 //	   Ref: https://aws.github.io/aws-sdk-go-v2/docs/configuring-sdk/
-func (credLoader *CredentialLoader) LoadDefaultConfig() (aws.Config, error) {
+func (credLoader *Loader) LoadDefaultConfig() (aws.Config, error) {
 	emptyContext := context.TODO()
 	region := config.WithRegion(defaultRegion)
 	cfg, err := credLoader.LocalLoaderFunc(emptyContext, region)
@@ -46,7 +47,7 @@ func (credLoader *CredentialLoader) LoadDefaultConfig() (aws.Config, error) {
 //     If successful, aws.Config struct & nil
 //     Otherwise, empty aws.Config and an error.
 //	   Ref: https://aws.github.io/aws-sdk-go-v2/docs/configuring-sdk/
-func (credLoader *CredentialLoader) LoadDefaultConfigForProfile(profile string) (aws.Config, error) {
+func (credLoader *Loader) LoadDefaultConfigForProfile(profile string) (aws.Config, error) {
 	cmptyContext := context.TODO()
 	region := config.WithRegion(defaultRegion)
 	sharedConfigFiles := config.WithSharedConfigFiles(config.DefaultSharedConfigFiles)
@@ -62,13 +63,11 @@ func (credLoader *CredentialLoader) LoadDefaultConfigForProfile(profile string) 
 // Output:
 //     If successful, Returns sections within the ~/.aws/credential file
 //     Otherwise, empty sections and an error.
-func (credLoader *CredentialLoader) GetSections(credentialFile string) (ini.Sections, error) {
+func (credLoader *Loader) GetSections(credentialFile string) (ini.Sections, error) {
 	if fileExists(credentialFile) {
 		return ini.OpenFile(credentialFile)
-	} else {
-		return ini.Sections{}, errors.New("credential file is not available")
 	}
-
+	return ini.Sections{}, errors.New("credential file is not available")
 }
 
 func fileExists(filename string) bool {

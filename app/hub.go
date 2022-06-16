@@ -37,7 +37,7 @@ func (hub *Hub) setUpFlags() {
 }
 
 func (hub *Hub) setUpCommands() {
-	cmdhandler := cmd.CmdHandler{}
+	cmdhandler := cmd.Handler{}
 	cmdhandler.EnableShutdDown = false
 	startCommand := cmd.GetCommand(cmdhandler.StartCommand)
 	commands := []*cli.Command{&startCommand}

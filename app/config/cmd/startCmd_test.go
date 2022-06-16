@@ -14,7 +14,7 @@ func MockStartCommand(appCtx *cli.Context) error {
 }
 
 func GetStartCommandWithShutdown() cli.Command {
-	cmdhandler := CmdHandler{EnableShutdDown: true}
+	cmdhandler := Handler{EnableShutdDown: true}
 	startCommand := GetCommand(cmdhandler.StartCommand)
 	return startCommand
 }

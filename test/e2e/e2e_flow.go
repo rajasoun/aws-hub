@@ -9,9 +9,9 @@ import (
 
 var (
 	DefaultFileName                = "e2e.md"
-	DefaultFileOptions int         = os.O_RDWR | os.O_CREATE
-	DefaultPermission  os.FileMode = 0666
+	DefaultFileOptions             = os.O_RDWR | os.O_CREATE
 	DefaultFileOpener              = os.OpenFile
+	DefaultPermission  os.FileMode = 0666
 )
 
 type Markdown struct {
