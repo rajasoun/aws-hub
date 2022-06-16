@@ -39,5 +39,7 @@ type Triangle struct {
 
 // area of the triangle.
 func (c Triangle) Area() float64 {
+	area := (c.Height * c.Base) * 0.5
+	fmt.Printf("Area of Triangle %f", area)
 	return (c.Height * c.Base) * 0.5
 }
