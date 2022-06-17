@@ -108,13 +108,37 @@ func TestAccoutDetails(t *testing.T) {
 
 func TestStatement(t *testing.T) {
 
-		t.Run("Generate Statement.txt", func(t *testing.T) {
-			filename := Statement().Name()
-			checkFile, err:=  os.Stat(filename)
-			actual :=filename
-			expected:= checkFile.Name()
-			if actual != expected {
-				t.Errorf("actual: %v,  expected: %v, error: %v", actual, expected, err)
+	t.Run("Generate Statement.txt", func(t *testing.T) {
+		filename := Statement().Name()
+		checkFile, err := os.Stat(filename)
+		actual := filename
+		expected := checkFile.Name()
+		if actual != expected {
+			t.Errorf("actual: %v,  expected: %v, error: %v", actual, expected, err)
+		}
+	})
+}
+
+func TestUsers(t *testing.T) {
+	tests := []struct {
+		name string
+		want users
+	}{
+		// TODO: Add test cases.
+		{name: "Check value and memory address ",
+		want: users{
+			user1: "Manu",
+			user2: "Ajit",
+			user3: "Pratim",
+			user4: "Rohini",
+		},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := Users(); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("Users() = %v, want %v", got, tt.want)
 			}
 		})
 	}
+}

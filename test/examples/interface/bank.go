@@ -43,12 +43,29 @@ func AccoutDetails() *acc_details {
 	return &AccDetails
 }
 
-
-func Statement () *os.File{
+func Statement() *os.File {
 	file, err := os.Create("Statement.txt")
 	if err != nil {
 		fmt.Printf("Error generating Statement: %s", err)
 	}
 	fmt.Printf("Statement Generated Successfully: %v", file)
 	return file
+}
+
+type users struct {
+	user1 string
+	user2 string
+	user3 string
+	user4 string
+}
+
+func Users() users {
+	usr := &users{user1: "Manu",
+		user2: "Ajit",
+		user3: "Pratim",
+		user4: "Rohini",
+	}
+	fmt.Printf("Users list: %v\n", *usr)
+	fmt.Printf("Users memory address: %v\n", &usr)
+	return *usr
 }
