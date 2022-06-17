@@ -126,12 +126,12 @@ func TestUsers(t *testing.T) {
 	}{
 		// TODO: Add test cases.
 		{name: "Check value and memory address ",
-		want: users{
-			user1: "Manu",
-			user2: "Ajit",
-			user3: "Pratim",
-			user4: "Rohini",
-		},
+			want: users{
+				user1: "Manu",
+				user2: "Ajit",
+				user3: "Pratim",
+				user4: "Rohini",
+			},
 		},
 	}
 	for _, tt := range tests {
