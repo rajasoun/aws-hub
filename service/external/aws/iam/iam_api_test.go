@@ -1,4 +1,4 @@
-package aws
+package iam
 
 import (
 	"testing"
@@ -14,15 +14,17 @@ func TestExecute(t *testing.T) {
 		client *iam.Client
 	}
 	tests := []struct {
-		name    string
-		api     API
+		name string
+		api  interface {
+			Execute(client *iam.Client) (interface{}, error)
+		}
 		args    args
 		want    interface{}
 		wantErr bool
 	}{
 		{
 			name: "Check GetAliasesAPI With NoOp Client",
-			api:  New(IAMGetAliasesAPI),
+			api:  GetAliasesAPI{},
 			args: args{
 				client: &iam.Client{},
 			},
@@ -31,7 +33,7 @@ func TestExecute(t *testing.T) {
 		},
 		{
 			name: "Check GetUserCountAPI With NoOp Client",
-			api:  New(IAMGetUserCountAPI),
+			api:  GetUserCountAPI{},
 			args: args{
 				client: &iam.Client{},
 			},
@@ -40,7 +42,7 @@ func TestExecute(t *testing.T) {
 		},
 		{
 			name: "Check GetUserIdentitytAPI With NoOp Client",
-			api:  New(IAMGetUserIdentityAPI),
+			api:  GetUserIdentityAPI{},
 			args: args{
 				client: &iam.Client{},
 			},
@@ -49,7 +51,7 @@ func TestExecute(t *testing.T) {
 		},
 		{
 			name: "Check Ping",
-			api:  New(IAMPing),
+			api:  DoPing{},
 			args: args{
 				client: &iam.Client{},
 			},
