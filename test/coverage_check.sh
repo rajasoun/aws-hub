@@ -10,7 +10,7 @@
 TESTCOVERAGE_THRESHOLD=100
 echo -e "\nQuality Gate: Test Coverage Check"
 echo "Threshold             : $TESTCOVERAGE_THRESHOLD %"
-totalCoverage=$(go tool cover -func=build/coverage/coverage.out | grep total | grep -Eo '[0-9]+\.[0-9]+')
+totalCoverage=$(go tool cover -func=.ci/build/coverage/coverage.out | grep total | grep -Eo '[0-9]+\.[0-9]+')
 echo "Current test coverage : $totalCoverage %"
 echo ""
 if (( $(echo "$totalCoverage $TESTCOVERAGE_THRESHOLD" | awk '{print ($1 = $2)}') )); then
