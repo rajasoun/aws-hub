@@ -16,7 +16,7 @@ func TestStudent_Student(t *testing.T) {
 		want2  int
 	}{
 		// TODO: Add test cases.
-		{name: "Pratim",
+		{name: "Student",
 			fields: fields{
 				Name:   "Pratim Sil",
 				Course: "BE",
