@@ -1,3 +1,4 @@
+// Package app is the cli based application for Analysis and management of AWS cost
 package app
 
 import (
@@ -11,6 +12,7 @@ import (
 	"github.com/urfave/cli/v2"
 )
 
+// Hub is CLI Application.
 type Hub struct {
 	cli *cli.App
 }
@@ -49,12 +51,14 @@ func (hub *Hub) setUpOutput(writer io.Writer) {
 	hub.cli.Writer = writer
 }
 
+// StructToMap to convert struct into a map[string]interface{}.
 func (hub *Hub) StructToMap(ds interface{}) map[string]interface{} {
 	s := structs.New(ds)
 	m := s.Map()
 	return m
 }
 
+// SliceToStrMap to convert slice of cli.Flag into a map[int]string{}.
 func (hub *Hub) SliceToStrMap(elements []cli.Flag) map[int]string {
 	elementMap := make(map[int]string)
 	for index, s := range elements {
@@ -63,7 +67,8 @@ func (hub *Hub) SliceToStrMap(elements []cli.Flag) map[int]string {
 	return elementMap
 }
 
-func NewApp() *Hub {
+// New creates and returns cli hub application.
+func New() *Hub {
 	hub := Hub{&cli.App{}}
 	hub.setUpInfo()
 	hub.setUpAuthors()
@@ -73,7 +78,7 @@ func NewApp() *Hub {
 }
 
 func Execute(args []string, writer io.Writer) error {
-	app := NewApp()
+	app := New()
 	// Dependency Injection - Enable TDD
 	app.setUpOutput(writer)
 	// Start App

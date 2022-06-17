@@ -21,7 +21,7 @@ sequenceDiagram
     User ->> main : aws-env go run main.go start
     main ->> app.hub: Execute()
     opt app
-        app.hub ->> app.hub: hub:= NewApp()
+        app.hub ->> app.hub: hub:= New()
         opt app.hub
             app.hub  ->> + app.flag: hub.setUpFlags()
             app.hub  ->>    app.cmd: hub.setUpCommands()

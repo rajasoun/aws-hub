@@ -10,11 +10,11 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestNewApp(t *testing.T) {
+func TestNew(t *testing.T) {
 	assert := assert.New(t)
 	t.Parallel()
 
-	app := NewApp()
+	app := New()
 	tests := []struct {
 		name string
 		key  string
@@ -38,7 +38,7 @@ func TestNewApp(t *testing.T) {
 func TestSetUpFlags(t *testing.T) {
 	assert := assert.New(t)
 	t.Parallel()
-	app := NewApp()
+	app := New()
 
 	tests := []struct {
 		name  string
