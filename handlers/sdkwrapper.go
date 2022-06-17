@@ -7,7 +7,7 @@ import (
 	"time"
 
 	"github.com/aws/aws-sdk-go-v2/service/iam"
-	api "github.com/rajasoun/aws-hub/api/external/aws"
+	api "github.com/rajasoun/aws-hub/service/api/external"
 	"github.com/rajasoun/aws-hub/service/aws"
 	"github.com/rajasoun/aws-hub/service/cache"
 )
