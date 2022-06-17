@@ -19,9 +19,9 @@ help: ## This help.
 .DEFAULT_GOAL := help
 
 # Go TASKS
-build:  build/bin/$(APP) test ## Build Go
+build:  .ci/build/bin/$(APP) test ## Build Go
 
-build/bin/$(APP): bin
+.ci/build/bin/$(APP): bin
 	go build -v -installsuffix 'static' -o $@ -ldflags "-X main.Version='${VERSION}'"
 
 check-for-updates:	## View minor/patch upgrades 
