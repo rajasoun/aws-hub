@@ -7,7 +7,6 @@ import (
 	"time"
 
 	"github.com/aws/aws-sdk-go-v2/service/iam"
-	"github.com/rajasoun/aws-hub/service/aws"
 	"github.com/rajasoun/aws-hub/service/cache"
 	api "github.com/rajasoun/aws-hub/service/external/aws"
 )
@@ -15,7 +14,6 @@ import (
 type AWSHandler struct {
 	cache    cache.Cache
 	multiple bool
-	aws      aws.AWS
 }
 
 func NewDefaultAWSHandler(multiple bool) *AWSHandler {
@@ -29,7 +27,6 @@ func NewAWSHandler(cacheHandler cache.Cache, multiple bool) *AWSHandler {
 	awsHandler := AWSHandler{
 		cache:    cacheHandler,
 		multiple: multiple,
-		aws:      aws.AWS{},
 	}
 	return &awsHandler
 }
