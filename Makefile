@@ -1,7 +1,8 @@
 APP := $(shell basename $(CURDIR))
 VERSION := $(shell git describe --tags --always --dirty)
 IMAGE_NAME=rajasoun/$(APP):$(VERSION)
-CONTEXT="build/container/"
+CONTEXT=.ci/container/
+REPORTS_DIR=.ci/reports
 
 #GOPATH := $(CURDIR)/Godeps/_workspace:$(GOPATH)
 #PATH := $(GOPATH)/bin:$(PATH)
@@ -36,7 +37,7 @@ lint: ## Go Lint
 	golangci-lint run 
 
 gosec: ## Lint Go Code for security issues
-	@gosec -exclude=G104 -fmt=json -out=.ci/build/security/results.json -stdout --verbose=text  ./...
+	@gosec -exclude=G104 -fmt=json -out=$(REPORTS_DIR)/security/results.json -stdout --verbose=text  ./...
 
 tdd:  ## Test Go
 	go test ./... -v
@@ -45,12 +46,12 @@ tdd-watch: ## Test Watch
 	gotestsum --watch --format testname
 
 tdd-cover: ## Go Coverage
-	go test ./... -v --cover -coverprofile .ci/build/coverage/coverage.out
-	go tool cover -html=coverage/coverage.out
+	go test ./... -v --cover -coverprofile 
+	go tool cover -html=$(REPORTS_DIR)/coverage/coverage.out
 
 tdd-unit: ## Prints formatted unit test output
-	@export SKIP_E2E=true && gotestsum --format testname -- -coverprofile=.ci/build/coverage/coverage.out ./...
-	@go tool cover -html=.ci/build/coverage/coverage.out -o .ci/build/coverage/coverage.html
+	@export SKIP_E2E=true && gotestsum --format testname -- -coverprofile=$(REPORTS_DIR)/coverage/coverage.out ./...
+	@go tool cover -html=$(REPORTS_DIR)/coverage/coverage.out -o $(REPORTS_DIR)/coverage/coverage.html
 	@bash -c "test/coverage_check.sh"
 
 tdd-integration: ## Prints formatted integration test output
