@@ -146,7 +146,7 @@ func TestGetConfig(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			cfg, err := GetConfigFromFileSystem(tt.profile, tt.isMultipleProfile)
+			cfg, err := loadConfigFromFileSystem(tt.profile, tt.isMultipleProfile)
 			if tt.wantErr {
 				assert.Error(err, funcName, err)
 			}

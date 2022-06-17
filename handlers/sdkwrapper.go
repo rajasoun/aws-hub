@@ -77,8 +77,7 @@ func (awsWrapper *AWSWrapper) InvokeAPI(awsAPI hubAWS.API, cacheKeyCode, errMsg 
 		return
 	}
 	// Not In Cache
-	//cfg, _ := hubAWS.GetConfigFromFileSystem(profile, awsWrapper.multiple)
-	cfg, _ := GetConfigFromFileSystem(profile, awsWrapper.multiple)
+	cfg, _ := loadConfigFromFileSystem(profile, awsWrapper.multiple)
 	client := iam.NewFromConfig(cfg)
 	response, err := awsAPI.Execute(client)
 	if err != nil {
@@ -89,7 +88,7 @@ func (awsWrapper *AWSWrapper) InvokeAPI(awsAPI hubAWS.API, cacheKeyCode, errMsg 
 	awsWrapper.RespondWithJSON(http.StatusOK, response)
 }
 
-func GetConfigFromFileSystem(profile string, isMultipleProfile bool) (aws.Config, error) {
+func loadConfigFromFileSystem(profile string, isMultipleProfile bool) (aws.Config, error) {
 	var cfg aws.Config
 	var err error
 	credentialLoader := credential.New()
