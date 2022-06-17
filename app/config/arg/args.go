@@ -9,8 +9,11 @@ import (
 )
 
 const (
-	DefaultPort      = 3000
-	DefaultDuration  = 30
+	// DefaultPort of Running Server.
+	DefaultPort = 3000
+	// DefaultDuration of an Element in cache.
+	DefaultDuration = 30
+	// DefaultCacheType used by application.
 	DefaultCacheType = "in-memory"
 )
 
