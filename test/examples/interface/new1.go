@@ -1,7 +1,9 @@
 package spike
 
 import (
+	"encoding/json"
 	"fmt"
+	"io/ioutil"
 	"log"
 	"os"
 )
@@ -66,7 +68,10 @@ it will create the file
 func CreatingFile() *os.File {
 	filename := "Demo.txt"
 
-	NewFile, _ := os.OpenFile(filename, os.O_RDWR|os.O_CREATE, 0666)
+	NewFile, error1 := os.Create(filename)
+	if error1 != nil {
+		log.Fatal(error1)
+	}
 
 	/*if err != nil {
 		log.Println("Error whlie creating the file %s Err = %v", NewFile)
@@ -120,5 +125,59 @@ func NewUser(u User) error {
 	}
 	log.Println(u.Name)
 	return nil
+
+}
+
+// working with json
+
+type Salary struct {
+	Basic float32
+	tax   float64
+	total float64
+}
+
+type Employee struct {
+	FirstName, LastName, Email string
+	age                        int
+	MonthlySalary              []Salary
+}
+
+func EmployeeSalary() (*os.File, bool) {
+	set := false
+	filename := "demo.json"
+	newfile, _ := os.Create(filename)
+
+	data := Employee{
+		FirstName: "ajit",
+		LastName:  "kumar",
+		Email:     "ajithkumar.sinha@srsconsultinginc.com",
+		age:       26,
+		MonthlySalary: []Salary{
+			{
+				Basic: 10000,
+				tax:   1000,
+				total: 11000,
+			},
+		},
+	}
+	file, _ := json.MarshalIndent(data, "", "")
+	erro := ioutil.WriteFile(newfile.Name(), file, 0644)
+	if erro != nil {
+		log.Fatal(erro)
+	}
+
+	/*_, err := os.ReadFile(newfile.Name())
+	if err != nil {
+		log.Fatal(err)
+	}
+	*/
+	fileinfo, _ := os.Stat(newfile.Name())
+	log.Println(fileinfo)
+	lenghtOfFile := fileinfo.Size()
+	if lenghtOfFile != 0 {
+		set = true
+
+	}
+	return newfile, set
 
 }

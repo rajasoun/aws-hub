@@ -1,6 +1,7 @@
 package spike
 
 import (
+	"log"
 	"os"
 	"reflect"
 	"testing"
@@ -68,6 +69,7 @@ func TestPlayerDetails(t *testing.T) {
 }
 
 func Test_player_playingGames(t *testing.T) {
+
 	type fields struct {
 		name      string
 		age       int64
@@ -114,8 +116,10 @@ func TestCreatingFile(t *testing.T) {
 		//assert := assert.New(t)
 		t.Parallel()
 		name := CreatingFile().Name()
+		log.Println(name)
 		//path, _ := os.Getwd()
 		fileInfo, _ := os.Stat(name)
+		log.Println(fileInfo)
 
 		got := name
 		want := fileInfo.Name()
@@ -259,4 +263,12 @@ func TestNewUser(t *testing.T) {
 		t.Errorf("throw an error got nil")
 	}
 
+}
+
+func TestEmployeeSalary(t *testing.T) {
+
+	t.Run("testing for json is written", func(t *testing.T) {
+		t.Parallel()
+
+	})
 }
