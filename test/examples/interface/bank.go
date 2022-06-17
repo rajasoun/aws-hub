@@ -6,7 +6,8 @@ import (
 )
 
 type BankAccountDetails interface {
-	account()
+	getaccountnamenumber()
+	getaccounttypebalance()
 }
 
 type acc_details struct {
