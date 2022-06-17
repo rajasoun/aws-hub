@@ -94,9 +94,9 @@ func CreatingFile() *os.File {
 // moking
 
 type User struct {
-	Name     string //`json:"name"`
-	Email    string //`json:"email"`
-	UserName string //`json:"user_name"`
+	Name     string
+	Email    string
+	UserName string
 }
 type precheck interface {
 	userExists(string) bool
