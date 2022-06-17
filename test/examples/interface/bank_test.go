@@ -142,3 +142,43 @@ func TestUsers(t *testing.T) {
 		})
 	}
 }
+
+func Test_entries_details(t *testing.T) {
+	type fields struct {
+		Customer_Name string
+		Account_Type  string
+		Status        string
+		AccountNumber int
+		Balance       float32
+	}
+	tests := []struct {
+		name   string
+		fields fields
+		want string
+	}{
+		// TODO: Add test cases.
+		{
+			name: "Generates Json File",
+			fields: fields{
+				Customer_Name: "Manu V H",
+				Account_Type:  "Current",
+				Status:        "Active",
+				AccountNumber: 0012345,
+				Balance:       56789.00,
+			},
+			want: "Error writing json",
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			e := entries{
+				Customer_Name: tt.fields.Customer_Name,
+				Account_Type:  tt.fields.Account_Type,
+				Status:        tt.fields.Status,
+				AccountNumber: tt.fields.AccountNumber,
+				Balance:       tt.fields.Balance,
+			}
+			e.details()
+		})
+	}
+}

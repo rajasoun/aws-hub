@@ -1,7 +1,9 @@
 package spike
 
 import (
+	"encoding/json"
 	"fmt"
+	"io/ioutil"
 	"os"
 )
 
@@ -68,4 +70,42 @@ func Users() users {
 	fmt.Printf("Users list: %v\n", *usr)
 	fmt.Printf("Users memory address: %v\n", &usr)
 	return *usr
+}
+
+type Json_Details interface {
+	details()
+}
+
+type entries struct {
+	Customer_Name string
+	Account_Type  string
+	Status        string
+	AccountNumber int
+	Balance       float32
+}
+
+func (e entries) details() string {
+	fileName, err := os.Create("File.json")
+	if err != nil {
+		fmt.Printf("Error writing json: %v", err)
+	}
+	fmt.Println("")
+	fmt.Printf("json created: %v\n", *fileName)
+	fmt.Println("")
+
+	AccountData := entries{
+		Customer_Name: "Manu V H",
+		Account_Type:  "Current",
+		Status:        "Active",
+		AccountNumber: 0012345,
+		Balance:       56789.00,
+	}
+
+	filefmt, _ := json.MarshalIndent(AccountData, " ", " ")
+	fmt.Printf("Account User Details: %v\n", string(filefmt))
+	err = ioutil.WriteFile("File.json", filefmt, 0644)
+	fmt.Println("")
+	fmt.Printf("JSON File: %v\n", err)
+	fmt.Println("")
+	return "Error writing json"
 }
