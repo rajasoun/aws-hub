@@ -3,12 +3,15 @@ package handlers
 import (
 	"encoding/json"
 	"fmt"
+	"log"
 	"net/http"
 	"time"
 
+	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/service/iam"
+	"github.com/rajasoun/aws-hub/provider/credential"
 	"github.com/rajasoun/aws-hub/service/cache"
-	aws "github.com/rajasoun/aws-hub/service/external/aws"
+	hubAWS "github.com/rajasoun/aws-hub/service/external/aws"
 )
 
 type AWSHandler struct {
@@ -65,7 +68,7 @@ func (awsWrapper *AWSWrapper) RespondWithErrorJSON(err error, errMsg string) {
 	}
 }
 
-func (awsWrapper *AWSWrapper) InvokeAPI(awsAPI aws.API, cacheKeyCode, errMsg string) {
+func (awsWrapper *AWSWrapper) InvokeAPI(awsAPI hubAWS.API, cacheKeyCode, errMsg string) {
 	profile := awsWrapper.request.Header.Get("profile")
 	cacheKey := fmt.Sprintf(cacheKeyCode, profile)
 	response, foundInCache := awsWrapper.cache.Get(cacheKey)
@@ -74,7 +77,8 @@ func (awsWrapper *AWSWrapper) InvokeAPI(awsAPI aws.API, cacheKeyCode, errMsg str
 		return
 	}
 	// Not In Cache
-	cfg, _ := aws.GetConfigFromFileSystem(profile, awsWrapper.multiple)
+	//cfg, _ := hubAWS.GetConfigFromFileSystem(profile, awsWrapper.multiple)
+	cfg, _ := GetConfigFromFileSystem(profile, awsWrapper.multiple)
 	client := iam.NewFromConfig(cfg)
 	response, err := awsAPI.Execute(client)
 	if err != nil {
@@ -83,4 +87,26 @@ func (awsWrapper *AWSWrapper) InvokeAPI(awsAPI aws.API, cacheKeyCode, errMsg str
 	}
 	awsWrapper.cache.Set(cacheKey, response)
 	awsWrapper.RespondWithJSON(http.StatusOK, response)
+}
+
+func GetConfigFromFileSystem(profile string, isMultipleProfile bool) (aws.Config, error) {
+	var cfg aws.Config
+	var err error
+	credentialLoader := credential.New()
+	if isMultipleProfile {
+		cfg, err = credentialLoader.LoadDefaultConfigForProfile(profile)
+		handleErr(err, "AWSConfig For multiple Profile ")
+	} else {
+		cfg, err = credentialLoader.LoadDefaultConfig()
+		handleErr(err, "Default AWSConfig")
+	}
+	return cfg, err
+}
+
+func handleErr(err error, msg string) {
+	if err != nil {
+		log.Println(msg+" Load Failed err = %v", err)
+	} else {
+		log.Println(msg + "loaded successfully")
+	}
 }
