@@ -6,10 +6,10 @@ GREEN :=$(shell tput setaf 2)
 YELLOW :=$(shell tput setaf 3)
 RESET :=$(shell tput sgr0)
 
-NAME := "aws-toolz"
+NAME := "aws-hub"
 LIST_TAGS := $(shell git tag -l)
 IMAGE_NAME=rajasoun/$(NAME)
-VERSION := "1.0.1"
+VERSION := "1.0.0"
 
 # HELP
 # This will output the help for each task
