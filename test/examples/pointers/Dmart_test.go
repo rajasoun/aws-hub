@@ -6,7 +6,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-// rohini &  somebody are pointers variables
+// rohini &  John are pointers variables
 func TestNewUser(t *testing.T) {
 	Rohini := NewUser("Rohini")
 	John := NewUser("John")
@@ -15,9 +15,12 @@ func TestNewUser(t *testing.T) {
 
 	//adding items in the list
 	Rohini.AddItem("Cloths")
+	Rohini.AddItem("Soaps")
+	Rohini.AddItem("Shampoo")
+	Rohini.AddItem("Toys")
 
 	list, err := Rohini.GiveMyList()
-	assert.Equal(t, 1, len(list))
+	assert.Equal(t, 4, len(list))
 	assert.Equal(t, nil, err)
 
 	list1, err := John.GiveMyList()
