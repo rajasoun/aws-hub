@@ -5,7 +5,7 @@ import (
 	"net/http"
 
 	"github.com/gorilla/mux"
-	"github.com/rajasoun/aws-hub/handlers/api"
+	api "github.com/rajasoun/aws-hub/api/external/aws"
 )
 
 const cacheKeyTemplate = "aws.%s.iam."
