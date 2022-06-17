@@ -69,6 +69,7 @@ require (
 require (
 	github.com/alicebob/miniredis/v2 v2.21.0
 	github.com/gavv/httpexpect v2.0.0+incompatible
+	github.com/jarcoal/httpmock v1.2.0
 	github.com/steinfletcher/apitest v1.5.12
 	github.com/stretchr/testify v1.7.2
 )
