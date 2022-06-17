@@ -1,4 +1,4 @@
-package api
+package aws
 
 import (
 	"bytes"
@@ -18,27 +18,27 @@ func TestNewAwsAPI(t *testing.T) {
 		apiName string
 	}{
 		{
-			name:    "Check NewAwsAPI for GetUserCountAPI ",
+			name:    "Check New for GetUserCountAPI ",
 			apiName: IAMGetUserCountAPI,
 		},
 		{
-			name:    "Check NewAwsAPI for GetUserIdentityAPI",
+			name:    "Check New for GetUserIdentityAPI",
 			apiName: IAMGetUserIdentityAPI,
 		},
 		{
-			name:    "Check NewAwsAPI for GetAliasesAPI",
+			name:    "Check New for GetAliasesAPI",
 			apiName: IAMGetAliasesAPI,
 		},
 		{
-			name:    "Check NewAwsAPI for Ping",
+			name:    "Check New for Ping",
 			apiName: IAMPing,
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			api := NewAwsAPI(tt.apiName)
+			api := New(tt.apiName)
 			got := reflect.TypeOf(api).Name()
-			assert.Equal(got, tt.apiName, "NewAwsAPI() = %v, want = %v ", got, tt.apiName)
+			assert.Equal(got, tt.apiName, "New() = %v, want = %v ", got, tt.apiName)
 		})
 	}
 }

@@ -5,7 +5,7 @@ import (
 	"net/http"
 
 	"github.com/gorilla/mux"
-	api "github.com/rajasoun/aws-hub/service/external/aws"
+	aws "github.com/rajasoun/aws-hub/service/external/aws"
 )
 
 const cacheKeyTemplate = "aws.%s.iam."
@@ -13,7 +13,7 @@ const cacheKeyTemplate = "aws.%s.iam."
 // Get Number of Users associated to a AWS Account.
 func (handler *AWSHandler) IAMGetUserCountHandler(w http.ResponseWriter, r *http.Request) {
 	cacheKey := cacheKeyTemplate + "users"
-	apiToBeInvoked := api.IAMGetUserCountAPI
+	apiToBeInvoked := aws.IAMGetUserCountAPI
 	onErrMsg := "iam:GetUserCount - Failed."
 	awsWrapper := NewAWSWrapper(r, w, handler)
 	awsAPI := GetAPI(r, apiToBeInvoked)
@@ -23,7 +23,7 @@ func (handler *AWSHandler) IAMGetUserCountHandler(w http.ResponseWriter, r *http
 // Get User Identity Details for the user associated to a AWS Account.
 func (handler *AWSHandler) IAMGetUserIdentityHandler(w http.ResponseWriter, r *http.Request) {
 	cacheKey := cacheKeyTemplate + "useraccount"
-	apiToBeInvoked := api.IAMGetUserIdentityAPI
+	apiToBeInvoked := aws.IAMGetUserIdentityAPI
 	onErrMsg := "iam:GetUserIdentity - Failed."
 	awsWrapper := NewAWSWrapper(r, w, handler)
 	awsAPI := GetAPI(r, apiToBeInvoked)
@@ -33,19 +33,19 @@ func (handler *AWSHandler) IAMGetUserIdentityHandler(w http.ResponseWriter, r *h
 // Get Aliases for the  AWS Account.
 func (handler *AWSHandler) IAMGetAliasesHandler(w http.ResponseWriter, r *http.Request) {
 	cacheKey := cacheKeyTemplate + "aliases"
-	apiToBeInvoked := api.IAMGetAliasesAPI
+	apiToBeInvoked := aws.IAMGetAliasesAPI
 	onErrMsg := "iam:GetAliases - Failed."
 	awsWrapper := NewAWSWrapper(r, w, handler)
 	awsAPI := GetAPI(r, apiToBeInvoked)
 	awsWrapper.InvokeAPI(awsAPI, cacheKey, onErrMsg)
 }
 
-func GetAPI(r *http.Request, apiToBeInvoked string) api.AwsAPI {
+func GetAPI(r *http.Request, apiToBeInvoked string) aws.API {
 	params := mux.Vars(r)
 	apiName := params["ApiName"]
-	if apiName == api.IAMPing {
+	if apiName == aws.IAMPing {
 		log.Println(" IAM Ping API ")
-		return api.NewAwsAPI(api.IAMPing)
+		return aws.New(aws.IAMPing)
 	}
-	return api.NewAwsAPI(apiToBeInvoked)
+	return aws.New(apiToBeInvoked)
 }

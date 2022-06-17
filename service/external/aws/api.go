@@ -1,4 +1,4 @@
-package api
+package aws
 
 import (
 	"log"
@@ -13,12 +13,12 @@ const IAMGetUserIdentityAPI = "GetUserIdentityAPI"
 const IAMGetAliasesAPI = "GetAliasesAPI"
 const IAMPing = "DoPing"
 
-type AwsAPI interface {
+type API interface {
 	Execute(client *iam.Client) (interface{}, error)
 }
 
-func NewAwsAPI(api string) AwsAPI {
-	var awsAPI AwsAPI
+func New(api string) API {
+	var awsAPI API
 	switch api {
 	case IAMGetUserCountAPI:
 		awsAPI = GetUserCountAPI{}

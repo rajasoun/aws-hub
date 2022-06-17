@@ -8,7 +8,7 @@ import (
 
 	"github.com/aws/aws-sdk-go-v2/service/iam"
 	"github.com/rajasoun/aws-hub/service/cache"
-	api "github.com/rajasoun/aws-hub/service/external/aws"
+	aws "github.com/rajasoun/aws-hub/service/external/aws"
 )
 
 type AWSHandler struct {
@@ -65,7 +65,7 @@ func (awsWrapper *AWSWrapper) RespondWithErrorJSON(err error, errMsg string) {
 	}
 }
 
-func (awsWrapper *AWSWrapper) InvokeAPI(awsAPI api.AwsAPI, cacheKeyCode, errMsg string) {
+func (awsWrapper *AWSWrapper) InvokeAPI(awsAPI aws.API, cacheKeyCode, errMsg string) {
 	profile := awsWrapper.request.Header.Get("profile")
 	cacheKey := fmt.Sprintf(cacheKeyCode, profile)
 	response, foundInCache := awsWrapper.cache.Get(cacheKey)
@@ -74,7 +74,7 @@ func (awsWrapper *AWSWrapper) InvokeAPI(awsAPI api.AwsAPI, cacheKeyCode, errMsg 
 		return
 	}
 	// Not In Cache
-	cfg, _ := api.GetConfigFromFileSystem(profile, awsWrapper.multiple)
+	cfg, _ := aws.GetConfigFromFileSystem(profile, awsWrapper.multiple)
 	client := iam.NewFromConfig(cfg)
 	response, err := awsAPI.Execute(client)
 	if err != nil {
