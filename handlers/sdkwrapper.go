@@ -7,9 +7,9 @@ import (
 	"time"
 
 	"github.com/aws/aws-sdk-go-v2/service/iam"
-	api "github.com/rajasoun/aws-hub/service/api/external"
 	"github.com/rajasoun/aws-hub/service/aws"
 	"github.com/rajasoun/aws-hub/service/cache"
+	api "github.com/rajasoun/aws-hub/service/external/aws"
 )
 
 type AWSHandler struct {
