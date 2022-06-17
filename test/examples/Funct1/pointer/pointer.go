@@ -21,13 +21,13 @@ func main() {
 	emp := Employee{Name: "Anji", ID: "EMP001"}
 	var empPointer *Employee = &emp
 
-	// call function UpdateEmployeeWithoutPointer
+	// here calling the function UpdateEmployeeWithoutPointer
 	UpdateEmployeeWithoutPointer(emp)
 	fmt.Println(emp.Name, emp.ID)
 	// output:  Anji EMP001
 
-	// call function UpdateEmployeeWithPointer
+	// here calling the function UpdateEmployeeWithPointer
 	UpdateEmployeeWithPointer(empPointer)
 	fmt.Println(emp.Name, emp.ID)
-	// output:  John EMP002
+	// output:  Rajesh EMP002
 }
