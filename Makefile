@@ -28,26 +28,16 @@ check-for-updates:	## View minor/patch upgrades
 	go list -u -f '{{if (and (not (or .Main .Indirect)) .Update)}}{{.Path}}: {{.Version}} -> {{.Update.Version}}{{end}}' -m all 2> /dev/null
 
 bin: clean
-	mkdir -p build/bin
+	mkdir -p .ci/build/bin
 
 clean: ## Clean Go
-	rm -rf build/bin
+	rm -rf .ci/build/bin
 
 lint: ## Go Lint
 	golangci-lint run 
 
 gosec: ## Lint Go Code for security issues
 	@gosec -exclude=G104 -fmt=json -out=$(REPORTS_DIR)/security/results.json -stdout --verbose=text  ./...
-
-tdd:  ## Test Go
-	go test ./... -v
-
-tdd-watch: ## Test Watch
-	gotestsum --watch --format testname
-
-tdd-cover: ## Go Coverage
-	go test ./... -v --cover -coverprofile 
-	go tool cover -html=$(REPORTS_DIR)/coverage/coverage.out
 
 tdd-unit: ## Prints formatted unit test output
 	@export SKIP_E2E=true && gotestsum --format testname -- -coverprofile=$(REPORTS_DIR)/coverage/coverage.out ./...
@@ -56,18 +46,16 @@ tdd-unit: ## Prints formatted unit test output
 
 tdd-integration: ## Prints formatted integration test output
 	gotestsum --format testname -- test/api/api_test.go
-
-tdd-understand: ## Generate Sequence Diagram
 	gotestsum --format testname -- test/api/understand_test.go
-
+	
 docker-build: ## Build aws-hub docker container
 	docker build  -t $(IMAGE_NAME) $(CONTEXT) 
 
-docker-start: ## Run container 
-	docker run --rm --name $(APP) --publish 3000:3000 -v "${PWD}:/workspace" $(IMAGE_NAME)
+# docker-start: ## Run container 
+# 	docker run --rm --name $(APP) --publish 3000:3000 -v "${PWD}:/workspace" $(IMAGE_NAME)
 
-docker-stop: ## Stop container 
-	docker stop $(APP)
+# docker-stop: ## Stop container 
+# 	docker stop $(APP)
 
 check-all: tdd-unit lint ## Check Lint & Unit Test
 
