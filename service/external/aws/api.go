@@ -2,6 +2,7 @@ package aws
 
 import (
 	"github.com/aws/aws-sdk-go-v2/service/iam"
+	hubIAM "github.com/rajasoun/aws-hub/service/external/aws/iam"
 )
 
 const IAMGetUserCountAPI = "GetUserCountAPI"
@@ -17,13 +18,13 @@ func New(api string) API {
 	var awsAPI API
 	switch api {
 	case IAMGetUserCountAPI:
-		awsAPI = GetUserCountAPI{}
+		awsAPI = hubIAM.GetUserCountAPI{}
 	case IAMGetUserIdentityAPI:
-		awsAPI = GetUserIdentityAPI{}
+		awsAPI = hubIAM.GetUserIdentityAPI{}
 	case IAMGetAliasesAPI:
-		awsAPI = GetAliasesAPI{}
+		awsAPI = hubIAM.GetAliasesAPI{}
 	case IAMPing:
-		awsAPI = DoPing{}
+		awsAPI = hubIAM.DoPing{}
 	}
 	return awsAPI
 }
