@@ -8,15 +8,26 @@ import (
 	"github.com/fatih/structs"
 )
 
-type DataStructure struct{}
+type DataStructure struct {
+	fileName    string
+	fileCreator func(name string) (*os.File, error)
+}
 
-func (data *DataStructure) StructToJSON(result *struct{}) error {
+func New() DataStructure {
+	ds := DataStructure{
+		fileName:    "data.json",
+		fileCreator: os.Create,
+	}
+	return ds
+}
+
+func (data *DataStructure) StructToJSON(result interface{}) error {
 	json, err := json.Marshal(&result)
 	if err != nil {
 		log.Printf("struct to JSON err = %v", err)
 		return err
 	}
-	fileHandler, err := os.Create("data.json")
+	fileHandler, err := data.fileCreator(data.fileName)
 	if err != nil {
 		log.Printf("file creation failed err = %v", err)
 		return err
