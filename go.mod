@@ -39,6 +39,7 @@ require (
 	github.com/google/go-querystring v1.1.0 // indirect
 	github.com/gorilla/websocket v1.5.0 // indirect
 	github.com/imkira/go-interpol v1.1.0 // indirect
+	github.com/jmespath/go-jmespath v0.4.0 // indirect
 	github.com/klauspost/compress v1.15.6 // indirect
 	github.com/mattn/go-colorable v0.1.12 // indirect
 	github.com/moul/http2curl v1.0.0 // indirect
@@ -68,6 +69,8 @@ require (
 // Test
 require (
 	github.com/alicebob/miniredis/v2 v2.21.0
+	github.com/aws/aws-sdk-go v1.44.37
+	github.com/aws/aws-sdk-go-v2/service/costexplorer v1.19.0
 	github.com/gavv/httpexpect v2.0.0+incompatible
 	github.com/steinfletcher/apitest v1.5.12
 	github.com/stretchr/testify v1.7.2
