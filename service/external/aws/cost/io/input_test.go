@@ -83,7 +83,7 @@ func TestCostAndUsageInput(t *testing.T) {
 			name: "Check CostAndUsageInput",
 			want: want{
 				Granularity:         types.Granularity("MONTHLY"),
-				Metrics:             []string([]string{"BlendedCost"}),
+				Metrics:             []string{"BlendedCost"},
 				GroupDefinitionSize: 1,
 			},
 		},
