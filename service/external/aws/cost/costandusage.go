@@ -22,7 +22,7 @@ type GetCostAndUsageAPI interface {
 // Output:
 //     If successful, a GetCostAndUsage object containing the result of the service call and nil.
 //     Otherwise, nil and an error from the call to GetCostAndUsage.
-func GetCost(client GetCostAndUsageAPI) (model.Bill, error) {
+func CurrentBill(client GetCostAndUsageAPI) (model.Bill, error) {
 	emptyContext := context.TODO()
 
 	metrics := []string{"BlendedCost"}
