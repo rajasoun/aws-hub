@@ -49,6 +49,7 @@ func costHistory(result *costexplorer.GetCostAndUsageOutput) []model.Cost {
 		return costList
 	}
 
+	log.Println(result.ResultsByTime)
 	for _, res := range result.ResultsByTime {
 		unit, groups := groupByMetrics(res)
 
