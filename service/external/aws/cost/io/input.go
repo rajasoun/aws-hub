@@ -30,12 +30,14 @@ func CostAndUsageInput() *costexplorer.GetCostAndUsageInput {
 		Granularity: types.GranularityMonthly,
 		Metrics:     []string{"BlendedCost"},
 		TimePeriod:  timePeriod,
+		Filter:      &types.Expression{},
 		GroupBy: []types.GroupDefinition{
 			{
 				Key:  awsutil.String("SERVICE"),
 				Type: types.GroupDefinitionTypeDimension,
 			},
 		},
+		NextPageToken: new(string),
 	}
 	return input
 }
