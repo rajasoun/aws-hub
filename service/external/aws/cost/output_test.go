@@ -1,6 +1,9 @@
 package cost
 
 import (
+	"encoding/json"
+	"io/ioutil"
+	"log"
 	"testing"
 	"time"
 
@@ -122,11 +125,9 @@ func TestCostHistory(t *testing.T) {
 			want: []model.Cost{},
 		},
 		{
-			name: "Check CostHistory with Empty result",
+			name: "Check CostHistory with Non Empty result",
 			args: args{
-				result: &costexplorer.GetCostAndUsageOutput{
-					ResultsByTime: []types.ResultByTime{},
-				},
+				result: &costexplorer.GetCostAndUsageOutput{},
 			},
 			want: []model.Cost{},
 		},
@@ -173,29 +174,46 @@ func TestCurrentBill(t *testing.T) {
 func TestGetCostHistoryAndBill(t *testing.T) {
 	assert := assert.New(t)
 	t.Parallel()
+	jsonData := jsonData()
+
 	type args struct {
 		result *costexplorer.GetCostAndUsageOutput
 	}
 	tests := []struct {
-		name  string
-		args  args
-		want  []model.Cost
-		want1 float64
+		name string
+		args args
+		want float64
 	}{
 		{
 			name: "Check GetCostHistoryAndBill",
 			args: args{
 				result: &costexplorer.GetCostAndUsageOutput{},
 			},
-			want:  []model.Cost{},
-			want1: 0,
+			want: 0,
+		},
+		{
+			name: "Check GetCostHistoryAndBill",
+			args: args{
+				result: &jsonData,
+			},
+			want: 4,
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got, got1 := GetCostHistoryAndBill(tt.args.result)
-			assert.Equal(tt.want, got, "GetCostHistoryAndBill() got = %v, want %v", got, tt.want)
-			assert.Equal(tt.want1, got1, "GetCostHistoryAndBill() got = %v, want %v", got1, tt.want1)
+			_, got1 := GetCostHistoryAndBill(tt.args.result)
+			assert.Equal(tt.want, got1, "GetCostHistoryAndBill() got = %v, want %v", got1, tt.want)
 		})
 	}
+}
+
+func jsonData() costexplorer.GetCostAndUsageOutput {
+	jsonData := costexplorer.GetCostAndUsageOutput{}
+	file, _ := ioutil.ReadFile("data/test.json")
+	err := json.Unmarshal(file, &jsonData)
+	if err != nil {
+		log.Printf("Test Data UnMarshall Err = %v", err)
+		return costexplorer.GetCostAndUsageOutput{}
+	}
+	return jsonData
 }

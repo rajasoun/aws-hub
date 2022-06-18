@@ -47,6 +47,7 @@ func TestCurrentBill(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Fail()
 			got, err := cost.CurrentBill(tt.args.client)
 			if tt.wantErr {
 				assert.Error(err, "GetCost() error = %v", err)

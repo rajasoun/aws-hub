@@ -1,0 +1,65 @@
+{
+    "GroupDefinitions": [
+        {
+            "Key": "SERVICE",
+            "Type": "DIMENSION"
+        }
+    ],
+    "NextPageToken": null,
+    "ResultsByTime": [
+        {
+            "TimePeriod": {
+                "End": "2022-01-01",
+                "Start": "2021-12-18"
+            },
+            "Estimated": false,
+            "Groups": [
+                {
+                    "Keys": [
+                        "AWS CloudTrail"
+                    ],
+                    "Metrics": {
+                        "BlendedCost": {
+                            "Amount": "1",
+                            "Unit": "USD"
+                        }
+                    }
+                },
+                {
+                    "Keys": [
+                        "AWS Config"
+                    ],
+                    "Metrics": {
+                        "BlendedCost": {
+                            "Amount": "1",
+                            "Unit": "USD"
+                        }
+                    }
+                },
+                {
+                    "Keys": [
+                        "AWS Key Management Service"
+                    ],
+                    "Metrics": {
+                        "BlendedCost": {
+                            "Amount": "1",
+                            "Unit": "USD"
+                        }
+                    }
+                },
+                {
+                    "Keys": [
+                        "AWS Lambda"
+                    ],
+                    "Metrics": {
+                        "BlendedCost": {
+                            "Amount": "1",
+                            "Unit": "USD"
+                        }
+                    }
+                }
+            ],
+            "Total": {}
+        }
+    ]
+}

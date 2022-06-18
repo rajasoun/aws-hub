@@ -44,12 +44,12 @@ func appendToList(costs []model.Cost, start time.Time,
 
 func costHistory(result *costexplorer.GetCostAndUsageOutput) []model.Cost {
 	costList := make([]model.Cost, 0)
+
 	if len(result.ResultsByTime) == 0 {
 		log.Println("Got Empty result.ResultsByTime")
 		return costList
 	}
 
-	log.Println(result.ResultsByTime)
 	for _, res := range result.ResultsByTime {
 		unit, groups := groupByMetrics(res)
 
