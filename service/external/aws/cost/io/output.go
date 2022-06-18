@@ -1,4 +1,4 @@
-package cost
+package io
 
 import (
 	"log"
@@ -73,7 +73,7 @@ func currentBill(costHistory []model.Cost) float64 {
 	return currentBill
 }
 
-func GetCostHistoryAndBill(result *costexplorer.GetCostAndUsageOutput) ([]model.Cost, float64) {
+func TotalBillAndHistory(result *costexplorer.GetCostAndUsageOutput) ([]model.Cost, float64) {
 	costHistory := costHistory(result)
 	if len(costHistory) == 0 {
 		log.Println("Cost History is Empty")

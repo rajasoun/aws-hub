@@ -5,7 +5,7 @@ import (
 	"log"
 
 	"github.com/aws/aws-sdk-go-v2/service/costexplorer"
-	io "github.com/rajasoun/aws-hub/service/external/aws/cost/io"
+	cost "github.com/rajasoun/aws-hub/service/external/aws/cost/io"
 	model "github.com/rajasoun/aws-hub/service/external/aws/cost/model"
 )
 
@@ -26,7 +26,7 @@ func CurrentBill(client GetCostAndUsageAPI) (model.Bill, error) {
 	emptyContext := context.TODO()
 
 	// Time Period of Last Six Months
-	input := io.CostAndUsageInput()
+	input := cost.CostAndUsageInput()
 
 	result, err := client.GetCostAndUsage(emptyContext, input)
 	if err != nil {
@@ -34,7 +34,7 @@ func CurrentBill(client GetCostAndUsageAPI) (model.Bill, error) {
 		return model.Bill{}, err
 	}
 
-	costHistory, currentBill := GetCostHistoryAndBill(result)
+	costHistory, currentBill := cost.TotalBillAndHistory(result)
 
 	return model.Bill{
 		Total:   currentBill,

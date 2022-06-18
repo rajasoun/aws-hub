@@ -1,4 +1,4 @@
-package cost
+package io
 
 import (
 	"encoding/json"
@@ -201,7 +201,7 @@ func TestGetCostHistoryAndBill(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			_, got1 := GetCostHistoryAndBill(tt.args.result)
+			_, got1 := TotalBillAndHistory(tt.args.result)
 			assert.Equal(tt.want, got1, "GetCostHistoryAndBill() got = %v, want %v", got1, tt.want)
 		})
 	}
