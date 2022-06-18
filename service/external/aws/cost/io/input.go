@@ -22,25 +22,20 @@ func timePeriod(years, months, days int) *types.DateInterval {
 	return timePeriod
 }
 
-func groupDefinition(query string) types.GroupDefinition {
-	groupDefinition := types.GroupDefinition{
-		Key:  awsutil.String(query),
-		Type: types.GroupDefinitionTypeDimension,
-	}
-	return groupDefinition
-}
-
 func CostAndUsageInput() *costexplorer.GetCostAndUsageInput {
-	metrics := []string{"BlendedCost"}
-
+	// Last Six Months Period.
 	timePeriod := timePeriod(0, -6, 0)
-	groupDefinition := groupDefinition("SERVICE")
 
 	input := &costexplorer.GetCostAndUsageInput{
 		Granularity: types.GranularityMonthly,
-		Metrics:     metrics,
+		Metrics:     []string{"BlendedCost"},
 		TimePeriod:  timePeriod,
-		GroupBy:     []types.GroupDefinition{groupDefinition},
+		GroupBy: []types.GroupDefinition{
+			{
+				Key:  awsutil.String("SERVICE"),
+				Type: types.GroupDefinitionTypeDimension,
+			},
+		},
 	}
 	return input
 }

@@ -67,32 +67,33 @@ func TestTimePeriod(t *testing.T) {
 	}
 }
 
-func TestGroupDefinition(t *testing.T) {
+func TestCostAndUsageInput(t *testing.T) {
 	assert := assert.New(t)
 	t.Parallel()
-	type args struct {
-		query string
+	type want struct {
+		Granularity         types.Granularity
+		Metrics             []string
+		GroupDefinitionSize int
 	}
 	tests := []struct {
 		name string
-		args args
-		want types.GroupDefinition
+		want want
 	}{
 		{
-			name: "Check TestGroupByDefinition",
-			args: args{
-				query: "SERVICE",
-			},
-			want: types.GroupDefinition{
-				Key:  awsutil.String("SERVICE"),
-				Type: "DIMENSION",
+			name: "Check CostAndUsageInput",
+			want: want{
+				Granularity:         types.Granularity("MONTHLY"),
+				Metrics:             []string([]string{"BlendedCost"}),
+				GroupDefinitionSize: 1,
 			},
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got := groupDefinition(tt.args.query)
-			assert.Equal(tt.want, got, "groupDefinition() = %v, want %v", got, tt.want)
+			got := CostAndUsageInput()
+			assert.Equal(tt.want.Granularity, got.Granularity, "CostAndUsageInput() = %v, want %v", got.Granularity, tt.want.Granularity)
+			assert.Equal(tt.want.Metrics, got.Metrics, "CostAndUsageInput() = %v, want %v", got.Granularity, tt.want.Metrics)
+			assert.Equal(tt.want.GroupDefinitionSize, len(got.GroupBy), "CostAndUsageInput() = %v, want %v", len(got.GroupBy), tt.want.GroupDefinitionSize)
 		})
 	}
 }
