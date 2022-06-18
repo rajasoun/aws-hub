@@ -4,6 +4,7 @@ import (
 	"time"
 
 	awsutil "github.com/aws/aws-sdk-go-v2/aws"
+	"github.com/aws/aws-sdk-go-v2/service/costexplorer"
 	"github.com/aws/aws-sdk-go-v2/service/costexplorer/types"
 )
 
@@ -27,4 +28,19 @@ func groupDefinition(query string) types.GroupDefinition {
 		Type: types.GroupDefinitionTypeDimension,
 	}
 	return groupDefinition
+}
+
+func CostAndUsageInput() *costexplorer.GetCostAndUsageInput {
+	metrics := []string{"BlendedCost"}
+
+	timePeriod := timePeriod(0, -6, 0)
+	groupDefinition := groupDefinition("SERVICE")
+
+	input := &costexplorer.GetCostAndUsageInput{
+		Granularity: types.GranularityMonthly,
+		Metrics:     metrics,
+		TimePeriod:  timePeriod,
+		GroupBy:     []types.GroupDefinition{groupDefinition},
+	}
+	return input
 }

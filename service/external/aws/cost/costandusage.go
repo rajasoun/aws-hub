@@ -5,7 +5,7 @@ import (
 	"log"
 
 	"github.com/aws/aws-sdk-go-v2/service/costexplorer"
-	"github.com/aws/aws-sdk-go-v2/service/costexplorer/types"
+	io "github.com/rajasoun/aws-hub/service/external/aws/cost/io"
 	model "github.com/rajasoun/aws-hub/service/external/aws/cost/model"
 )
 
@@ -25,17 +25,8 @@ type GetCostAndUsageAPI interface {
 func CurrentBill(client GetCostAndUsageAPI) (model.Bill, error) {
 	emptyContext := context.TODO()
 
-	metrics := []string{"BlendedCost"}
 	// Time Period of Last Six Months
-	timePeriod := timePeriod(0, -6, 0)
-	groupDefinition := groupDefinition("SERVICE")
-
-	input := &costexplorer.GetCostAndUsageInput{
-		Granularity: types.GranularityMonthly,
-		Metrics:     metrics,
-		TimePeriod:  timePeriod,
-		GroupBy:     []types.GroupDefinition{groupDefinition},
-	}
+	input := io.CostAndUsageInput()
 
 	result, err := client.GetCostAndUsage(emptyContext, input)
 	if err != nil {
