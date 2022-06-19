@@ -174,7 +174,7 @@ func TestCurrentBill(t *testing.T) {
 func TestGetCostHistoryAndBill(t *testing.T) {
 	assert := assert.New(t)
 	t.Parallel()
-	jsonData := jsonData()
+	jsonData := jsonTestData()
 
 	type args struct {
 		result *costexplorer.GetCostAndUsageOutput
@@ -207,9 +207,9 @@ func TestGetCostHistoryAndBill(t *testing.T) {
 	}
 }
 
-func jsonData() costexplorer.GetCostAndUsageOutput {
+func jsonTestData() costexplorer.GetCostAndUsageOutput {
 	jsonData := costexplorer.GetCostAndUsageOutput{}
-	file, _ := ioutil.ReadFile("data/test.json")
+	file, _ := ioutil.ReadFile("testdata/test.json")
 	err := json.Unmarshal(file, &jsonData)
 	if err != nil {
 		log.Printf("Test Data UnMarshall Err = %v", err)
