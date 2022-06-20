@@ -45,8 +45,11 @@ tdd-unit: ## Prints formatted unit test output
 	@bash -c "test/coverage_check.sh"
 
 tdd-integration: ## Prints formatted integration test output
-	gotestsum --format testname -- test/api/api_test.go
-	gotestsum --format testname -- test/api/understand_test.go
+	gotestsum --format testname -- test/integration/cost_test.go
+
+tdd-e2e: ## Prints formatted e2e test output
+	gotestsum --format testname -- test/e2e/api_test.go
+	gotestsum --format testname -- test/e2e/understand_test.go
 	
 docker-build: ## Build aws-hub docker container
 	docker build  -t $(IMAGE_NAME) $(CONTEXT) 
