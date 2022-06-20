@@ -3,8 +3,6 @@
 package integration_test
 
 import (
-	"encoding/json"
-	"io/ioutil"
 	"os"
 	"testing"
 
@@ -18,32 +16,54 @@ import (
 )
 
 func TestCurrentBill(t *testing.T) {
+	var outputToFile = false
 	if os.Getenv("SKIP_E2E") != "" {
 		t.Skip("Skipping INTEGRATION Tests")
 	}
 
+	if os.Getenv("OUTPUT_TO_FILE") != "" {
+		outputToFile = true
+	}
+
 	assert := assert.New(t)
 	t.Parallel()
-	t.Run("Check Current Bill", func(t *testing.T) {
-		// Load Default Configuration
-		cfgLoader := credential.New()
-		cfg, err := cfgLoader.LoadDefaultConfig()
-		assert.NoError(err, "LoadDefaultConfig() = %v", err)
+	// Load Default Configuration
+	cfgLoader := credential.New()
+	cfg, err := cfgLoader.LoadDefaultConfig()
+	assert.NoError(err, "LoadDefaultConfig() = %v", err)
 
-		// Create Client From Configuration
-		client := costexplorer.NewFromConfig(cfg)
+	// Create Client From Configuration
+	client := costexplorer.NewFromConfig(cfg)
 
-		// Execute API
-		got, err := cost.CurrentBill(client)
-		// json, _ := json.Marshal(&got)
-		// fmt.Println(string(json))
-		// Assert
-		assert.NoError(err, "CurrentBill() = %v", err)
-		assert.NotZero(got.Total, "GetCost() = %v, want %v", got.Total)
+	tests := []struct {
+		name     string
+		filePath string
+	}{
+		{
+			name:     "Check Current Bill",
+			filePath: "testdata/cost/bill.json",
+		},
+	}
 
-		want := model.Bill{}
-		file, _ := ioutil.ReadFile("testdata/cost/bill.json")
-		json.Unmarshal(file, &want)
-		assert.Equal(want, got, "CurrentBill() = %v, want = %v", got, want)
-	})
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+
+			// Execute API
+			got, err := cost.CurrentBill(client)
+
+			if outputToFile {
+				jsonWriteErr := ToJSONFile(tt.filePath, got)
+				assert.NoError(jsonWriteErr, "ToJSONFile() = %v", jsonWriteErr)
+			}
+
+			want := model.Bill{}
+			jsonReadErr := FromJSONFile(tt.filePath, &want)
+			assert.NoError(jsonReadErr, "FromJSONFile() = %v", jsonReadErr)
+
+			assert.Equal(want, got, "CurrentBill() = %v, want = %v", got, want)
+
+			assert.NoError(err, "CurrentBill() = %v", err)
+			assert.NotZero(got.Total, "GetCost() = %v, want %v", got.Total)
+		})
+	}
 }
