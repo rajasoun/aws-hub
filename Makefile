@@ -45,7 +45,7 @@ tdd-unit: ## Prints formatted unit test output
 	@bash -c "test/coverage_check.sh"
 
 tdd-integration: ## Prints formatted integration test output
-	gotestsum --format testname -- test/integration/**.go
+	@export OUTPUT_TO_FILE=true && gotestsum --format testname -- test/integration/**.go
 
 tdd-e2e: ## Prints formatted e2e test output
 	gotestsum --format testname -- test/e2e/api_test.go
