@@ -1,6 +1,6 @@
 // Integration test for the Cost Explorer APIs
 
-package cost
+package integration_test
 
 import (
 	"os"
