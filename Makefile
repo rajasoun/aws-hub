@@ -46,6 +46,7 @@ tdd-unit: ## Prints formatted unit test output
 
 tdd-integration: ## Prints formatted integration test output
 	gotestsum --format testname -- test/integration/cost_test.go
+	gotestsum --format testname -- test/integration/iam_test.go
 
 tdd-e2e: ## Prints formatted e2e test output
 	gotestsum --format testname -- test/e2e/api_test.go

@@ -12,6 +12,7 @@ import (
 	"github.com/stretchr/testify/assert"
 
 	"github.com/rajasoun/aws-hub/service/external/aws/cost"
+	"github.com/rajasoun/aws-hub/service/external/aws/cost/model"
 )
 
 func TestCurrentBill(t *testing.T) {
@@ -32,9 +33,14 @@ func TestCurrentBill(t *testing.T) {
 
 		// Execute API
 		got, err := cost.CurrentBill(client)
-
+		// json, _ := json.Marshal(&got)
+		// fmt.Println(string(json))
 		// Assert
 		assert.NoError(err, "CurrentBill() = %v", err)
 		assert.NotZero(got.Total, "GetCost() = %v, want %v", got.Total)
+
+		want := model.Bill{}
+		loadTestData("testdata/cost/bill.json", &want)
+		assert.Equal(want, got, "CurrentBill() = %v, want = %v", got, want)
 	})
 }
