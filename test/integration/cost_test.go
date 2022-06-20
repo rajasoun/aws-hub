@@ -3,6 +3,8 @@
 package integration_test
 
 import (
+	"encoding/json"
+	"io/ioutil"
 	"os"
 	"testing"
 
@@ -40,7 +42,8 @@ func TestCurrentBill(t *testing.T) {
 		assert.NotZero(got.Total, "GetCost() = %v, want %v", got.Total)
 
 		want := model.Bill{}
-		loadTestData("testdata/cost/bill.json", &want)
+		file, _ := ioutil.ReadFile("testdata/cost/bill.json")
+		json.Unmarshal(file, &want)
 		assert.Equal(want, got, "CurrentBill() = %v, want = %v", got, want)
 	})
 }
