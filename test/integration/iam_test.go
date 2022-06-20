@@ -12,7 +12,18 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestIAM(t *testing.T) {
+func New() (*iam.Client, error) {
+	cfgLoader := credential.New()
+	cfg, err := cfgLoader.LoadDefaultConfig()
+	if err != nil {
+		return nil, err
+	}
+
+	client := iam.NewFromConfig(cfg)
+	return client, nil
+}
+
+func setUp(t *testing.T) bool {
 	var outputToFile = false
 	if os.Getenv("SKIP_E2E") != "" {
 		t.Skip("Skipping INTEGRATION Tests")
@@ -21,80 +32,89 @@ func TestIAM(t *testing.T) {
 	if os.Getenv("OUTPUT_TO_FILE") != "" {
 		outputToFile = true
 	}
+	return outputToFile
+}
 
+func TestIAMAccountAlias(t *testing.T) {
 	assert := assert.New(t)
 	t.Parallel()
 
-	// Load Default Configuration
-	cfgLoader := credential.New()
-	cfg, err := cfgLoader.LoadDefaultConfig()
-	assert.NoError(err, "LoadDefaultConfig() = %v", err)
-	// Create Client
-	client := iam.NewFromConfig(cfg)
-	tests := []struct {
-		name string
-	}{
-		{
-			name: "Check Account Alias",
-		},
-		{
-			name: "Check Users Count",
-		},
-		{
-			name: "Check User Identity",
-		},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			got, err := hubiam.GetAliases(client)
-			assert.NoError(err, "GetAliases() = %v", err)
+	outputToFile := setUp(t)
+	client, err := New()
+	assert.NoError(err, "IAM Client New() = %v", err)
+	filePath := "testdata/iam/alias.json"
 
-			if outputToFile {
-				jsonWriteErr := ToJSONFile("testdata/iam/alias.json", got)
-				assert.NoError(jsonWriteErr, "ToJSONFile() = %v", jsonWriteErr)
-			}
+	t.Run("Check Account Alias", func(t *testing.T) {
+		got, err := hubiam.GetAliases(client)
+		assert.NoError(err, "GetAliases() = %v", err)
 
-			want := hubiam.Aliases{}
-			jsonReadErr := FromJSONFile("testdata/iam/alias.json", &want)
-			assert.NoError(jsonReadErr, "FromJSONFile() = %v", jsonReadErr)
+		if outputToFile {
+			jsonWriteErr := ToJSONFile(filePath, got)
+			assert.NoError(jsonWriteErr, "ToJSONFile() = %v", jsonWriteErr)
+		}
 
-			assert.Equal(want, got, "GetAliases() = %v, want = %v", got, want)
+		want := hubiam.Aliases{}
+		jsonReadErr := FromJSONFile(filePath, &want)
+		assert.NoError(jsonReadErr, "FromJSONFile() = %v", jsonReadErr)
 
-		})
-		t.Run(tt.name, func(t *testing.T) {
-			got, err := hubiam.GetUserCount(client)
-			assert.NoError(err, "GetUserCount() = %v", err)
+		assert.Equal(want, got, "GetAliases() = %v, want = %v", got, want)
 
-			if outputToFile {
-				jsonWriteErr := ToJSONFile("testdata/iam/users.json", got)
-				assert.NoError(jsonWriteErr, "ToJSONFile() = %v", jsonWriteErr)
-			}
+	})
+}
 
-			want := hubiam.UserList{}
-			jsonReadErr := FromJSONFile("testdata/iam/users.json", &want)
-			assert.NoError(jsonReadErr, "FromJSONFile() = %v", jsonReadErr)
+func TestIAMUsersCount(t *testing.T) {
+	assert := assert.New(t)
+	t.Parallel()
 
-			assert.Equal(want, got, "GetUserCount() = %v, want = %v", got, want)
+	outputToFile := setUp(t)
+	client, err := New()
+	assert.NoError(err, "IAM Client New() = %v", err)
+	filePath := "testdata/iam/users.json"
 
-		})
-		t.Run(tt.name, func(t *testing.T) {
-			got, err := hubiam.GetUserIdentity(client)
-			assert.NoError(err, "GetUserIdentity() = %v", err)
+	t.Run("Check Users Count", func(t *testing.T) {
+		got, err := hubiam.GetUserCount(client)
+		assert.NoError(err, "GetUserCount() = %v", err)
 
-			if outputToFile {
-				jsonWriteErr := ToJSONFile("testdata/iam/identity.json", got)
-				assert.NoError(jsonWriteErr, "ToJSONFile() = %v", jsonWriteErr)
-			}
+		if outputToFile {
+			jsonWriteErr := ToJSONFile(filePath, got)
+			assert.NoError(jsonWriteErr, "ToJSONFile() = %v", jsonWriteErr)
+		}
 
-			want := hubiam.User{}
-			jsonReadErr := FromJSONFile("testdata/iam/identity.json", &want)
-			assert.NoError(jsonReadErr, "FromJSONFile() = %v", jsonReadErr)
+		want := hubiam.UserList{}
+		jsonReadErr := FromJSONFile(filePath, &want)
+		assert.NoError(jsonReadErr, "FromJSONFile() = %v", jsonReadErr)
 
-			assert.Equal(want.ARN, got.ARN, "GetUserIdentity() ARN = %v, want = %v", got.ARN, want.ARN)
-			assert.Equal(want.CreateDate, got.CreateDate, "GetUserIdentity() CreateDate = %v, want = %v", got.CreateDate, want.CreateDate)
-			assert.Equal(want.UserID, got.UserID, "GetUserIdentity() UserID = %v, want = %v", got.UserID, want.UserID)
-			assert.Equal(want.Username, got.Username, "GetUserIdentity() Username = %v, want = %v", got.Username, want.Username)
+		assert.Equal(want, got, "GetUserCount() = %v, want = %v", got, want)
 
-		})
-	}
+	})
+}
+
+func TestIAMUserIdentity(t *testing.T) {
+	assert := assert.New(t)
+	t.Parallel()
+
+	outputToFile := setUp(t)
+	client, err := New()
+	assert.NoError(err, "IAM Client New() = %v", err)
+	filePath := "testdata/iam/identity.json"
+
+	t.Run("Check User Identity", func(t *testing.T) {
+		got, err := hubiam.GetUserIdentity(client)
+		assert.NoError(err, "GetUserIdentity() = %v", err)
+
+		if outputToFile {
+			jsonWriteErr := ToJSONFile(filePath, got)
+			assert.NoError(jsonWriteErr, "ToJSONFile() = %v", jsonWriteErr)
+		}
+
+		want := hubiam.User{}
+		jsonReadErr := FromJSONFile(filePath, &want)
+		assert.NoError(jsonReadErr, "FromJSONFile() = %v", jsonReadErr)
+
+		assert.Equal(want.ARN, got.ARN, "GetUserIdentity() ARN = %v, want = %v", got.ARN, want.ARN)
+		assert.Equal(want.CreateDate, got.CreateDate, "GetUserIdentity() CreateDate = %v, want = %v", got.CreateDate, want.CreateDate)
+		assert.Equal(want.UserID, got.UserID, "GetUserIdentity() UserID = %v, want = %v", got.UserID, want.UserID)
+		assert.Equal(want.Username, got.Username, "GetUserIdentity() Username = %v, want = %v", got.Username, want.Username)
+
+	})
 }
