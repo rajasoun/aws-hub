@@ -11,7 +11,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestIsTestRun(t *testing.T) {
+func TestGetFreePort(t *testing.T) {
 	assert := assert.New(t)
 	t.Parallel()
 	// t.Run("Check Is Test Run", func(t *testing.T) {
