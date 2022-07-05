@@ -3,7 +3,7 @@ run:
 
 linters-settings:
   dupl:
-    threshold: 100
+    threshold: 130
   funlen:
     lines: 100
     statements: 50

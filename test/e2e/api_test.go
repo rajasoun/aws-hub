@@ -1,4 +1,4 @@
-package api_test
+package e2e_test
 
 import (
 	"net/http"

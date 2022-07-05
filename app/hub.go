@@ -77,7 +77,7 @@ func New() *Hub {
 	return &hub
 }
 
-// Execute creates New CLI App and runs the command
+// Execute creates New CLI App and runs the command.
 func Execute(args []string, writer io.Writer) error {
 	app := New()
 	// Dependency Injection - Enable TDD

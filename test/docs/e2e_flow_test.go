@@ -81,8 +81,9 @@ func TestE2E(t *testing.T) {
 }
 
 func TestSimulateExecute(t *testing.T) {
+	assert := assert.New(t)
+	t.Parallel()
 	t.Run("Flow Execute Simulation", func(t *testing.T) {
-		assert := assert.New(t)
 		var outputBuffer bytes.Buffer
 		outputBuffer.Reset()
 		log.SetOutput(&outputBuffer)
@@ -114,9 +115,9 @@ func TestSimulateExecute(t *testing.T) {
 }
 
 func TestFlowOpenOrCreate(t *testing.T) {
+	assert := assert.New(t)
+	t.Parallel()
 	t.Run("Check Markdown Creation os.OpenFile", func(t *testing.T) {
-		assert := assert.New(t)
-		t.Parallel()
 		flowManager := NewFlowManager()
 		got, _ := flowManager.CreateMarkdown()
 		want := flowManager.markdown.fileName
@@ -137,8 +138,9 @@ func (c *MockOs) FileOpener(name string, flag int, perm os.FileMode) (*os.File, 
 }
 
 func TestFlowOpenOrCreateErr(t *testing.T) {
+	assert := assert.New(t)
+	t.Parallel()
 	t.Run("Check Markdown Creation for Err", func(t *testing.T) {
-		assert := assert.New(t)
 		mockos := new(MockOs)
 		flowManager := NewFlowManager()
 		mockErr := errors.New("simulated error")
